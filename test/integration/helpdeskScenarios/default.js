@@ -18,7 +18,11 @@ addScenario('default', {
      */
   'context.property.get': function({ path, type, tabId }) {
     return {
-      body: 'my property',
+      body: {
+        emails: [
+          "bh@hubspot.com",
+        ],
+      },
       status: 'success',
     };
   },
