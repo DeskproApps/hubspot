@@ -1,0 +1,26 @@
+# This is a language file. Every key here is a phrase that
+# can be translated into other languages.
+#
+# To use a phrase in your code, use the i18n helper available
+# from dpapp like this:
+#    <p>{dpapp.i18n.t("hello_name", { name: "John" )}</p>
+# Or the shorter alias 't':
+#    <p>{dpapp.t("hello_name", { name: "John" )}</p>
+# Or finally, you can use the Phrase component:
+#    import { Phrase } from '@deskpro/apps-components/DeskproApp';
+#    <Phrase id="hello_name" name="John" />
+#
+# All apps MUST include an `en-US` or `en` locale.
+#
+# Refer to the manual for more information about translation and I18n:
+# https://deskpro.gitbook.io/deskpro-apps/i18n/translation-and-i18n
+
+# Here's an example phrase using a variable like demonstrated above:
+hello_name: "Hello, {{name}}!"
+
+# You can organise phrases intro structures. When you do this, you
+# refer to the phrase by the full ID, using dots to denote hierarchy.
+# For example: <Phrase id="welcome.again" />
+welcome:
+  back: "Welcome back"
+  again: "Hello again"

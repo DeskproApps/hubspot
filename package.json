@@ -1,0 +1,73 @@
+{
+  "name": "hello",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@deskpro/apps-react-scripts": "0.5.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "@deskpro/apps-sdk": "~0.12.1",
+    "@deskpro/apps-components": "~0.12.1",
+    "@deskpro/apps-installer": "~1.0.7",
+    "prop-types": "^15.6.2"
+  },
+  "devDependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "react-test-renderer": "^16.4.2"
+  },
+  "homepage": ".",
+  "scripts": {
+    "start": "PORT=31080 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "lint": "react-scripts eslint src test",
+    "format": "react-scripts prettier --write \"{src,test}/**/*.js\"",
+    "format:check": "react-scripts prettier --list-different \"{src,test}/**/*.js\""
+  },
+  "description": "What does your app do?",
+  "author": {
+    "name": "Your name or company name",
+    "email": "your@email.com",
+    "url": "https://your.app.homepage"
+  },
+  "deskpro": {
+    "version": "2.3.0",
+    "title": "hello",
+    "isSingle": true,
+    "scope": "agent",
+    "targets": [
+      {
+        "target": "ticket-sidebar",
+        "url": "index.html"
+      },
+      {
+        "target": "install",
+        "url": "install.html"
+      }
+    ],
+    "storage": [],
+    "settings": [],
+    "deskproApiTags": [],
+    "externalApis": []
+  },
+  "eslintConfig": {
+    "extends": "react-app",
+    "rules": {
+      "jsx-a11y/href-no-hash": "off"
+    },
+    "overrides": [
+      {
+        "files": "test/**/*.js",
+        "env": {
+          "jest": true
+        }
+      }
+    ]
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "singleQuote": true
+  }
+}
