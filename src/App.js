@@ -1,15 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { Phrase } from '@deskpro/apps-components';
 import './styles.css';
-
-import { Button } from '@deskpro/apps-components';
 
 import { DataList } from '@deskpro/apps-components';
 import { Panel } from '@deskpro/apps-components';
-
-// var request = require("request");
-// import request from 'request';
 
 /*
   This is your main App component. By default, this is the upper-most component
@@ -32,61 +26,79 @@ class App extends React.Component {
   };
 
   state = {
-    me: null,
+    data: null,
   };
 
   componentDidMount() {
-    // dpapp is injected into your App automatically.
-    // It is the main interface between your app and Deskpro itself.
-    const dpapp = this.props.dpapp;
+    let w = window.w = window;
 
-    // Here you see we're accessing the context,
-    // in this case we're getting ahold of the ticket context.
+    const dpapp = this.props.dpapp;
     const ticketContext = dpapp.context.get('ticket');
 
-    // And from that, we can interact with the ticket in various
-    // ways. In this case we're just loading up some info about the user
     ticketContext.get('person').then(person => {
-      console.debug({ person });
+
       const primaryEmail = person.emails[0];
 
-      this.setState({data: null});
+      fetch_contact_by_email(primaryEmail).then((json) => {
 
-      find_by_email(primaryEmail).then((x) => {
+        console.debug("fetch_contact_by_email json:", json);
+        w.json = json;
+
+        function getter(obj){
+          function get(key, alternative="") {
+            if (obj[key]) {
+              if (obj[key].value !== undefined) {
+                return obj[key].value;
+              } else {
+                console.warn(
+                  `property ${key} exists but not ${key}.value - ` +
+                  `defaulting to "${alternative}"`
+                );
+              }
+            }
+            return alternative;
+          }
+          return get;
+        };
+        const get = getter(json.properties)
+        const company = json["associated-company"];        
+        const getc = getter(company.properties)
         const data = {
-          company: x.properties.company.value,
-          list: [
+          company: getc("name", ""),
+          companylist: [
+            {
+              label: "Domain name",
+              value: getc("domain"),
+            },
+            {
+              label: "Industry",
+              value: getc("industry"),
+            },
+            {
+              label: "Annual Revenue",
+              value: getc("annualrevenue"),
+            },
+          ],
+          name: `${get("firstname", "")} ${get("lastname", "").toUpperCase()}`,
+          namelist: [
             {
               label: "Email",
-              value: x.properties.email.value,
+              value: get("email"),
             },
             {
               label: "Phone",
-              value: x.properties.phone.value, // TODO .phone can be undefined
+              value: get("phone"),
             },
             {
               label: "Job Title",
-              value: x.properties.jobtitle.value, // TODO actually, I believe all of them can
-            },
-            {
-              label: "Owner",
-              value: "London"
+              value: get("jobtitle"),
             },
             {
               label: "Lifecycle stage",
-              value: x.properties.lifecyclestage.value,
+              value: get("lifecyclestage"),
             },
           ]
         };
-        console.debug({
-          x,
-          company: x.properties.company.value,
-          email: x.properties.email.value,
-          phone: x.properties.phone.value,
-          jobtitle: x.properties.jobtitle.value,
-          // owner: x.properties.owner. ...
-          lifecyclestage: x.properties.lifecyclestage.value,
-        });
         this.setState({data});
       });
     });
@@ -94,18 +106,58 @@ class App extends React.Component {
 
   render() {
     return (
-      <Panel title={this.state.data ? this.state.data.company : "Loading..."}>
-        <DataList data={this.state.data ? this.state.data.list : []} />
-      </Panel>
+      <div>
+        <Panel title={access(this, "state.data.name", "Loading...")}>
+          <DataList data={access(this, "state.data.namelist", [])} />
+        </Panel>
+        <Panel title={access(this, "state.data.company", "Loading...")}>
+          <DataList data={access(this, "state.data.companylist", [])} />
+        </Panel>
+      </div>
     );
   }
 }
 
-function find_by_email(email, hapikey="c35b9d4e-0049-49fe-a8cf-22dc422e7512") {
-  console.debug(`Finding by email [${email}]`);
+function access(object, dotted_name, alternative) {
+  let name_list;
+  if(!dotted_name) {
+    name_list = [];
+  } else {
+    name_list = dotted_name.split(".");
+  }
+  let value = object;
+  for (let key of name_list) {
+    if (value) {
+      value = value[key];
+    } else {
+      return alternative;
+    }
+  }
+  if (!value) {
+    return alternative;
+  }
+  return value;
+}
+function test_access() { // eslint-disable-line no-unused-vars
+  let o = {a:{b:{c:"ok"}}};
+  console.assert(access(o, "a.b.c", "nope") === "ok");
+  console.assert(access(o, "a.b.d", "nope") === "nope");
+  console.assert(access(o, "a.a", "nope") === "nope");
+  console.assert(access(o, "d", "nope") === "nope");
+  console.assert(access(o.a.b, "c", "nope") === "ok");
+  console.assert(access("ok", "", "nope") === "ok");
+}
+
+function fetch_contact_by_email(
+  email,
+  hapikey="c35b9d4e-0049-49fe-a8cf-22dc422e7512"
+) {
   var options = { method: 'GET',
     mode: 'cors',
-    url: `https://cors-anywhere.herokuapp.com/api.hubapi.com:443/contacts/v1/contact/email/${email}/profile?hapikey=${hapikey}`,
+    url: 
+    `https://cors-anywhere.herokuapp.com/` +
+    `api.hubapi.com:443/` +
+    `contacts/v1/contact/email/${email}/profile?hapikey=${hapikey}`,
     headers: { 'Content-Type': 'application/json' }
   };
 
