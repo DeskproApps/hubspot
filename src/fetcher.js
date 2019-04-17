@@ -1,7 +1,3 @@
-const fetcher = {
-  hapikey: "c35b9d4e-0049-49fe-a8cf-22dc422e7512",
-};
-
 function cors_fetch(base_url, query_string_param, option) {
   base_url = new URL(base_url);
   if (base_url.protocol !== "https:") {
@@ -28,78 +24,50 @@ function cors_fetch(base_url, query_string_param, option) {
   return fetch(url, option);
 }
 
-function fetch_contact_by_email(email, hapikey = fetcher.hapikey) {
-  const url =
-    `https://api.hubapi.com` +
-    `/contacts/v1/contact/email/${email}/profile`;
-  return cors_fetch(url, { hapikey }).then(r => r.json());
+class Fetcher { // es-lint-disable
+  constructor(qs) {
+    this.qs = qs;
+    Fetcher_methods.forEach(([method_name, url]) => {
+      this[method_name] = (id) => {
+        return this.fetch(base + url(id));
+      };
+    });
+  }
+  fetch(url) {
+    return cors_fetch(url, this.qs).then(r => r.json());
+  }
 }
 
-// /**
-//  * Use a deprecated API request because it's the only way to batch
-//  * obtain the needed information.
-//  * @param {*} contactId contact vid
-//  * @param {*} hapikey
-//  */
-// function fetch_deals_by_contact(contactId, hapikey = fetcher.hapikey) {
-//   // https://developers.hubspot.com/docs/methods/crm-associations/crm-associations-overview
-//   const contact_to_deal_defintion_id = 4;
+const base = "https://api.hubapi.com";
+const contact_to_deal_defintion_id = 4;
+const contact_to_engagement_defintion_id = 9;
+const association_url = (id, definition_id) =>
+  `/crm-associations/v1/associations/${id}/HUBSPOT_DEFINED/${definition_id}`;
 
-//   const url =
-//     `https://api.hubapi.com` +
-//     `/deals/v1/deal/associated/contact/${contactId}/paged`;
-//   return cors_fetch(url, { hapikey }).then(r => r.json());
-// }
+const Fetcher_methods = [
+  [
+    "contact_by_email",
+    (email) => `/contacts/v1/contact/email/${email}/profile`
+  ],
+  [
+    "deal",
+    (dealId) => `/deals/v1/deal/${dealId}`
+  ],
+  [
+    "engagement",
+    (engagementId) => `/engagements/v1/engagements/${engagementId}`
+  ],
+  [
+    "dealId_by_contact",
+    (contactId) => association_url(contactId, contact_to_deal_defintion_id)
+  ],
+  [
+    "engagementId_by_contact",
+    (contactId) => association_url(contactId, contact_to_engagement_defintion_id)
+  ],
+]
 
-
-/**
- * Use the Hubspot Associations API to get the deal ids associated with
- * a contact
- * @param {*} contactId contact vid
- * @param {*} hapikey
- */
-function fetch_dealId_by_contact(contactId, hapikey = fetcher.hapikey) {
-  // https://developers.hubspot.com/docs/methods/crm-associations/crm-associations-overview
-  const contact_to_deal_defintion_id = 4;
-
-  const url =
-    `https://api.hubapi.com` +
-    `/crm-associations/v1/associations/${contactId}/HUBSPOT_DEFINED/` +
-    `${contact_to_deal_defintion_id}`;
-  return cors_fetch(url, { hapikey }).then(r => r.json());
-}
-
-/* TODO refactor copy-pasted code */
-function fetch_engagementId_by_contact(contactId, hapikey = fetcher.hapikey) {
-  // https://developers.hubspot.com/docs/methods/crm-associations/crm-associations-overview
-  const contact_to_engagement_defintion_id = 9;
-
-  const url =
-    `https://api.hubapi.com` +
-    `/crm-associations/v1/associations/${contactId}/HUBSPOT_DEFINED/` +
-    `${contact_to_engagement_defintion_id}`;
-  return cors_fetch(url, { hapikey }).then(r => r.json());
-}
-
-function fetch_deal(dealId, hapikey = fetcher.hapikey) {
-  const url =
-    `https://api.hubapi.com` +
-    `/deals/v1/deal/${dealId}`;
-  return cors_fetch(url, { hapikey }).then(r => r.json());
-}
-
-/* TODO refactor copy-pasted code */
-function fetch_engagement(engagementId, hapikey = fetcher.hapikey) {
-  const url =
-    `https://api.hubapi.com` +
-    `/engagements/v1/engagements/${engagementId}`;
-  return cors_fetch(url, { hapikey }).then(r => r.json());
-}
 
 export {
-  fetch_contact_by_email,
-  fetch_dealId_by_contact,
-  fetch_engagementId_by_contact,
-  fetch_deal,
-  fetch_engagement,
+  Fetcher
 };

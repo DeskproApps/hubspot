@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 import './styles.css';
 
 import {
-  fetch_contact_by_email,
-  fetch_dealId_by_contact,
-  fetch_engagementId_by_contact,
-  fetch_deal,
-  fetch_engagement,
+  Fetcher
 } from './fetcher';
 
 import {
@@ -45,6 +41,7 @@ function value_getter(obj) {
   };
 };
 
+const fetcher = new Fetcher({ hapikey: "c35b9d4e-0049-49fe-a8cf-22dc422e7512" });
 
 class App extends React.Component {
   static propTypes = {
@@ -71,61 +68,35 @@ class App extends React.Component {
 
       const primaryEmail = person.emails[0];
 
-      fetch_contact_by_email(primaryEmail).then((json) => {
-        // console.debug("fetch_contact_by_email json:", json);
+      fetcher.contact_by_email(primaryEmail).then((json) => {
 
         this.setState({ json });
 
-        fetch_dealId_by_contact(json.vid).then((json) => {
-          // console.debug("fetch_deals_by_contact json:", json);
+        [
+          [fetcher.dealId_by_contact, fetcher.deal, "dealId_a", "deal_a"],
+          [fetcher.engagementId_by_contact, fetcher.engagement, "engagementId_a", "engagement_a"],
+        ].forEach((
+          [fetch_its_id_by_contact, fetch_it, id_array_n, array_n]
+        ) => {
+          fetch_its_id_by_contact(json.vid).then((json) => {
 
-          this.setState({
-            dealId_a: json.results,
-            deal_a: new Array(json.results.length).fill(null),
-          });
+            this.setState({
+              [id_array_n]: json.results,
+              [array_n]: new Array(json.results.length).fill(null),
+            });
 
-          json.results.map((dealId, index) => {
-            return fetch_deal(dealId).then((deal_json) => {
-              // console.debug({deal_json, index});
-
-              // let deal_a = Array.from(this.state.deal_a);
-              // deal_a[index] = deal_json;
-              // this.setState({ deal_a });
-
-              let deal_a = this.state.deal_a;
-              deal_a[index] = deal_json;
-              // console.assert(this.state.deal_a[index] === deal_json);
-              this.setState({ deal_a });
-
-              // this.setState({ [`deal_json[${index}]`]: deal_json });
+            json.results.forEach((id, index) => {
+              return fetch_it(id).then((deal_json) => {
+                let array = this.state[array_n];
+                array[index] = deal_json;
+                this.setState({ [array_n]: array });
+              });
             });
           });
         });
-
-        /* TODO refactor copy-pasted code */
-        fetch_engagementId_by_contact(json.vid).then((json) => {
-          console.debug("fetch_engagementId_by_contact json:", json);
-
-          this.setState({
-            engagementId_a: json.results,
-            engagement_a: new Array(json.results.length).fill(null),
-          });
-
-          json.results.map((engagementId, index) => {
-            return fetch_engagement(engagementId).then((engagement_json) => {
-              // console.debug({ engagement_json, index });
-
-              let engagement_a = this.state.engagement_a;
-              engagement_a[index] = engagement_json;
-              this.setState({ engagement_a });
-
-              // this.setState({ [`engagement_json[${index}]`]: engagement_json });
-            });
-          });
-        });
-      })
+      });
     });
-    console.debug("state", (o) => o.s = this.state)
+    console.debug(function state(o) { return o.s = this.state; })
   }
 
   render() {
@@ -155,19 +126,12 @@ class App extends React.Component {
     let activity_json_a = [];
     let show_engagement_count = false;
 
+    /* Sort existing engagment json into note_json and activity_json */
     obtain(this.state, "engagementId_a", (engagementId_a) => {
       const engagement_json_a = engagementId_a
         .map((_engagmentId, index) => index)
         .filter((index) => this.state.engagement_a[index] !== null)
-        .map((index) => obtain(
-          this.state,
-          `engagement_a.${index}`,
-          (x) => x,
-          () => {
-            console.error(`Unexplicably couldn't obtain engagement_json[${index}]`);
-            return null;
-          }
-        ))
+        .map((index) => this.state.engagement_a[index])
 
       engagement_json_a.forEach((json) => {
         if (json.engagement.type === "NOTE") {
@@ -180,7 +144,6 @@ class App extends React.Component {
       if (engagement_json_a.length === engagementId_a.length) {
         show_engagement_count = true;
       }
-
     }, () => {});
 
     return (
