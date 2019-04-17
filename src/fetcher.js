@@ -69,15 +69,37 @@ function fetch_dealId_by_contact(contactId, hapikey = fetcher.hapikey) {
   return cors_fetch(url, { hapikey }).then(r => r.json());
 }
 
-function fetch_deal(dealId = 683300941, hapikey = fetcher.hapikey) {
+/* TODO refactor copy-pasted code */
+function fetch_engagementId_by_contact(contactId, hapikey = fetcher.hapikey) {
+  // https://developers.hubspot.com/docs/methods/crm-associations/crm-associations-overview
+  const contact_to_engagement_defintion_id = 9;
+
+  const url =
+    `https://api.hubapi.com` +
+    `/crm-associations/v1/associations/${contactId}/HUBSPOT_DEFINED/` +
+    `${contact_to_engagement_defintion_id}`;
+  return cors_fetch(url, { hapikey }).then(r => r.json());
+}
+
+function fetch_deal(dealId, hapikey = fetcher.hapikey) {
   const url =
     `https://api.hubapi.com` +
     `/deals/v1/deal/${dealId}`;
   return cors_fetch(url, { hapikey }).then(r => r.json());
 }
 
+/* TODO refactor copy-pasted code */
+function fetch_engagement(engagementId, hapikey = fetcher.hapikey) {
+  const url =
+    `https://api.hubapi.com` +
+    `/engagements/v1/engagements/${engagementId}`;
+  return cors_fetch(url, { hapikey }).then(r => r.json());
+}
+
 export {
   fetch_contact_by_email,
   fetch_dealId_by_contact,
+  fetch_engagementId_by_contact,
   fetch_deal,
+  fetch_engagement,
 };

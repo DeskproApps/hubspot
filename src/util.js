@@ -1,10 +1,11 @@
+
 /**
  *
  * @param {Object} object
  * @param {string} dotted_name
- * @param {*} alternative replacement value
+ * @param {*} failure_f callback function in case of failure
  */
-function access(object, dotted_name, alternative) {
+function obtain (object, dotted_name, success_f, failure_f) {
   let name_list;
   if(!dotted_name) {
     name_list = [];
@@ -14,26 +15,31 @@ function access(object, dotted_name, alternative) {
   let value = object;
   for (let key of name_list) {
     if (value) {
+      if (key.match(/[1-9]\d*/)) {
+        key = Number(key);
+      }
       value = value[key];
     } else {
-      return alternative;
+      break;
     }
   }
   if (value === undefined || value === null) {
-    return alternative;
+    return failure_f(object, dotted_name);
   }
-  return value;
+  return success_f(value);
+
 }
 
-function test_access() { // eslint-disable-line no-unused-vars
-  let o = {a:{b:{c:"ok"}}};
-  console.assert(access(o, "a.b.c", "nope") === "ok");
-  console.assert(access(o, "a.b.d", "nope") === "nope");
-  console.assert(access(o, "a.a", "nope") === "nope");
-  console.assert(access(o, "d", "nope") === "nope");
-  console.assert(access(o.a.b, "c", "nope") === "ok");
-  console.assert(access("ok", "", "nope") === "ok");
+/**
+ *
+ * @param {Object} object
+ * @param {string} dotted_name
+ * @param {*} alternative replacement value
+ */
+function access(object, dotted_name, alternative) {
+  return obtain(object, dotted_name, (x) => x, (_o, _d) => alternative);
 }
+
 
 /**
  * wtf
@@ -75,4 +81,4 @@ function wtf(info_extractor) {
   }
 }
 
-export { access, wtf };
+export { access, obtain, wtf };

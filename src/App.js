@@ -5,26 +5,25 @@ import './styles.css';
 import {
   fetch_contact_by_email,
   fetch_dealId_by_contact,
+  fetch_engagementId_by_contact,
   fetch_deal,
-} from './fetcher.js';
-import { access, wtf } from './util.js';
+  fetch_engagement,
+} from './fetcher';
 
-import { DataList } from '@deskpro/apps-components';
-import { Panel } from '@deskpro/apps-components';
-import { Tabs } from '@deskpro/apps-components';
-import { TabMenu } from '@deskpro/apps-components';
-import { List } from '@deskpro/apps-components';
+import {
+  access,
+  obtain
+} from './util';
+
+import {
+  DataList,
+  Panel,
+  Tabs,
+  TabMenu,
+  List,
+} from '@deskpro/apps-components';
 
 import * as d3 from 'd3-format';
-
-/*
-  This is your main App component. By default, this is the upper-most component
-  for your app. You can start developing your app here like you would with
-  any React app.
-
-  The example below demonstrates using dpapp to fetch the details for the
-  currently logged-in agent to show a "Hello" message.
-*/
 
 /**
  * return a function which gets the `.value` property of the specified property,
@@ -64,6 +63,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
+    console.clear();
     const dpapp = this.props.dpapp;
     const ticketContext = dpapp.context.get('ticket');
 
@@ -76,103 +76,193 @@ class App extends React.Component {
 
         this.setState({ json });
 
-        return fetch_dealId_by_contact(json.vid);
-      }).then((json) => {
-        console.debug("fetch_deals_by_contact json:", json);
+        fetch_dealId_by_contact(json.vid).then((json) => {
+          // console.debug("fetch_deals_by_contact json:", json);
 
-        this.setState({ deal_a: json.results });
+          this.setState({
+            dealId_a: json.results,
+            deal_a: new Array(json.results.length).fill(null),
+          });
 
-        json.results.map((dealId, index) => {
-          return fetch_deal(dealId).then((deal_json) => {
-            console.debug({deal_json, index});
-            this.setState({ [`deal_json[${index}]`]: deal_json });
+          json.results.map((dealId, index) => {
+            return fetch_deal(dealId).then((deal_json) => {
+              // console.debug({deal_json, index});
+
+              // let deal_a = Array.from(this.state.deal_a);
+              // deal_a[index] = deal_json;
+              // this.setState({ deal_a });
+
+              let deal_a = this.state.deal_a;
+              deal_a[index] = deal_json;
+              // console.assert(this.state.deal_a[index] === deal_json);
+              this.setState({ deal_a });
+
+              // this.setState({ [`deal_json[${index}]`]: deal_json });
+            });
           });
         });
-      });
+
+        /* TODO refactor copy-pasted code */
+        fetch_engagementId_by_contact(json.vid).then((json) => {
+          console.debug("fetch_engagementId_by_contact json:", json);
+
+          this.setState({
+            engagementId_a: json.results,
+            engagement_a: new Array(json.results.length).fill(null),
+          });
+
+          json.results.map((engagementId, index) => {
+            return fetch_engagement(engagementId).then((engagement_json) => {
+              // console.debug({ engagement_json, index });
+
+              let engagement_a = this.state.engagement_a;
+              engagement_a[index] = engagement_json;
+              this.setState({ engagement_a });
+
+              // this.setState({ [`engagement_json[${index}]`]: engagement_json });
+            });
+          });
+        });
+      })
     });
-    console.log("state", (o) => o.s = this.state)
+    console.debug("state", (o) => o.s = this.state)
   }
 
   render() {
     window.state = this.state;
-    let getn, getc;
+    let get_n, get_c;
     if (this.state.json !== undefined) {
-      getn = value_getter(this.state.json.properties);
-      getc = value_getter(this.state.json["associated-company"].properties);
+      get_n = value_getter(this.state.json.properties);
+      get_c = value_getter(this.state.json["associated-company"].properties);
     } else {
-      getn = getc = (a, b) => b;
+      get_n = get_c = (a, b) => b;
     }
 
-    const both = getn("firstname") && getn("lastname");
+    const both = get_n("firstname") && get_n("lastname");
     const name =
-      getn("firstname", "") +
+      get_n("firstname", "") +
       (both ? " " : "") +
-      getn("lastname", "").toUpperCase();
+      get_n("lastname", "").toUpperCase();
 
-    const company = getc("name", "");
-    const format_count = (arr) => arr ? ` (${arr.length})` : "";
+    const company = get_c("name", "");
+
+    const deal_index_a =
+      access(this.state, "dealId_a", [])
+        .map((_dealId, index) => index)
+        .filter((index) => this.state.deal_a[index] !== null);
+
+    let note_json_a = [];
+    let activity_json_a = [];
+    let show_engagement_count = false;
+
+    obtain(this.state, "engagementId_a", (engagementId_a) => {
+      const engagement_json_a = engagementId_a
+        .map((_engagmentId, index) => index)
+        .filter((index) => this.state.engagement_a[index] !== null)
+        .map((index) => obtain(
+          this.state,
+          `engagement_a.${index}`,
+          (x) => x,
+          () => {
+            console.error(`Unexplicably couldn't obtain engagement_json[${index}]`);
+            return null;
+          }
+        ))
+
+      engagement_json_a.forEach((json) => {
+        if (json.engagement.type === "NOTE") {
+          note_json_a.push(json);
+        } else {
+          activity_json_a.push(json);
+        }
+      });
+
+      if (engagement_json_a.length === engagementId_a.length) {
+        show_engagement_count = true;
+      }
+
+    }, () => {});
+
     return (
       <div>
         <Panel title={name}>
           <DataList data={[
-              ["Email", getn("email")],
-              ["Phone", getn("phone")],
-              ["Job Title", getn("jobtitle")],
-              ["Lifecycle stage", getn("lifecyclestage")],
-            ].map(([label, value]) => ({ label, value }))
+            ["Email", get_n("email")],
+            ["Phone", get_n("phone")],
+            ["Job Title", get_n("jobtitle")],
+            ["Lifecycle stage", get_n("lifecyclestage")],
+          ].map(([label, value]) => ({ label, value }))
           } />
         </Panel>
         <Panel title={company}>
           <DataList data={[
-              ["Domain name", getc("domain")],
-              ["Industry", getc("industry")],
-              ["Annual Revenue",
-                getc("annualrevenue") ?
-                d3.format(".3s")(getc("annualrevenue")) :
+            ["Domain name", get_c("domain")],
+            ["Industry", get_c("industry")],
+            ["Annual Revenue",
+              get_c("annualrevenue") ?
+                d3.format(".3s")(get_c("annualrevenue")) :
                 ""
-              ],
-            ].map(([label, value]) => ({ label, value }))
+            ],
+          ].map(([label, value]) => ({ label, value }))
           } />
         </Panel>
         <Tabs
           active={this.state.activeTab}
-          onChange={(clickedTab) => { this.setState({ activeTab: clickedTab }) }}
+          onChange={(clickedTab) => {
+            this.setState({ activeTab: clickedTab });
+          }}
         >
-          <TabMenu name="deals">{"Deals" + format_count(this.state.deal_a)}</TabMenu>
-          <TabMenu name="activities">{"Activities" + format_count(this.state.activitie_a)}</TabMenu>
-          <TabMenu name="notes">{"Notes" + format_count(this.state.note_a)}</TabMenu>
+          <TabMenu name="deals">{
+            "Deals" + ((arr) => arr ? ` (${arr.length})` : "")(this.state.dealId_a)
+          }</TabMenu>
+          <TabMenu name="activities">{
+            "Activities" + (show_engagement_count ? ` (${activity_json_a.length})` : "")
+          }</TabMenu>
+          <TabMenu name="notes">{
+            "Notes" + (show_engagement_count ? ` (${note_json_a.length})` : "")
+          }</TabMenu>
         </Tabs>
         {
           {
-            "deals": <Panel><List>{
-              wtf(x => ({length: x.length}))(access(wtf("a")(this.state.deal_a), "", [])
-              .map((_dealId, index) => index))
-              .filter((index) => (`deal_json[${index}]` in this.state))
-              .map((index) => {
+            "deals": () => <Panel><List>{
+              deal_index_a.map((index) => {
                 const getd = value_getter(
-                  access(
-                    this,
-                    `state.deal_json[${index}].properties`,
-                    {}
-                  ),
-                  "-getd"
+                  access(this.state,`deal_a.${index}.properties`, {}),
+                  ""
                 );
                 return (
-                  <Panel title={getd("dealname")}>
+                  <Panel title={getd("dealname")} key={index}>
                     <DataList data={[
-                        ["Pipeline", getd("pipeline")],
-                        ["Stage", getd("dealstage")],
-                        ["Start date", getd("lifecyclestage")],
-                        ["Amount", getd("amount")],
-                      ].map(([label, value]) => ({ label, value }))
-                    }/>
+                      ["Pipeline", getd("pipeline")],
+                      ["Stage", getd("dealstage")],
+                      ["Start date", getd("lifecyclestage")],
+                      ["Amount", getd("amount")],
+                    ].map(([label, value]) => ({ label, value }))
+                    } />
                   </Panel>
                 )
               })
             }</List></Panel>,
-            "activities": <Panel>Activities!</Panel>,
-            "notes": <Panel>Notes!</Panel>,
-          }[this.state.activeTab]
+            "activities": () => <Panel><List>{
+              activity_json_a.map((json) =>
+                <Panel
+                  title={json.engagement.type}
+                  key={json.engagement.id}
+                >{
+                    json.engagement.bodyPreview
+                  }</Panel>
+              )
+            }</List></Panel>,
+            "notes": () => <Panel><List>{
+              note_json_a.map((json) =>
+                <Panel
+                  key={json.engagement.id}
+                >{
+                    json.engagement.bodyPreview
+                  }</Panel>
+              )
+            }</List></Panel>,
+          }[this.state.activeTab]()
         }
       </div>
     );
