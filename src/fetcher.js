@@ -24,10 +24,14 @@ function cors_fetch(base_url, query_string_param, option) {
   return fetch(url, option);
 }
 
+/**
+ * Fetcher allows performing API request on Hubspot API
+ * See "Fetcher_methods"
+ */
 class Fetcher { // es-lint-disable
   constructor(qs) {
     this.qs = qs;
-    Fetcher_methods.forEach(([method_name, url]) => {
+    Object.entries(Fetcher_methods).forEach(([method_name, url]) => {
       this[method_name] = (id) => {
         return this.fetch(base + url(id));
       };
@@ -44,29 +48,31 @@ const contact_to_engagement_defintion_id = 9;
 const association_url = (id, definition_id) =>
   `/crm-associations/v1/associations/${id}/HUBSPOT_DEFINED/${definition_id}`;
 
-const Fetcher_methods = [
-  [
-    "contact_by_email",
-    (email) => `/contacts/v1/contact/email/${email}/profile`
-  ],
-  [
-    "deal",
-    (dealId) => `/deals/v1/deal/${dealId}`
-  ],
-  [
-    "engagement",
-    (engagementId) => `/engagements/v1/engagements/${engagementId}`
-  ],
-  [
-    "dealId_by_contact",
-    (contactId) => association_url(contactId, contact_to_deal_defintion_id)
-  ],
-  [
-    "engagementId_by_contact",
-    (contactId) => association_url(contactId, contact_to_engagement_defintion_id)
-  ],
-]
+/**
+ * Fetcher_methods
+ * @type {[[method_name, method_url_function]]}
+ */
+/**
+ * method_url_function
+ * @type {(string) -> string}
+ * @description function which returns the path part of the API url
+ */
+const Fetcher_methods = {
+  contact_by_email:
+    (email) => `/contacts/v1/contact/email/${email}/profile`,
 
+  deal:
+    (dealId) => `/deals/v1/deal/${dealId}`,
+
+  engagement:
+    (engagementId) => `/engagements/v1/engagements/${engagementId}`,
+
+  dealId_by_contact:
+    (contactId) => association_url(contactId, contact_to_deal_defintion_id),
+
+  engagementId_by_contact:
+    (contactId) => association_url(contactId, contact_to_engagement_defintion_id),
+}
 
 export {
   Fetcher

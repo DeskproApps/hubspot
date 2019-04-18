@@ -96,7 +96,8 @@ class App extends React.Component {
         });
       });
     });
-    console.debug(function state(o) { return o.s = this.state; })
+    const me = this;
+    console.debug(function state(o) { return o.s = me.state; })
   }
 
   render() {
@@ -198,7 +199,7 @@ class App extends React.Component {
                     <DataList data={[
                       ["Pipeline", getd("pipeline")],
                       ["Stage", getd("dealstage")],
-                      ["Start date", getd("lifecyclestage")],
+                      ["Start date", getd("startdate")],
                       ["Amount", getd("amount")],
                     ].map(([label, value]) => ({ label, value }))
                     } />
