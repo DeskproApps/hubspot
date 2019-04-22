@@ -7,11 +7,15 @@
     "@deskpro/apps-installer": "~1.0.7",
     "@deskpro/apps-react-scripts": "0.5.1",
     "@deskpro/apps-sdk": "~0.12.1",
+    "@emotion/core": "^10.0.10",
     "d3-format": "^1.3.2",
+    "formik": "^1.5.2",
     "prop-types": "^15.6.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "request": "^2.88.0"
+    "react-router-dom": "^5.0.0",
+    "request": "^2.88.0",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "enzyme": "^3.3.0",
@@ -20,7 +24,7 @@
   },
   "homepage": ".",
   "scripts": {
-    "start": "env PORT=31080 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -28,11 +32,11 @@
     "format": "react-scripts prettier --write \"{src,test}/**/*.js\"",
     "format:check": "react-scripts prettier --list-different \"{src,test}/**/*.js\""
   },
-  "description": "What does your app do?",
+  "description": "Fetch the Hubspot API to present contact information by email address",
   "author": {
-    "name": "Your name or company name",
-    "email": "your@email.com",
-    "url": "https://your.app.homepage"
+    "name": "Mathieu CAROFF",
+    "email": "mathieu.caroff@deskpro.com",
+    "url": "https://github.com/DeskproApps/hubspot"
   },
   "deskpro": {
     "version": "2.3.0",

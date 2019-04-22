@@ -1,36 +1,33 @@
 
 /**
+ * obtain
  *
  * @param {Object} object
  * @param {string} dotted_name
- * @param {*} failure_f callback function in case of failure
+ * @param {*} failure_f callback function in case of failure -- documented far
+ * below
  */
-function obtain (object, dotted_name, success_f, failure_f) {
-  let name_list;
-  if(!dotted_name) {
-    name_list = [];
-  } else {
-    name_list = dotted_name.split(".");
-  }
+function obtain(object, dotted_name, success_f, failure_f) {
+  const key_a = (dotted_name ? dotted_name.split(".") : []).map(
+    (key) => key.match(/^[1-9]\d*$/) ? Number(key) : key
+  );
   let value = object;
-  for (let key of name_list) {
+  for (let key of key_a) {
     if (value) {
-      if (key.match(/[1-9]\d*/)) {
-        key = Number(key);
-      }
       value = value[key];
     } else {
       break;
     }
   }
-  if (value === undefined || value === null) {
-    return failure_f(object, dotted_name);
+  if (value === void 0 || value === null) {
+    return failure_f("obtain", {key: dotted_name, obj: object, val: value});
   }
   return success_f(value);
-
 }
 
+
 /**
+ * access
  *
  * @param {Object} object
  * @param {string} dotted_name
@@ -58,7 +55,7 @@ function wtf(info_extractor) {
   if (typeof info_extractor !== "function") {
     if (typeof info_extractor === "string") {
       const key = info_extractor;
-      info_extractor = ((x) => ({[key]: x}));
+      info_extractor = ((x) => ({ [key]: x }));
     } else {
       console.warn(`wtf: unexpected type for info_extractor`, info_extractor);
       return (thing) => thing;
@@ -72,13 +69,39 @@ function wtf(info_extractor) {
       );
     } else {
       const what =
-        logme === undefined ?
-        "return undefined" :
-        "didn't return an object";
+        logme === void 0 ?
+          "returned undefined" :
+          "didn't return an object";
       console.warn(`wtf: info_extractor ${what} -- no info`);
     }
     return thing;
   }
 }
 
-export { access, obtain, wtf };
+
+/**
+ * take
+ * access a property of an object, handling undefined and null keys through a
+ * callback failure fonction
+ *
+ * @param {object|any} obj
+ * @param {string} key
+ * @param {(val, key, obj) -> any} fail_f callback documented below
+ */
+const take = (obj, key) => (failure_f) =>
+  (obj[key] !== null && obj[key] !== void 0) ?
+    obj[key] :
+    failure_f("take", { key, obj, val: obj[key], });
+
+/**
+ * @callback failure_f
+ * @param name the name of the util function calling failure_f
+ * @param {key: string, obj: object, val: null|undefined}
+ * @param key the key whose access failed
+ * @param obj the given object
+ * @param val the failing result value -- null or undefined
+ * @returns {any} the substitution value
+ */
+
+
+export { access, obtain, wtf, take, };

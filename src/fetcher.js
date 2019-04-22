@@ -1,4 +1,4 @@
-function cors_fetch(base_url, query_string_param, option) {
+function cors_fetch(fetch_f, base_url, query_string_param, option) {
   base_url = new URL(base_url);
   if (base_url.protocol !== "https:") {
     throw new Error(
@@ -15,13 +15,12 @@ function cors_fetch(base_url, query_string_param, option) {
   });
 
   option = {
+    mode: "cors",
+    headers: { "Content-Type": "application/json" },
     ...option,
-    method: 'GET',
-    mode: 'cors',
-    headers: { 'Content-Type': 'application/json' },
   }
 
-  return fetch(url, option);
+  return fetch_f(url, option);
 }
 
 /**
@@ -29,16 +28,23 @@ function cors_fetch(base_url, query_string_param, option) {
  * See "Fetcher_methods"
  */
 class Fetcher { // es-lint-disable
-  constructor(qs) {
+  constructor({fetch_f = fetch, qs = {}, option = {}}) {
+    this.fetch_f = fetch_f;
     this.qs = qs;
-    Object.entries(Fetcher_methods).forEach(([method_name, url]) => {
-      this[method_name] = (id) => {
-        return this.fetch(base + url(id));
-      };
+    this.option = option;
+    ["GET", "POST"].forEach(method => {
+      Object.entries(Fetcher[`method_${method}_a`])
+      .forEach(([method_name, url_f]) => {
+        this[method_name] = ({id, option = {}}) => {
+          return cors_fetch(
+            this.fetch_f,
+            base + url_f(id),
+            this.qs,
+            { ...this.option, ...option, method },
+          ).then(r => r.json());
+        };
+      });
     });
-  }
-  fetch(url) {
-    return cors_fetch(url, this.qs).then(r => r.json());
   }
 }
 
@@ -57,7 +63,7 @@ const association_url = (id, definition_id) =>
  * @type {(string) -> string}
  * @description function which returns the path part of the API url
  */
-const Fetcher_methods = {
+Fetcher.method_GET_a = {
   contact_by_email:
     (email) => `/contacts/v1/contact/email/${email}/profile`,
 
@@ -72,6 +78,18 @@ const Fetcher_methods = {
 
   engagementId_by_contact:
     (contactId) => association_url(contactId, contact_to_engagement_defintion_id),
+}
+
+Fetcher.method_POST_a = {
+  create_deal:
+    () => `/deals/v1/deal/`,
+  update_deal:
+    (dealId) => `/deals/v1/deal/${dealId}`,
+
+  create_engagement:
+    () => `/engagements/v1/engagements/`,
+  update_engagement:
+    (engagementId) => `/engagements/v1/engagements/${engagementId}`,
 }
 
 export {
