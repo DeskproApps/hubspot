@@ -1,10 +1,4 @@
 import React from 'react';
-import {
-  BrowserRouter,
-  Route,
-  Switch,
-  Link,
-} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './styles.css';
 
@@ -17,6 +11,9 @@ import {
   obtain,
 } from './util';
 
+import {
+  SwitchCase,
+} from './Component';
 
 import {
   CreateDealForm,
@@ -40,7 +37,7 @@ import {
 function value_getter(obj) {
   return function get(key, alternative = "") {
     if (obj[key]) {
-      if (obj[key].value !== undefined) {
+      if (obj[key].value !== void 0) {
         return obj[key].value;
       } else {
         console.warn(
@@ -70,35 +67,49 @@ class App extends React.Component {
   };
 
   state = {
-    activeTab: "/deals",
+    activeTab: "deals",
     screen: ["default_screen", "create_deal_screen"][0],
   }
 
   componentDidMount() {
-    console.clear();
-    const dpapp = this.props.dpapp;
-    const ticketContext = dpapp.context.get('ticket');
 
+    console.clear();
+    const me = this;
+    console.debug(function state(o = {}) { return o.s = me.state; })
+
+    const dpapp = this.props.dpapp;
+    const ticket_context = dpapp.context.get('ticket');
+
+    this.setState({ ticket_context }, () => this.fetch_data());
+
+  }
+
+  fetch_data() {
     this.state.screen.match(/default/) && // Temporary
-      ticketContext.get('person').then(person => {
+      this.state.ticket_context.get('person').then(person => {
 
         const primaryEmail = person.emails[0];
 
-        fetcher.contact_by_email({ id: primaryEmail }).then((json) => {
+        fetcher.contact_by_email({ id: primaryEmail }).then((contact_json) => {
 
-          this.setState({ json: json });
+          this.setState({ contact_json });
 
           [
-            [fetcher.dealId_by_contact, fetcher.deal, "dealId_a", "deal_a"],
-            [fetcher.engagementId_by_contact, fetcher.engagement, "engagementId_a", "engagement_a"],
+            [fetcher.dealId_by_contact, fetcher.deal,
+              "dealId_a", "deal_a"],
+            [fetcher.engagementId_by_contact, fetcher.engagement,
+              "engagementId_a", "engagement_a"],
           ].forEach((
-            [fetch_its_id_by_contact, fetch_it, id_array_n, array_n]
-          ) => {
-            fetch_its_id_by_contact({ id: json.vid }).then((json) => {
+            [fetch_its_id_by_contact, fetch_it,
+              id_array_n, array_n]) => {
+            fetch_its_id_by_contact({ id: contact_json.vid }).then((json) => {
 
+              const array = this.state[array_n] || [];
               this.setState({
                 [id_array_n]: json.results,
-                [array_n]: new Array(json.results.length).fill(null),
+                [array_n]: new Array(json.results.length).fill().map(
+                  (_, index) => array[index] || null,
+                ),
               });
 
               json.results.forEach((id, index) => {
@@ -112,15 +123,13 @@ class App extends React.Component {
           });
         });
       });
-    const me = this;
-    console.debug(function state(o = {}) { return o.s = me.state; })
   }
 
-  renderData() {
+  render_parse_state() {
     let get_n, get_c;
-    if (this.state.json !== undefined) {
-      get_n = value_getter(this.state.json.properties);
-      get_c = value_getter(this.state.json["associated-company"].properties);
+    if (this.state.contact_json !== void 0) {
+      get_n = value_getter(this.state.contact_json.properties);
+      get_c = value_getter(this.state.contact_json["associated-company"].properties);
     }
     else {
       get_n = get_c = (a, b) => b;
@@ -159,9 +168,7 @@ class App extends React.Component {
       if (engagement_json_a.length === engagementId_a.length) {
         show_engagement_count = true;
       }
-    }, () => { });
-
-    console.warn({ activity_json_a });
+    }, () => {});
 
     return {
       deal_index_a, activity_json_a, note_json_a,
@@ -172,72 +179,85 @@ class App extends React.Component {
   }
 
   render() {
+    console.debug("render", {state: this.state});
+
     let {
       deal_index_a, activity_json_a, note_json_a,
       name, get_n,
       company, get_c,
       show_engagement_count,
-    } = this.renderData();
+    } = this.render_parse_state();
+
+    const create_deal_callback_f = () => {
+      this.setState({screen: "create_deal_screen"});
+    };
 
     const renderDealList =
       (props) => <DealList {...props} {...{
+        create_deal_callback_f,
         deal_index_a,
         deal_a: this.state.deal_a || [],
-        value_getter
+        value_getter,
       }} />;
 
     const renderActivityList =
-      (props) => {
-        console.debug("Rendering ActivityList");
-        return <ActivityList {...props} {...{ activity_json_a }} />;
-      };
+      (props) => <ActivityList {...props} {...{ activity_json_a }} />;
 
     const renderNoteList =
-      (props) => {
-        console.debug("Rendering NoteList");
-        return <NoteList {...props} {...{ note_json_a }} />
-    };
+      (props) => <NoteList {...props} {...{ note_json_a }} />;
 
-    return {
-      "default_screen": () => <div>
-        <Panel title={name}>
-          <PersonDataList getter={get_n} />
-        </Panel>
-        <Panel title={company}>
-          <CompanyDataList getter={get_c} />
-        </Panel>
-        <BrowserRouter>
-          <Tabs
-            active={this.state.activeTab}
-            onChange={(ev) => {
-              this.setState({ activeTab: ev.currentTarget.href });
-            }}
-          >
-            <Link to="/deals">
-              <TabMenu name="/deals">{
-                "Deals" + ((arr) => arr ? ` (${arr.length})` : "")(this.state.dealId_a)
-              }</TabMenu>
-            </Link>
-            <Link to="/activites">
-              <TabMenu name="/activities">{
-                "Activities" + (show_engagement_count ? ` (${activity_json_a.length})` : "")
-              }</TabMenu>
-            </Link>
-            <Link to="/notes">
-              <TabMenu name="/notes">{
-                "Notes" + (show_engagement_count ? ` (${note_json_a.length})` : "")
-              }</TabMenu>
-            </Link>
-          </Tabs>
-          <Switch>
-            <Route path="/deals" render={renderDealList}></Route>
-            <Route path="/activities" render={renderActivityList}></Route>
-            <Route path="/notes" render={renderNoteList}></Route>
-          </Switch>
-        </BrowserRouter>
-      </div>,
-      "create_deal_screen": () => <CreateDealForm />,
-    }[this.state.screen]();
+    const renderDefaultScreen = () => <div>
+      <Panel title={name}>
+        <PersonDataList getter={get_n} />
+      </Panel>
+      <Panel title={company}>
+        <CompanyDataList getter={get_c} />
+      </Panel>
+      <Tabs
+        active={this.state.activeTab}
+        onChange={(clickedTab) => {
+          this.setState({ activeTab: clickedTab });
+        }}
+      >
+        <TabMenu name="deals">{
+          "Deals" + ((arr) => arr ? ` (${arr.length})` : "")(this.state.dealId_a)
+        }</TabMenu>
+        <TabMenu name="activities">{
+          "Activities" + (show_engagement_count ? ` (${activity_json_a.length})` : "")
+        }</TabMenu>
+        <TabMenu name="notes">{
+          "Notes" + (show_engagement_count ? ` (${note_json_a.length})` : "")
+        }</TabMenu>
+      </Tabs>
+      <SwitchCase
+        on={this.state.activeTab}
+        render_o={{
+          deals: renderDealList,
+          activities: renderActivityList,
+          notes: renderNoteList,
+        }}
+      ></SwitchCase>
+    </div>
+
+    const goto_default_screen = () =>
+      this.setState({ screen: "default_screen" });
+
+    const renderCreateDealScreen = () =>
+    <CreateDealForm
+      cancel_f={goto_default_screen}
+      finish_f={() => {
+        goto_default_screen();
+        this.fetch_data();
+      }}
+    ></CreateDealForm>;
+
+    return <SwitchCase
+      on={this.state.screen}
+      render_o={{
+        default_screen: renderDefaultScreen,
+        create_deal_screen: renderCreateDealScreen,
+      }}
+    ></SwitchCase>
   }
 }
 

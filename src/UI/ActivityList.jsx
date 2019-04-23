@@ -1,9 +1,7 @@
 import React from 'react';
 import { XList } from '../Component';
 
-const ActivityList = ({ activity_json_a }) => {
-  console.log({ activity_json_a });
-return <XList
+const ActivityList = ({ activity_json_a }) => <XList
   iter={activity_json_a}
   callback={(value) => [
     {
@@ -11,6 +9,6 @@ return <XList
       title: value.engagement.type,
     },
     value.engagement.bodyPreview
-]}></XList>};
+]}></XList>;
 
 export { ActivityList };

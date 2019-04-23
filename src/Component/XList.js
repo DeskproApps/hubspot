@@ -7,6 +7,7 @@ import {
 
 import {
   take,
+  null_f,
 } from '../util';
 
 /**
@@ -15,8 +16,8 @@ import {
  * @param {{iter: Iterable, callback: function}}
  * XList calls `array.map(callback)`. See below the documentation of `callback`.
  */
-const XList = ({iter, callback}) =>
-  <Panel><List>{Array.prototype.map.call(iter, callback).map(
+const XList = ({iter, callback, render_head = null_f}) =>
+  <Panel>{render_head()}<List>{Array.prototype.map.call(iter, callback).map(
     ([props, ...children]) => {
       return <Panel {...props} key={take(props, "key")(console.error)}>{children}</Panel>
     }

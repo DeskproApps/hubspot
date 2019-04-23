@@ -1,3 +1,35 @@
+import { generic_validator } from './util';
+
+function validator({ required, valid }) {
+  const validate = generic_validator({ required, valid });
+  return ({ option }) => {
+    let name_a;
+    try {
+      const property_a = option.body.properties;
+      if (!property_a) {
+        throw new Error("No .properties in .body");
+      }
+      name_a = property_a.map(({ name }) => name);
+    } catch (e) {
+      return {
+        failed: true,
+        reason: e,
+      }
+    }
+
+    return validate({ name_a });
+  }
+}
+
+/**
+ * cors_fetch
+ * Use the cors-anywhere proxy for the given request
+ *
+ * @param {function} fetch_f what function to use in place of fetch
+ * @param {string} base_url the target url
+ * @param {Object} query_string_param -- will be append to the url
+ * @param {Object} option the fetch options, except mode and headers
+ */
 function cors_fetch(fetch_f, base_url, query_string_param, option) {
   base_url = new URL(base_url);
   if (base_url.protocol !== "https:") {
@@ -15,9 +47,9 @@ function cors_fetch(fetch_f, base_url, query_string_param, option) {
   });
 
   option = {
+    ...option,
     mode: "cors",
     headers: { "Content-Type": "application/json" },
-    ...option,
   }
 
   return fetch_f(url, option);
@@ -34,8 +66,15 @@ class Fetcher { // es-lint-disable
     this.option = option;
     ["GET", "POST"].forEach(method => {
       Object.entries(Fetcher[`method_${method}_a`])
-      .forEach(([method_name, url_f]) => {
-        this[method_name] = ({id, option = {}}) => {
+      .forEach(([method_name, { url: url_f, validation_f }]) => {
+        this[method_name] = (params) => {
+          if (validation_f) {
+            const validation = validation_f(params);
+            if (validation.failed) {
+              return Promise.reject(method_name, "option validation failed:", validation.reason);
+            }
+          }
+          const {id, option = {}} = params;
           return cors_fetch(
             this.fetch_f,
             base + url_f(id),
@@ -64,32 +103,45 @@ const association_url = (id, definition_id) =>
  * @description function which returns the path part of the API url
  */
 Fetcher.method_GET_a = {
-  contact_by_email:
-    (email) => `/contacts/v1/contact/email/${email}/profile`,
+  contact_by_email: {
+    url: (email) => `/contacts/v1/contact/email/${email}/profile`,
+  },
 
-  deal:
-    (dealId) => `/deals/v1/deal/${dealId}`,
+  deal: {
+    url: (dealId) => `/deals/v1/deal/${dealId}`,
+  },
 
-  engagement:
-    (engagementId) => `/engagements/v1/engagements/${engagementId}`,
+  engagement: {
+    url: (engagementId) => `/engagements/v1/engagements/${engagementId}`,
+  },
 
-  dealId_by_contact:
-    (contactId) => association_url(contactId, contact_to_deal_defintion_id),
+  dealId_by_contact: {
+    url: (contactId) => association_url(contactId, contact_to_deal_defintion_id),
+  },
 
-  engagementId_by_contact:
-    (contactId) => association_url(contactId, contact_to_engagement_defintion_id),
+  engagementId_by_contact: {
+    url: (contactId) => association_url(contactId, contact_to_engagement_defintion_id),
+  },
 }
 
 Fetcher.method_POST_a = {
-  create_deal:
-    () => `/deals/v1/deal/`,
-  update_deal:
-    (dealId) => `/deals/v1/deal/${dealId}`,
+  create_deal: {
+    url: () => `/deals/v1/deal/`,
+    validation_f: validator({
+      required: "dealname dealtype".split(" "),
+      valid: "dealstage pipeline hubspot_owner_id closedate amount".split(" "),
+    }),
+  },
+  update_deal: {
+    url: (dealId) => `/deals/v1/deal/${dealId}`,
+  },
 
-  create_engagement:
-    () => `/engagements/v1/engagements/`,
-  update_engagement:
-    (engagementId) => `/engagements/v1/engagements/${engagementId}`,
+  create_engagement: {
+    url: () => `/engagements/v1/engagements/`,
+  },
+  update_engagement: {
+    url: (engagementId) => `/engagements/v1/engagements/${engagementId}`,
+  },
 }
 
 export {
