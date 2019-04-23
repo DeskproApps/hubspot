@@ -1,6 +1,9 @@
-import { generic_validator } from './util';
+import {
+  generic_validator,
+  OxError,
+} from './util';
 
-function validator({ required, valid }) {
+function properties_validator({ required, valid }) {
   const validate = generic_validator({ required, valid });
   return ({ option }) => {
     let name_a;
@@ -10,6 +13,9 @@ function validator({ required, valid }) {
         throw new Error("No .properties in .body");
       }
       name_a = property_a.map(({ name }) => name);
+      if (!property_a.every(({ value }) => value)) {
+        throw new OxError("Property without a value").info({ property_a });
+      }
     } catch (e) {
       return {
         failed: true,
@@ -122,14 +128,18 @@ Fetcher.method_GET_a = {
   engagementId_by_contact: {
     url: (contactId) => association_url(contactId, contact_to_engagement_defintion_id),
   },
+
+  owners: {
+    url: () => `/owners/v2/owners/`,
+  }
 }
 
 Fetcher.method_POST_a = {
   create_deal: {
     url: () => `/deals/v1/deal/`,
-    validation_f: validator({
-      required: "dealname dealtype".split(" "),
-      valid: "dealstage pipeline hubspot_owner_id closedate amount".split(" "),
+    validation_f: properties_validator({
+      required: "dealname".split(" "),
+      valid: "dealstage dealtype pipeline hubspot_owner_id closedate amount".split(" "),
     }),
   },
   update_deal: {

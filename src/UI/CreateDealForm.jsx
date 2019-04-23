@@ -44,7 +44,7 @@ const CreateDealForm = (props) => {
     margin-top: 1em;
   }
   input {
-    border-radius: 0.15rem;
+    border-radius: 0.25rem;
     border-style: solid;
     border-color: #d2dce4;
     border-width: 2px;
@@ -61,7 +61,7 @@ const CreateDealForm = (props) => {
         dealstage: "",
         amount: "",
         startdate: "",
-        owner: "",
+        hubspot_owner_id: "",
         company: "",
       }}
       onSubmit={(value, { setSubmitting }) => {
@@ -115,7 +115,7 @@ const CreateDealForm = (props) => {
         </label>
         <label>
           Owner
-          <Field type="text" name="owner"/>
+          <Field type="text" name="hubspot_owner_id"/>
         </label>
         <label>
           Company
