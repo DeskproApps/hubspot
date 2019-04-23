@@ -2,6 +2,7 @@
 
 import {
   Panel,
+  Button
 } from '@deskpro/apps-components';
 
 import { jsx, css } from '@emotion/core';
@@ -39,7 +40,7 @@ const CreateDealForm = (props) => {
   label, input {
     display: block;
   }
-  label {
+  > * {
     margin-top: 1em;
   }
   input {
@@ -121,13 +122,18 @@ const CreateDealForm = (props) => {
           <Field type="text" name="company"/>
         </label>
 
-        <button type="button" onClick={cancel_f}>
-          Cancel
-        </button>
+        <div>
+          <Button type="button" onClick={cancel_f}>
+            Cancel
+          </Button>
 
-        <button type="submit" disabled={isSubmitting}>
-          Submit
-        </button>
+          <Button type="submit" disabled={isSubmitting} css={{
+            position: "relative",
+            float: "right",
+          }}>
+            Create
+          </Button>
+        </div>
 
         {/* <DisplayFormikState {...props} /> */}
       </Form>
