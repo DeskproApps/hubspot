@@ -14,26 +14,27 @@ import {
 import * as yup from 'yup';
 
 /* OA code used for development not production */
-// const DisplayFormikState = props =>
-//   <div style={{ margin: '1rem 0' }}>
-//     <pre
-//       style={{
-//         background: '#f6f8fa',
-//         fontSize: '.65rem',
-//         padding: '.5rem',
-//         fontFamily: 'monospace'
-//       }}
-//     >
-//       <strong>props</strong> ={' '}
-//       {JSON.stringify(props, null, 2)}
-//     </pre>
-//   </div>;
+const debug_state = true;
+const DisplayFormikState = props =>
+  <div style={{ margin: '1rem 0' }}>
+    <pre
+      style={{
+        background: '#f6f8fa',
+        fontSize: '.65rem',
+        padding: '.5rem',
+        fontFamily: 'monospace'
+      }}
+    >
+      <strong>props</strong> ={' '}
+      {JSON.stringify(props, null, 2)}
+    </pre>
+  </div>;
 /* OV end of code */
 
 const CreateDealForm = (props) => {
   const {
     cancel_f,
-    finish_f,
+    submit_f,
   } = props;
 
   const form_css = css`
@@ -64,20 +65,13 @@ const CreateDealForm = (props) => {
         hubspot_owner_id: "",
         company: "",
       }}
-      onSubmit={(value, { setSubmitting }) => {
-        setTimeout(() => {
-          setSubmitting(false);
-          setTimeout(() => {
-            finish_f();
-          }, 300)
-        }, 300);
-      }}
+      onSubmit={submit_f}
       validationSchema={
         yup.object({
-          amount: yup.number().integer("Amount must be an integer"),
+          amount: yup.number(),
         })
       }
-    >{(props) => {
+    >{(formik_props) => {
       const {
         // values,
         // touched,
@@ -85,13 +79,13 @@ const CreateDealForm = (props) => {
         // dirty,
         isSubmitting,
         handleSubmit,
-      } = props;
+      } = formik_props;
 
       return (
       <Form css={form_css} onSubmit={handleSubmit}>
         <label>
           Contact
-          <Field type="select" name="contact"/>
+          <Field type="select" name="contact" value={props.name} readOnly/>
         </label>
         <label>
           Deal Name
@@ -115,7 +109,11 @@ const CreateDealForm = (props) => {
         </label>
         <label>
           Owner
-          <Field type="text" name="hubspot_owner_id"/>
+          <Field type="text" name="owner"/>
+          <Field type="text" name="hubspot_owner_id"
+            value={this.props.owner_id}
+            style={{display: "none"}}
+          ></Field>
         </label>
         <label>
           Company
@@ -135,7 +133,7 @@ const CreateDealForm = (props) => {
           </Button>
         </div>
 
-        {/* <DisplayFormikState {...props} /> */}
+        {debug_state ? <DisplayFormikState {...formik_props} /> : null}
       </Form>
       )}
     }</Formik>

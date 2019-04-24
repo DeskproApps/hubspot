@@ -1,3 +1,5 @@
+import {} from './helper/clear_console';
+
 import ReactDOM from 'react-dom';
 import React from 'react';
 import { createApp } from '@deskpro/apps-sdk';
@@ -17,18 +19,25 @@ import * as phrasePacks from './locales/**/*.{json,yaml,yml}';
  */
 
 createApp(dpapp => props => {
-  ReactDOM.render(
-    <DefaultDeskproApp dpapp={dpapp} phrasePacks={phrasePacks} {...props}>
-      <App
-        dpapp={dpapp}
-        uiProps={{
-          state: props.state,
-          display: props.display,
-          badgeCount: props.badgeCount,
-          badgeVisibility: props.badgeVisibility,
-        }}
-      />
-    </DefaultDeskproApp>,
-    document.getElementById('root')
-  );
+  try {
+    ReactDOM.render(
+      <DefaultDeskproApp dpapp={dpapp} phrasePacks={phrasePacks} {...props}>
+        <App
+          dpapp={dpapp}
+          uiProps={{
+            state: props.state,
+            display: props.display,
+            badgeCount: props.badgeCount,
+            badgeVisibility: props.badgeVisibility,
+          }}
+        />
+      </DefaultDeskproApp>,
+      document.getElementById('root')
+    );
+  } catch (e) {
+    if (e._info) {
+      e.show();
+    }
+    throw e;
+  }
 });

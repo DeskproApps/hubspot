@@ -1,6 +1,3 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
-
 import React from 'react';
 
 import { access } from '../util';
@@ -8,19 +5,12 @@ import { XList } from '../Component';
 import { DealDataList } from '.';
 
 
-const DealList = ({ deal_index_a, deal_a, value_getter, create_deal_callback_f }) => <React.Fragment>
+const DealList = ({
+  render_head,
+  deal_index_a, deal_a, value_getter,
+}) => <React.Fragment>
   <XList
-    render_head={() => <div
-      css={{
-        textAlign: "right",
-      }}
-    ><a
-      css={{
-        textDecoration: "underline",
-      }}
-      onClick={create_deal_callback_f}
-      >Create new deal</a></div>
-    }
+    render_head={render_head}
     iter={deal_index_a}
     callback={(index) => {
       const get_d = value_getter(access(deal_a, `${index}.properties`, {}), "");
