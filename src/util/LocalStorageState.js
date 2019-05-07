@@ -27,8 +27,8 @@ const LocalStorageState = ({key, default_value = null, component = null}) => {
   const get = () => item;
   const set = (value) => {
     localStorage.setItem(key, JSON.stringify(value));
+    component && (item !== value) && component.setState({});
     item = value;
-    component && component.setState({});
   };
 
   return { get, set };

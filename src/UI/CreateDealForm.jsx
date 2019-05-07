@@ -35,6 +35,7 @@ const CreateDealForm = (props) => {
   const {
     cancel_f,
     submit_f,
+    owner_id,
   } = props;
 
   const form_css = css`
@@ -111,7 +112,7 @@ const CreateDealForm = (props) => {
           Owner
           <Field type="text" name="owner"/>
           <Field type="text" name="hubspot_owner_id"
-            value={this.props.owner_id}
+            value={owner_id}
             style={{display: "none"}}
           ></Field>
         </label>

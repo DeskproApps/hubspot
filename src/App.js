@@ -74,7 +74,7 @@ class App extends React.Component {
 
   state = {
     activeTab: "deals",
-    screen: ["default_screen", "create_deal_screen", "oauth_screen"][2],
+    screen: ["default_screen", "create_deal_screen", "oauth_screen"][0],
   }
 
   componentDidMount() {
@@ -251,6 +251,7 @@ class App extends React.Component {
           notes: renderNoteList,
         }}
       ></SwitchCase>
+      {renderOauthScreen()}
     </div>
 
     const goto_default_screen = () => new Promise((resolve) => {

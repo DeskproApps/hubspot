@@ -13,10 +13,10 @@ const oauth = {
 
 const redirect_uri = "http://localhost:3000/dev.html";
 
-async function make_oauth_link({ add_nocsrf_f }) {
+function make_oauth_link({ add_nocsrf_f }) {
   let url = new URL("https://app.hubspot.com/oauth/authorize");
   const nocsrf = Math.random().toString(36).substring(2);
-  await add_nocsrf_f(nocsrf);
+  add_nocsrf_f(nocsrf);
   const query_string_param = {
     response_type: "code",
     client_id: oauth.client_id,
@@ -30,7 +30,7 @@ async function make_oauth_link({ add_nocsrf_f }) {
   return url;
 }
 
-const OauthPanel = ({oauth_nocsrf_a_state, oauth_code_state}) => {
+const OauthPanel = ({ oauth_nocsrf_a_state, oauth_code_state }) => {
 
   let oauth_nocsrf_a = oauth_nocsrf_a_state.get();
   if (!oauth_nocsrf_a instanceof Array) {
@@ -45,23 +45,25 @@ const OauthPanel = ({oauth_nocsrf_a_state, oauth_code_state}) => {
   };
 
   let children = [
-    <a
+    <a key="a"
       onClick={async () => {
-        delete children[0].href;
-        window.location.href = await make_oauth_link(add_nocsrf_f);
+        console.log("click!");
+        window.top.location.href = make_oauth_link({ add_nocsrf_f });
       }}
     >Authenticate with OAuth</a>
   ];
 
-  const search = new URL(window.location.href).searchParams;
+  const search = new URL(window.top.location.href).searchParams;
   const code = search.get("code");
   const nocsrf = search.get("state");
   if (nocsrf || code) {
-    if (nocsrf in oauth_nocsrf_a) {
-      children.push("Receiving oauth code");
+    if (oauth_nocsrf_a.indexOf(nocsrf) !== -1) {
+      console.log("Receiving!")
+      children.push(<div key="r">Receiving oauth code</div>);
       oauth_code_state.set(code);
     } else {
-      children.push("Oauth failed");
+      console.log("Failing!", { nocsrf, oauth_nocsrf_a });
+      children.push(<div key="f">Oauth failed</div>);
     }
   }
 
