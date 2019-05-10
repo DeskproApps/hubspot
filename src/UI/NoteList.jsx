@@ -1,10 +1,17 @@
-import React from 'react';
-import { XList } from '../component';
+import React from "react";
+import PropTypes from "prop-types";
+import { XList } from "../component";
 
-export const NoteList = ({ note_json_a }) => <XList
+const NoteList = ({ note_json_a }) => (<XList
   iter={note_json_a}
   callback={(value) => [
     { key: value.engagement.id },
-    value.engagement.bodyPreview
+    value.engagement.bodyPreview,
   ]}
-></XList>;
+ />);
+
+NoteList.propTypes = {
+  note_json_a: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
+
+export { NoteList };

@@ -1,4 +1,4 @@
-import { is_iterable } from './checking';
+import { is_iterable } from "./checking";
 
 /**
  * parse_dotted_name
@@ -11,7 +11,7 @@ import { is_iterable } from './checking';
 function parse_dotted_name(dotted_name) {
   return dotted_name
     .split(".")
-    .map((key) => key.match(/^[0-9]/) ? Number(key) : key);
+    .map((key) => (key.match(/^[0-9]/) ? Number(key) : key));
 }
 
 
@@ -30,15 +30,14 @@ function parse_dotted_name(dotted_name) {
 function obtain(object, dotted_name, success_f, failure_f) {
   const key_a = (dotted_name ? parse_dotted_name(dotted_name) : []);
   let value = object;
-  for (let key of key_a) {
+  for (const key of key_a) {
     if (value) {
       value = value[key];
-    }
-    else {
+    } else {
       break;
     }
   }
-  if (value === void 0 || value === null) {
+  if (value === undefined || value === null) {
     return failure_f({
       key: dotted_name,
       obj: object,
@@ -75,23 +74,23 @@ function see_through(dotted_name) {
   let name_a;
   if (typeof dotted_name === "string") {
     name_a = parse_dotted_name(dotted_name);
-  }
-  else if (is_iterable(dotted_name)) {
+  } else if (is_iterable(dotted_name)) {
     name_a = dotted_name;
-  }
-  else {
-    throw new Error(`see_through: bad argument \`dotted_name\`: ${dotted_name}`);
+  } else {
+    throw new Error(
+      `see_through: bad argument \`dotted_name\`: ${dotted_name}`
+    );
   }
   const [name, ...key_a] = name_a;
   return (object) => {
-    let info = { [name]: object };
+    const info = { [name]: object };
     let progressive_name = name;
-    for (let key of key_a) {
-      progressive_name += "." + key;
-      object = object[key];
-      info[progressive_name] = object;
-      if (!object)
-        break;
+    let obj = object;
+    for (const key of key_a) {
+      progressive_name += `.${key}`;
+      obj = obj[key];
+      info[progressive_name] = obj;
+      if (!obj) { break; }
     }
     return info;
   };
@@ -120,28 +119,25 @@ function what(arg) {
   let info_extractor;
   if (typeof arg === "function") {
     info_extractor = arg;
-  }
-  else {
-    if (typeof arg === "string" || is_iterable(arg)) {
-      info_extractor = see_through(arg);
-    }
-    else {
-      console.warn(`what: unexpected type for info_extractor`, info_extractor);
-      return (thing) => thing;
-    }
+  } else if (typeof arg === "string" || is_iterable(arg)) {
+    info_extractor = see_through(arg);
+  } else {
+    console.warn("what: unexpected type for info_extractor", info_extractor);
+    return (thing) => thing;
   }
   return (thing) => {
     const logme = info_extractor(thing);
     if (typeof logme === "object") {
       console.group();
-      Object.entries(logme).map(([key, val]) => console.log(`what: ${key}:`, val));
+      Object.entries(logme).forEach(([key, val]) => {
+        console.log(`what: ${key}:`, val);
+      });
       console.groupEnd();
-    }
-    else {
-      const what = logme === void 0 ?
+    } else {
+      const msg = logme === undefined ?
         "returned undefined" :
         "didn't return an object";
-      console.warn(`what: info_extractor ${what} -- no info`);
+      console.warn(`what: info_extractor ${msg} -- no info`);
     }
     return thing;
   };
@@ -158,14 +154,14 @@ function what(arg) {
  * @param {(val, key, obj) -> any} fail_f callback documented below
  */
 const take = (obj, key) => (failure_f) =>
-  (obj[key] !== null && obj[key] !== void 0) ?
+  ((obj[key] !== null && obj[key] !== undefined) ?
     obj[key] :
     failure_f({
       key,
       obj,
       val: obj[key],
       from: "take",
-    });
+    }));
 
 /**
  * @callback failure_f

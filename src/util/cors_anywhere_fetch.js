@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 
 /**
  * cors_fetch
@@ -17,15 +18,15 @@ const cors_anywhere_fetch = ({ fetch_f = fetch }) => (url, init = {}) => {
   if (init.mode && init.mode !== "cors") {
     throw new Error(
       `cors_anywhere_fetch expects { mode: "cors" } only - not "${init.mode}"`
-    )
+    );
   }
   if (init.headers) {
-    const ct_type = init.headers["Content-Type"]
+    const ct_type = init.headers["Content-Type"];
     if (ct_type && ct_type !== "application/json") {
       throw new Error(
         `cors_anywhere_fetch expects { "Content-Type": "application/json" }` +
         ` only - not "${ct_type}"`
-      )
+      );
     }
   }
 
@@ -42,6 +43,6 @@ const cors_anywhere_fetch = ({ fetch_f = fetch }) => (url, init = {}) => {
   };
 
   return fetch_f(cors_url, option);
-}
+};
 
-export { cors_anywhere_fetch }
+export { cors_anywhere_fetch };

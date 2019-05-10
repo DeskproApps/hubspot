@@ -1,2 +1,2 @@
-export * from './XList';
-export * from './SwitchCase';
+export * from "./XList";
+export * from "./SwitchCase";

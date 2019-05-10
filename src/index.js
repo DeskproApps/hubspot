@@ -1,12 +1,13 @@
-// import {} from './helper/clear_console';
+import ReactDOM from "react-dom";
+import React from "react";
+import { createApp } from "@deskpro/apps-sdk";
+import { DefaultDeskproApp } from "@deskpro/apps-components";
 
-import ReactDOM from 'react-dom';
-import React from 'react';
-import { createApp } from '@deskpro/apps-sdk';
-import { DefaultDeskproApp } from '@deskpro/apps-components';
+import { } from "./helper/clear_console";
 
-import App from './App';
-import * as phrasePacks from './locales/**/*.{json,yaml,yml}';
+import App from "./App";
+// eslint-disable-next-line import/no-unresolved
+import * as phrasePacks from "./locales/**/*.{json,yaml,yml}";
 
 /*
   This is the main entry point for the browser. It's pre-configured
@@ -18,7 +19,7 @@ import * as phrasePacks from './locales/**/*.{json,yaml,yml}';
   your main App.js component.
  */
 
-createApp(dpapp => props => {
+createApp((dpapp) => (props) => {
   try {
     ReactDOM.render(
       <DefaultDeskproApp dpapp={dpapp} phrasePacks={phrasePacks} {...props}>
@@ -32,7 +33,7 @@ createApp(dpapp => props => {
           }}
         />
       </DefaultDeskproApp>,
-      document.getElementById('root')
+      document.getElementById("root")
     );
   } catch (e) {
     if (e._info) {

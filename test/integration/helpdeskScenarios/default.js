@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { addScenario } from '@deskpro/apps-sdk/lib/Testing';
 
 addScenario('default', {
@@ -16,7 +17,7 @@ addScenario('default', {
      * @param {String} tabId the id of the tab storing the data
      * @return {{body: *, status: string}}
      */
-  'context.property.get': function({ path, type, tabId }) {
+  'context.property.get': function ({ path, type, tabId }) {
     return {
       body: {
         emails: [
@@ -35,7 +36,7 @@ addScenario('default', {
      * @param {*} [body] the body of the request, if any
      * @return {{body: {status: number, body: {}, headers: {"Content-Type": string}}, status: string}}
      */
-  'webapi.request.fetch': function({ url, method, headers, mode, body }) {
+  'webapi.request.fetch': function ({ url, method, headers, mode, body }) {
     return {
       body: {
         status: 200,
@@ -54,7 +55,7 @@ addScenario('default', {
      * @param {Object} headers a map of headers to be sent with the request
      * @return {{body: {status: number, body: {}, headers: {"Content-Type": string}}, status: string}}
      */
-  'webapi.request.deskpro': function({ url, method, headers, body }) {
+  'webapi.request.deskpro': function ({ url, method, headers, body }) {
     return {
       body: {
         status: 200,
@@ -75,7 +76,7 @@ addScenario('default', {
      * @param {Object} [query] additional query parameters appended to the request url
      * @return {{body: {oauthVersion: *, body: {token: *}}, status: string}}
      */
-  'security.authenticate.oauth': function({
+  'security.authenticate.oauth': function ({
     provider,
     protocolVersion,
     query,
@@ -111,7 +112,7 @@ addScenario('default', {
      * @param {Object} [query] additional query parameters appended to the request url
      * @return {{urlRedirect: string}}
      */
-  'security.settings.oauth': function({ provider, protocolVersion, query }) {
+  'security.settings.oauth': function ({ provider, protocolVersion, query }) {
     return {
       urlRedirect: `http://deskpro-dev/api/oauth/${protocolVersion}/${provider}/grant-access`,
     };
@@ -123,7 +124,7 @@ addScenario('default', {
      * @param {Object} [query] additional query parameters appended to the request url
      * @return {{body: {oauthVersion: string, body: {token: *}}, status: string}}
      */
-  'security.oauth.refresh': function({ provider, protocolVersion, query }) {
+  'security.oauth.refresh': function ({ provider, protocolVersion, query }) {
     const oauth2Token = {
       access_token: 'your access token',
       refresh_token: 'your refresh token',

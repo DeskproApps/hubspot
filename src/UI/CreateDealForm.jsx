@@ -1,34 +1,35 @@
 /** @jsx jsx */
+import { jsx, css } from "@emotion/core";
+import PropTypes from "prop-types";
 
-import {
-  Panel,
-  Button
-} from '@deskpro/apps-components';
-
-import { jsx, css } from '@emotion/core';
 import {
   Formik,
   Form,
   Field,
-} from 'formik';
-import * as yup from 'yup';
+} from "formik";
+import * as yup from "yup";
+
+import {
+  Panel,
+  Button,
+} from "@deskpro/apps-components";
 
 /* OA code used for development not production */
 const debug_state = true;
-const DisplayFormikState = props =>
-  <div style={{ margin: '1rem 0' }}>
+const DisplayFormikState = (props) => (
+  <div style={{ margin: "1rem 0" }}>
     <pre
       style={{
-        background: '#f6f8fa',
-        fontSize: '.65rem',
-        padding: '.5rem',
-        fontFamily: 'monospace'
+        background: "#f6f8fa",
+        fontSize: ".65rem",
+        padding: ".5rem",
+        fontFamily: "monospace",
       }}
     >
-      <strong>props</strong> ={' '}
+      <strong>props</strong> ={" "}
       {JSON.stringify(props, null, 2)}
     </pre>
-  </div>;
+  </div>);
 /* OV end of code */
 
 const CreateDealForm = (props) => {
@@ -54,9 +55,9 @@ const CreateDealForm = (props) => {
   `;
 
   return (
-  <Panel title="Create New Deal">
-    <Formik
-      initialValues={{
+    <Panel title="Create New Deal">
+      <Formik
+        initialValues={{
         contact: "",
         dealname: "",
         pipeline: "",
@@ -66,8 +67,8 @@ const CreateDealForm = (props) => {
         hubspot_owner_id: "",
         company: "",
       }}
-      onSubmit={submit_f}
-      validationSchema={
+        onSubmit={submit_f}
+        validationSchema={
         yup.object({
           amount: yup.number(),
         })
@@ -83,62 +84,75 @@ const CreateDealForm = (props) => {
       } = formik_props;
 
       return (
-      <Form css={form_css} onSubmit={handleSubmit}>
-        <label>
+        <Form css={form_css} onSubmit={handleSubmit}>
+          <label>
           Contact
-          <Field type="select" name="contact" value={props.name} readOnly/>
-        </label>
-        <label>
+          <Field type="select" name="contact" value={props.name} readOnly />
+          </label>
+          <label>
           Deal Name
-          <Field type="text" name="dealname"/>
-        </label>
-        <label>
+          <Field type="text" name="dealname" />
+          </label>
+          <label>
           Pipeline
-          <Field type="text" name="pipeline"/>
-        </label>
-        <label>
+          <Field type="text" name="pipeline" />
+          </label>
+          <label>
           Deal Stage
-          <Field type="text" name="dealstage"/>
-        </label>
-        <label>
+          <Field type="text" name="dealstage" />
+          </label>
+          <label>
           Amount
-          <Field type="text" name="amount"/>
-        </label>
-        <label>
+          <Field type="text" name="amount" />
+          </label>
+          <label>
           Start date
-          <Field type="date" name="startdate"/>
-        </label>
-        <label>
+          <Field type="date" name="startdate" />
+          </label>
+          <label>
           Owner
-          <Field type="text" name="owner"/>
-          <Field type="text" name="hubspot_owner_id"
-            value={owner_id}
-            style={{display: "none"}}
-          ></Field>
-        </label>
-        <label>
+          <Field type="text" name="owner" />
+            <Field
+              type="text"
+              name="hubspot_owner_id"
+              value={owner_id}
+              style={{ display: "none" }}
+           />
+          </label>
+          <label>
           Company
-          <Field type="text" name="company"/>
-        </label>
+          <Field type="text" name="company" />
+          </label>
 
-        <div>
-          <Button type="button" onClick={cancel_f}>
+          <div>
+            <Button type="button" onClick={cancel_f}>
             Cancel
-          </Button>
+            </Button>
 
-          <Button type="submit" disabled={isSubmitting} css={{
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              css={{
             position: "relative",
             float: "right",
           }}>
             Create
-          </Button>
-        </div>
+            </Button>
+          </div>
 
-        {debug_state ? <DisplayFormikState {...formik_props} /> : null}
-      </Form>
-      )}
-    }</Formik>
-  </Panel>);
-}
+          {debug_state ? <DisplayFormikState {...formik_props} /> : null}
+        </Form>
+      );
+ }
+    }
+      </Formik>
+    </Panel>);
+};
+
+CreateDealForm.propTypes = {
+  cancel_f: PropTypes.func.isRequired,
+  submit_f: PropTypes.func.isRequired,
+  owner_id: PropTypes.string.isRequired,
+};
 
 export { CreateDealForm };

@@ -1,4 +1,4 @@
-function generic_validator ({ required, valid }) {
+function generic_validator({ required, valid }) {
   const valid_S = new Set(valid.concat(required));
 
   return ({ name_a }) => {
@@ -11,11 +11,10 @@ function generic_validator ({ required, valid }) {
         subset.forEach((name) => {
           if (!superset.has(name)) {
             throw new Error(`${error_text}: ${name}`);
-          };
+          }
         });
       });
-    }
-    catch (e) {
+    } catch (e) {
       return {
         failed: true,
         reason: e,

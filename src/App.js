@@ -1,21 +1,31 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './styles.css';
+import React from "react";
+import PropTypes from "prop-types";
+import {
+  Panel,
+  Tabs,
+  TabMenu,
+} from "@deskpro/apps-components";
+
+import "./styles.css";
 
 import {
-  HubspotFetcher
-} from './HubspotFetcher';
+  HubspotFetcher,
+} from "./HubspotFetcher";
+
+import {
+  OauthPanel,
+} from "./oauth";
 
 import {
   access,
   obtain,
   LocalStorageState,
   cors_anywhere_fetch,
-} from './util';
+} from "./util";
 
 import {
   SwitchCase,
-} from './component';
+} from "./component";
 
 import {
   CreateDealForm,
@@ -25,17 +35,8 @@ import {
   NoteList,
   ActivityList,
   CreateNewDealLink,
-} from './UI';
+} from "./UI";
 
-import {
-  Panel,
-  Tabs,
-  TabMenu,
-} from '@deskpro/apps-components';
-
-import {
-  OauthPanel
-} from './oauth';
 
 /**
  * return a function which gets the `.value` property of the specified property,
@@ -44,18 +45,15 @@ import {
 function value_getter(obj) {
   return function get(key, alternative = "") {
     if (obj[key]) {
-      if (obj[key].value !== void 0) {
+      if (obj[key].value !== undefined) {
         return obj[key].value;
-      } else {
-        console.warn(
-          `property ${key} exists but not ${key}.value - ` +
-          `defaulting to "${alternative}"`
-        );
       }
+      console.warn(`property ${key} exists but not ${key}.value - ` +
+        `defaulting to "${alternative}"`);
     }
     return alternative;
   };
-};
+}
 
 const fetcher = new HubspotFetcher({
   query_string: { hapikey: "c35b9d4e-0049-49fe-a8cf-22dc422e7512" },
@@ -64,12 +62,13 @@ const fetcher = new HubspotFetcher({
 
 class App extends React.Component {
   static propTypes = {
+    // eslint-disable-next-line react/forbid-prop-types
     dpapp: PropTypes.object.isRequired,
     uiProps: PropTypes.shape({
-      state: PropTypes.oneOf(['ready', 'loading', 'error', 'inactive']),
-      display: PropTypes.oneOf(['collapsed', 'expanded', 'fullscreen']),
+      state: PropTypes.oneOf(["ready", "loading", "error", "inactive"]),
+      display: PropTypes.oneOf(["collapsed", "expanded", "fullscreen"]),
       badgeCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      badgeVisibility: PropTypes.oneOf(['hidden', 'visible']),
+      badgeVisibility: PropTypes.oneOf(["hidden", "visible"]),
     }).isRequired,
   };
 
@@ -79,23 +78,22 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-
     const me = this;
-    console.debug(function app(o = {}) { return o.app = me; })
+    // eslint-disable-next-line
+    console.debug(function app (o = {}) { return o.app = me; });
 
-    const dpapp = this.props.dpapp;
-    const ticket_context = dpapp.context.get('ticket');
+    const { dpapp } = this.props;
+    this.ticket_context = dpapp.context.get("ticket");
 
-    this.setState({ ticket_context }, () => this.fetch_data());
-
+    this.fetch_data();
   }
 
   async fetch_data() {
-    const person = await this.state.ticket_context.get('person')
+    const person = await this.ticket_context.get("person");
 
-    const primaryEmail = person.emails[0];
+    const primary_email = person.emails[0];
 
-    const contact_json = await fetcher.contact_by_email(primaryEmail);
+    const contact_json = await fetcher.contact_by_email(primary_email);
 
     this.setState({ contact_json });
 
@@ -112,17 +110,16 @@ class App extends React.Component {
     ) => {
       const json = await fetch_its_id_by_contact(contact_json.vid);
 
-      const array = this.state[array_n] || [];
+      const previous_array = this.state[array_n] || [];
+      const empty = new Array(json.results.length).fill();
       this.setState({
         [id_array_n]: json.results,
-        [array_n]: new Array(json.results.length).fill().map(
-          (_, index) => array[index] || null,
-        ),
+        [array_n]: empty.map((_, index) => previous_array[index] || null),
       });
 
       json.results.forEach((id, index) => {
         fetch_it(id).then((deal_json) => {
-          let array = this.state[array_n];
+          const array = this.state[array_n];
           array[index] = deal_json;
           this.setState({ [array_n]: array });
         });
@@ -131,15 +128,17 @@ class App extends React.Component {
   }
 
   render_parse_state() {
-    let get_n, get_c;
+    let get_n;
+    let get_c;
     let enable_create_deal;
-    if (this.state.contact_json !== void 0) {
-      get_n = value_getter(this.state.contact_json.properties);
-      get_c = value_getter(this.state.contact_json["associated-company"].properties);
+    if (this.state.contact_json !== undefined) {
+      const { contact_json } = this.state;
+      get_n = value_getter(contact_json.properties);
+      get_c = value_getter(contact_json["associated-company"].properties);
       enable_create_deal = true;
-    }
-    else {
-      get_n = get_c = (a, b) => b;
+    } else {
+      get_n = (a, b) => b;
+      get_c = (a, b) => b;
       enable_create_deal = false;
     }
 
@@ -154,8 +153,8 @@ class App extends React.Component {
       .map((_dealId, index) => index)
       .filter((index) => this.state.deal_a[index] !== null);
 
-    let note_json_a = [];
-    let activity_json_a = [];
+    const note_json_a = [];
+    const activity_json_a = [];
     let show_engagement_count = false;
 
     /* Sort existing engagment json into note_json and activity_json */
@@ -168,8 +167,7 @@ class App extends React.Component {
       engagement_json_a.forEach((json) => {
         if (json.engagement.type === "NOTE") {
           note_json_a.push(json);
-        }
-        else {
+        } else {
           activity_json_a.push(json);
         }
       });
@@ -180,9 +178,13 @@ class App extends React.Component {
     }, () => { });
 
     return {
-      deal_index_a, activity_json_a, note_json_a,
-      name, get_n,
-      company, get_c,
+      deal_index_a,
+      activity_json_a,
+      note_json_a,
+      name,
+      get_n,
+      company,
+      get_c,
       show_engagement_count,
       enable_create_deal,
     };
@@ -191,7 +193,7 @@ class App extends React.Component {
   render() {
     console.debug("render", { state: this.state });
 
-    let {
+    const {
       deal_index_a, activity_json_a, note_json_a,
       name, get_n,
       company, get_c,
@@ -200,88 +202,27 @@ class App extends React.Component {
     } = this.render_parse_state();
 
     const renderCreateNewDealLink =
-      () => <CreateNewDealLink
+      () => (<CreateNewDealLink
         {...{ enable_create_deal }}
         callback_f={() => {
           this.setState({ screen: "create_deal_screen" });
         }}
-      />;
+      />);
 
     const renderDealList =
-      () => <DealList {...{
+      () => (<DealList {...{
         render_head: renderCreateNewDealLink,
         deal_index_a,
         deal_a: this.state.deal_a || [],
         value_getter,
-      }} />;
+      }}
+      />);
 
     const renderActivityList =
       () => <ActivityList {...{ activity_json_a }} />;
 
     const renderNoteList =
       () => <NoteList {...{ note_json_a }} />;
-
-    const renderDefaultScreen = () => <div>
-      <Panel title={name}>
-        <PersonDataList getter={get_n} />
-      </Panel>
-      <Panel title={company}>
-        <CompanyDataList getter={get_c} />
-      </Panel>
-      <Tabs
-        active={this.state.activeTab}
-        onChange={(clickedTab) => {
-          this.setState({ activeTab: clickedTab });
-        }}
-      >
-        <TabMenu name="deals">{
-          "Deals" + ((arr) => arr ? ` (${arr.length})` : "")(this.state.dealId_a)
-        }</TabMenu>
-        <TabMenu name="activities">{
-          "Activities" + (show_engagement_count ? ` (${activity_json_a.length})` : "")
-        }</TabMenu>
-        <TabMenu name="notes">{
-          "Notes" + (show_engagement_count ? ` (${note_json_a.length})` : "")
-        }</TabMenu>
-      </Tabs>
-      <SwitchCase
-        on={this.state.activeTab}
-        render_o={{
-          deals: renderDealList,
-          activities: renderActivityList,
-          notes: renderNoteList,
-        }}
-      ></SwitchCase>
-      {renderOauthScreen()}
-    </div>
-
-    const goto_default_screen = () => new Promise((resolve) => {
-      this.setState({ screen: "default_screen" }, resolve)
-    });
-
-    const renderCreateDealScreen = () =>
-      <CreateDealForm
-        {...{ name, get_n }}
-        cancel_f={goto_default_screen}
-        submit_f={(form, { setSubmitting }) => {
-          let property_o = {};
-          HubspotFetcher.create_deal.all_property_a.forEach((name) => {
-            const value = form[name];
-            if (value) {
-              property_o[name] = { name, value };
-            }
-          })
-          fetcher.create_deal({
-            body: { properties: property_o }
-          }).catch((error) => {
-            console.error("fetcher.create_deal", error);
-          }).then(async () => {
-            setSubmitting(false);
-            await goto_default_screen();
-            await this.fetch_data();
-          })
-        }}
-      ></CreateDealForm>;
 
     const oauth_nocsrf_a_state = LocalStorageState({
       key: "deskpro_hubspot_oauth_nocsrf_a",
@@ -293,21 +234,90 @@ class App extends React.Component {
       default_value: null,
       component: this,
     });
-    const renderOauthScreen = () => <OauthPanel
+    const renderOauthScreen = () => (<OauthPanel
       {...{ oauth_nocsrf_a_state, oauth_code_state }}
-    />
+    />);
 
-    return <SwitchCase
+    const renderDefaultScreen = () => (
+      <div>
+        <Panel title={name}>
+          <PersonDataList getter={get_n} />
+        </Panel>
+        <Panel title={company}>
+          <CompanyDataList getter={get_c} />
+        </Panel>
+        <Tabs
+          active={this.state.activeTab}
+          onChange={(clickedTab) => {
+            this.setState({ activeTab: clickedTab });
+          }}
+        >
+          <TabMenu name="deals">{
+            `Deals${((arr) => (
+              arr ? ` (${arr.length})` : ""))(this.state.dealId_a)}`
+          }
+          </TabMenu>
+          <TabMenu name="activities">{
+            `Activities${
+            show_engagement_count ? ` (${activity_json_a.length})` : ""}`
+          }
+          </TabMenu>
+          <TabMenu name="notes">{
+            `Notes${
+            show_engagement_count ? ` (${note_json_a.length})` : ""}`
+          }
+          </TabMenu>
+        </Tabs>
+        <SwitchCase
+          on={this.state.activeTab}
+          render_o={{
+            deals: renderDealList,
+            activities: renderActivityList,
+            notes: renderNoteList,
+          }}
+        />
+        {renderOauthScreen()}
+      </div>
+    );
+
+    const goto_default_screen = () => new Promise((resolve) => {
+      this.setState({ screen: "default_screen" }, resolve);
+    });
+
+    const renderCreateDealScreen = () =>
+      (<CreateDealForm
+        {...{ name, get_n }}
+        cancel_f={goto_default_screen}
+        submit_f={(form, { setSubmitting }) => {
+          const property_o = {};
+          HubspotFetcher.create_deal.all_property_a.forEach((deal_name) => {
+            const value = form[deal_name];
+            if (value) {
+              property_o[deal_name] = { name: deal_name, value };
+            }
+          });
+          fetcher.create_deal({
+            body: { properties: property_o },
+          }).catch((error) => {
+            console.error("fetcher.create_deal", error);
+          }).then(async () => {
+            setSubmitting(false);
+            await goto_default_screen();
+            await this.fetch_data();
+          });
+        }}
+      />);
+
+    return (<SwitchCase
       on={this.state.screen}
       render_o={{
         default_screen: renderDefaultScreen,
         create_deal_screen: renderCreateDealScreen,
         oauth_screen: renderOauthScreen,
       }}
-    ></SwitchCase>
+    />);
   }
 }
 
 export default App;
-
 

@@ -14,8 +14,7 @@
  * @method set set the state. The passed value must be JSON-serializable
  * }
  */
-const LocalStorageState = ({key, default_value = null, component = null}) => {
-
+const LocalStorageState = ({ key, default_value = null, component = null }) => {
   const json = localStorage.getItem(key);
   let item;
   if (json) {
@@ -27,7 +26,7 @@ const LocalStorageState = ({key, default_value = null, component = null}) => {
   const get = () => item;
   const set = (value) => {
     localStorage.setItem(key, JSON.stringify(value));
-    component && (item !== value) && component.setState({});
+    if (item !== value) if (component) component.setState({});
     item = value;
   };
 

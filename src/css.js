@@ -4,8 +4,8 @@ const disabled_link_css = {
   cursor: "not-allowed",
   opacity: 0.5,
   textDecoration: "none",
-}
+};
 
 export {
   disabled_link_css,
-}
+};
