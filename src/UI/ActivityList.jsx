@@ -1,5 +1,5 @@
 import React from 'react';
-import { XList } from '../Component';
+import { XList } from '../component';
 
 const ActivityList = ({ activity_json_a }) => <XList
   iter={activity_json_a}

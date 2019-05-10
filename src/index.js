@@ -1,4 +1,4 @@
-import {} from './helper/clear_console';
+// import {} from './helper/clear_console';
 
 import ReactDOM from 'react-dom';
 import React from 'react';

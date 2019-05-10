@@ -157,22 +157,6 @@
     query-string "^5.1.1"
     warning "^4.0.1"
 
-"@deskpro/apps-sdk@~0.12.1":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@deskpro/apps-sdk/-/apps-sdk-0.12.2.tgz#b1363ec672d527d8a3d91fabd291fe1299418ff6"
-  integrity sha512-toVayFAu50G/IkVcENxEClkqDsUmeL8ymb8JjnfkECIar6YjL/GGjJzU3WUr1K8aR/GPy5+Ue/N95hcdqJGDTg==
-  dependencies:
-    "@babel/runtime" "7.1.2"
-    date-fns "^2.0.0-alpha.18"
-    element-resize-detector "^1.1.12"
-    eventemitter3 "2.0.3"
-    get-size "^2.0.2"
-    i18next "11.9.0"
-    invariant "^2.2.4"
-    post-robot "10.0.14"
-    query-string "^5.1.1"
-    warning "^4.0.1"
-
 "@emotion/cache@^10.0.9":
   version "10.0.9"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.9.tgz#e0c7b7a289f7530edcfad4dcf3858bd2e5700a6f"
@@ -1607,15 +1591,6 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-belter@^1.0.41:
-  version "1.0.95"
-  resolved "https://registry.yarnpkg.com/belter/-/belter-1.0.95.tgz#3441841a3602b1ddd64b3a077a423842ba221211"
-  integrity sha512-UWQOhjP+IVWy9O4MvGYIxGyF2iPc/GJvb0oOEsIoPOJz25o4zedw3OB7V75bZHJDOvSgCg8DWNe88Ytjb7vi3Q==
-  dependencies:
-    cross-domain-safe-weakmap "^1.0.20"
-    cross-domain-utils "^2.0.10"
-    zalgo-promise "^1.0.28"
-
 big.js@^3.1.3:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-3.2.0.tgz#a5fc298b81b9e0dca2e458824784b65c52ba588e"
@@ -2534,14 +2509,14 @@ create-react-context@^0.2.2:
     fbjs "^0.8.0"
     gud "^1.0.0"
 
-cross-domain-safe-weakmap@^1.0.1, cross-domain-safe-weakmap@^1.0.20:
+cross-domain-safe-weakmap@^1.0.1:
   version "1.0.25"
   resolved "https://registry.yarnpkg.com/cross-domain-safe-weakmap/-/cross-domain-safe-weakmap-1.0.25.tgz#240f44b478cd0e1dc7023599f2d89d727fe260cf"
   integrity sha512-8JcZJVsWv+Sor3V2MJKmTibLUwUWVqUevcceoMi/BY+3Ryn7KjniAFH+9h7zNL/HEA1jah7oUhoIgdazp9P31A==
   dependencies:
     cross-domain-utils "^2.0.0"
 
-cross-domain-utils@^2.0.0, cross-domain-utils@^2.0.10:
+cross-domain-utils@^2.0.0:
   version "2.0.25"
   resolved "https://registry.yarnpkg.com/cross-domain-utils/-/cross-domain-utils-2.0.25.tgz#7b61c64b2a1c8a81a9fb1de4d3af24a92e836d83"
   integrity sha512-l65JB6hftDXT6ZuIMoNp/IPgWHNVTl1E3bWeY6LhAAYKSpRu1TepxpDrrTqTQh9dJhihPv6oq/yAwf1v4F80pQ==
@@ -7104,17 +7079,6 @@ posix-character-classes@^0.1.0:
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
   integrity sha1-AerA/jta9xoqbAL+q7jB/vfgDqs=
 
-post-robot@10.0.14:
-  version "10.0.14"
-  resolved "https://registry.yarnpkg.com/post-robot/-/post-robot-10.0.14.tgz#4bdfa263dcd9424a5a6f2586be4b1872edca01d2"
-  integrity sha512-Q0ZCH16u4UbEr4vxRFx562pFx4ktyTeyZienQyZIyERgb9H8pZCIRZRy5lBTQRoNV9MoutaEP6GsVxRObJ6g9Q==
-  dependencies:
-    belter "^1.0.41"
-    cross-domain-safe-weakmap "^1.0.1"
-    cross-domain-utils "^2.0.0"
-    universal-serialize "^1.0.4"
-    zalgo-promise "^1.0.3"
-
 post-robot@^7.0.8:
   version "7.0.18"
   resolved "https://registry.yarnpkg.com/post-robot/-/post-robot-7.0.18.tgz#29f4552dd6279e0454964a84f161b1dc6b909022"
@@ -9296,11 +9260,6 @@ unique-string@^1.0.0:
   dependencies:
     crypto-random-string "^1.0.0"
 
-universal-serialize@^1.0.4:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/universal-serialize/-/universal-serialize-1.0.7.tgz#5e64607c3c941c88f76e77f2b095fafc2f37abed"
-  integrity sha512-rHWw4zdhPqKqbBu3GbNzdicHRc+0byzAFFcImDMo8x+S9yYfyqYQQcr749NV8jO/0YisMzd+LjeivdbHUzA67A==
-
 universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
@@ -9947,7 +9906,7 @@ yup@^0.27.0:
     synchronous-promise "^2.0.6"
     toposort "^2.0.2"
 
-zalgo-promise@^1.0.11, zalgo-promise@^1.0.28, zalgo-promise@^1.0.3:
+zalgo-promise@^1.0.11, zalgo-promise@^1.0.3:
   version "1.0.38"
   resolved "https://registry.yarnpkg.com/zalgo-promise/-/zalgo-promise-1.0.38.tgz#6acdb8990954eabab505c0c3bde47523fd927d33"
   integrity sha512-+dj0kZU9poywiJ3nIFns3o10XXbbptugvO51TxwD8/V0SIEi+Jw/of0MeJZ8CO7gH9jqzD0MQ/Q1PXAx8GlOQw==

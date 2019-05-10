@@ -3,18 +3,19 @@ import PropTypes from 'prop-types';
 import './styles.css';
 
 import {
-  Fetcher
-} from './Fetcher';
+  HubspotFetcher
+} from './HubspotFetcher';
 
 import {
   access,
   obtain,
   LocalStorageState,
+  cors_anywhere_fetch,
 } from './util';
 
 import {
   SwitchCase,
-} from './Component';
+} from './component';
 
 import {
   CreateDealForm,
@@ -56,9 +57,9 @@ function value_getter(obj) {
   };
 };
 
-const fetcher = new Fetcher({
-  qs: { hapikey: "c35b9d4e-0049-49fe-a8cf-22dc422e7512" },
-  fetch_f: fetch,
+const fetcher = new HubspotFetcher({
+  query_string: { hapikey: "c35b9d4e-0049-49fe-a8cf-22dc422e7512" },
+  fetch_f: cors_anywhere_fetch({ fetch_f: fetch }),
 });
 
 class App extends React.Component {
@@ -94,7 +95,7 @@ class App extends React.Component {
 
     const primaryEmail = person.emails[0];
 
-    const contact_json = await fetcher.contact_by_email({ id: primaryEmail });
+    const contact_json = await fetcher.contact_by_email(primaryEmail);
 
     this.setState({ contact_json });
 
@@ -109,7 +110,7 @@ class App extends React.Component {
       [fetch_its_id_by_contact, fetch_it,
         id_array_n, array_n]
     ) => {
-      const json = await fetch_its_id_by_contact({ id: contact_json.vid });
+      const json = await fetch_its_id_by_contact(contact_json.vid);
 
       const array = this.state[array_n] || [];
       this.setState({
@@ -120,7 +121,7 @@ class App extends React.Component {
       });
 
       json.results.forEach((id, index) => {
-        fetch_it({ id }).then((deal_json) => {
+        fetch_it(id).then((deal_json) => {
           let array = this.state[array_n];
           array[index] = deal_json;
           this.setState({ [array_n]: array });
@@ -176,7 +177,7 @@ class App extends React.Component {
       if (engagement_json_a.length === engagementId_a.length) {
         show_engagement_count = true;
       }
-    }, () => {});
+    }, () => { });
 
     return {
       deal_index_a, activity_json_a, note_json_a,
@@ -188,7 +189,7 @@ class App extends React.Component {
   }
 
   render() {
-    console.debug("render", {state: this.state});
+    console.debug("render", { state: this.state });
 
     let {
       deal_index_a, activity_json_a, note_json_a,
@@ -200,7 +201,7 @@ class App extends React.Component {
 
     const renderCreateNewDealLink =
       () => <CreateNewDealLink
-        {...{enable_create_deal}}
+        {...{ enable_create_deal }}
         callback_f={() => {
           this.setState({ screen: "create_deal_screen" });
         }}
@@ -259,28 +260,28 @@ class App extends React.Component {
     });
 
     const renderCreateDealScreen = () =>
-    <CreateDealForm
-      {...{name, get_n}}
-      cancel_f={goto_default_screen}
-      submit_f={(form, { setSubmitting }) => {
-        let property_o = {};
-        Fetcher.method_POST_a.create_deal.all_property_a.forEach((name) => {
-          const value = form[name];
-          if (value) {
-            property_o[name] = { name, value };
-          }
-        })
-        fetcher.create_deal({
-          body: { properties: property_o }
-        }).catch((error) => {
-          console.error("fetcher.create_deal", error);
-        }).then(async () => {
-          setSubmitting(false);
-          await goto_default_screen();
-          await this.fetch_data();
-        })
-      }}
-    ></CreateDealForm>;
+      <CreateDealForm
+        {...{ name, get_n }}
+        cancel_f={goto_default_screen}
+        submit_f={(form, { setSubmitting }) => {
+          let property_o = {};
+          HubspotFetcher.create_deal.all_property_a.forEach((name) => {
+            const value = form[name];
+            if (value) {
+              property_o[name] = { name, value };
+            }
+          })
+          fetcher.create_deal({
+            body: { properties: property_o }
+          }).catch((error) => {
+            console.error("fetcher.create_deal", error);
+          }).then(async () => {
+            setSubmitting(false);
+            await goto_default_screen();
+            await this.fetch_data();
+          })
+        }}
+      ></CreateDealForm>;
 
     const oauth_nocsrf_a_state = LocalStorageState({
       key: "deskpro_hubspot_oauth_nocsrf_a",
@@ -293,7 +294,7 @@ class App extends React.Component {
       component: this,
     });
     const renderOauthScreen = () => <OauthPanel
-      {...{oauth_nocsrf_a_state, oauth_code_state}}
+      {...{ oauth_nocsrf_a_state, oauth_code_state }}
     />
 
     return <SwitchCase

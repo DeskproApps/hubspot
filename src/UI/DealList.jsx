@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { access } from '../util';
-import { XList } from '../Component';
+import { XList } from '../component';
 import { DealDataList } from '.';
 
 
