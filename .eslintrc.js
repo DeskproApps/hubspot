@@ -10,6 +10,11 @@ module.exports = {
   },
   extends: ["eslint:recommended", "plugin:react/recommended", "airbnb"],
   plugins: ["compat", "import", "promise", "react"],
+  settings: {
+    react: {
+      version: "16",
+    },
+  },
   rules: {
     "arrow-body-style": "off",
     "arrow-parens": ["error", "always"],
@@ -41,7 +46,7 @@ module.exports = {
     "react/destructuring-assignment": "off",
     "react/display-name": "off",
     "react/jsx-closing-bracket-location": "off",
-    "react/jsx-filename-extension": "off", //["warn", { extensions: [".jsx"] }],
+    "react/jsx-filename-extension": ["warn", { extensions: [".jsx"] }],
     "react/jsx-key": "warn",
     "react/jsx-no-bind": "off",
     "react/no-unescaped-entities": "off",
