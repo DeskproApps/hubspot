@@ -39,7 +39,12 @@ function obtain(object, dotted_name, success_f, failure_f) {
     }
   }
   if (value === void 0 || value === null) {
-    return failure_f("obtain", { key: dotted_name, obj: object, val: value });
+    return failure_f({
+      key: dotted_name,
+      obj: object,
+      val: value,
+      from: "obtain",
+    });
   }
   return success_f(value);
 }
@@ -154,20 +159,21 @@ function what(arg) {
  */
 const take = (obj, key) => (failure_f) =>
   (obj[key] !== null && obj[key] !== void 0) ?
-  obj[key] :
-  failure_f("take", {
-    key,
-    obj,
-    val: obj[key],
-  });
+    obj[key] :
+    failure_f({
+      key,
+      obj,
+      val: obj[key],
+      from: "take",
+    });
 
 /**
  * @callback failure_f
- * @param name the name of the util function calling failure_f
- * @param {key: string, obj: object, val: null|undefined}
+ * @param {key: string, obj: object, val: null|undefined, from: string}
  * @param key the key whose access failed
  * @param obj the given object
  * @param val the failing result value -- null or undefined
+ * @param from the name of the util function calling failure_f
  * @returns {any} the substitution value
  */
 
