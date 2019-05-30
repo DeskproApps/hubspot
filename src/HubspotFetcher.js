@@ -115,6 +115,10 @@ class HubspotFetcher {
   //
   // GET
   //
+  account_detail = () => {
+    return this._hubspot_GET("/integrations/v1/me");
+  }
+
   contact_by_email = (email) => {
     return this._hubspot_GET(`/contacts/v1/contact/email/${email}/profile`);
   }
@@ -165,6 +169,8 @@ class HubspotFetcher {
       return this._hubspot_POST("/deals/v1/deal/", { body });
     };
 
+    create_deal.required_a = required;
+    create_deal.valid_a = valid;
     create_deal.all_property_a = [].concat(valid, required);
 
     return create_deal;
@@ -178,6 +184,11 @@ class HubspotFetcher {
   // PUT
   //
   update_deal({ dealId, body }) {
+    const { required_a: required, valid_a: valid } = HubspotFetcher.create_deal;
+    console.assert(dealId);
+
+    properties_validator({ required, valid })({ body });
+
     return this._hubspot_PUT(`/deals/v1/deal/${dealId}`, { body });
   }
 

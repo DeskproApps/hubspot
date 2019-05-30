@@ -9,7 +9,6 @@ const DealDataList = ({ getter }) => {
   return (<DataList data={[
       ["Pipeline", getter("pipeline")],
       ["Stage", getter("dealstage")],
-      ["Amount", getter("amount")],
     ].map(([label, value]) => ({ label, value }))
     } />);
 };

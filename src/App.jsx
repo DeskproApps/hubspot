@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
-  Panel,
   Tabs,
   TabMenu,
 } from "@deskpro/apps-components";
@@ -25,10 +24,11 @@ import {
 
 import {
   SwitchCase,
+  XList,
 } from "./component";
 
 import {
-  CreateDealForm,
+  EditDealForm,
   PersonDataList,
   CompanyDataList,
   DealList,
@@ -74,7 +74,15 @@ class App extends React.Component {
 
   state = {
     activeTab: "deals",
-    screen: ["default_screen", "create_deal_screen", "oauth_screen"][0],
+    detail: {
+      currency: "¤",
+    },
+    edit_deal: {},
+    screen: [
+      "default_screen",
+      "edit_deal_screen",
+      "oauth_screen",
+    ][0],
   }
 
   componentDidMount() {
@@ -82,13 +90,27 @@ class App extends React.Component {
     // eslint-disable-next-line
     console.debug(function app (o = {}) { return o.app = me; });
 
+    const { body } = window.top.document;
+    body.style.margin = "0";
+    const { style = {} } = body.querySelector("iframe");
+    style.margin = "0";
+
     const { dpapp } = this.props;
     this.ticket_context = dpapp.context.get("ticket");
 
     this.fetch_data();
   }
 
+  setState(state, ...args) {
+    console.debug("setState", state);
+    super.setState(state, ...args);
+  }
+
   async fetch_data() {
+    fetcher.account_detail().then((detail) => {
+      this.setState({ detail });
+    });
+
     const person = await this.ticket_context.get("person");
 
     const primary_email = person.emails[0];
@@ -119,7 +141,7 @@ class App extends React.Component {
 
       json.results.forEach((id, index) => {
         fetch_it(id).then((deal_json) => {
-          const array = this.state[array_n];
+          const array = this.state[array_n].slice();
           array[index] = deal_json;
           this.setState({ [array_n]: array });
         });
@@ -143,18 +165,17 @@ class App extends React.Component {
     }
 
     const both = get_n("firstname") && get_n("lastname");
-    const name =
+    const contact_name =
       get_n("firstname", "") +
       (both ? " " : "") +
       get_n("lastname", "").toUpperCase();
 
     const company = get_c("name", "");
-    const deal_index_a = access(this.state, "dealId_a", [])
-      .map((_dealId, index) => index)
-      .filter((index) => this.state.deal_a[index] !== null);
+    const deal_filtered_a = access(this.state, "deal_a", [])
+      .filter((json) => json);
 
-    const note_json_a = [];
-    const activity_json_a = [];
+    const note_filtered_a = [];
+    const activity_filtered_a = [];
     let show_engagement_count = false;
 
     /* Sort existing engagment json into note_json and activity_json */
@@ -166,9 +187,9 @@ class App extends React.Component {
 
       engagement_json_a.forEach((json) => {
         if (json.engagement.type === "NOTE") {
-          note_json_a.push(json);
+          note_filtered_a.push(json);
         } else {
-          activity_json_a.push(json);
+          activity_filtered_a.push(json);
         }
       });
 
@@ -177,52 +198,72 @@ class App extends React.Component {
       }
     }, () => { });
 
+    const {
+      detail: { currency },
+    } = this.state;
+
     return {
-      deal_index_a,
-      activity_json_a,
-      note_json_a,
-      name,
+      deal_filtered_a,
+      activity_filtered_a,
+      note_filtered_a,
+      contact_name,
       get_n,
       company,
       get_c,
+      currency,
       show_engagement_count,
       enable_create_deal,
     };
   }
 
   render() {
-    console.debug("render", { state: this.state });
-
     const {
-      deal_index_a, activity_json_a, note_json_a,
-      name, get_n,
+      deal_filtered_a, activity_filtered_a, note_filtered_a,
+      contact_name, get_n,
       company, get_c,
+      currency,
       show_engagement_count,
       enable_create_deal,
     } = this.render_parse_state();
 
-    const renderCreateNewDealLink =
-      () => (<CreateNewDealLink
+    const renderCreateNewDealLink = () => {
+      return <CreateNewDealLink
         {...{ enable_create_deal }}
         callback_f={() => {
-          this.setState({ screen: "create_deal_screen" });
+          this.setState({
+            screen: "edit_deal_screen",
+            edit_deal: { title: "Create New Deal" },
+          });
         }}
-      />);
+      />;
+    };
 
-    const renderDealList =
-      () => (<DealList {...{
+    const edit = (dealId) => () => {
+      this.setState({
+        screen: "edit_deal_screen",
+        edit_deal: {
+          dealId,
+          title: "Edit Deal",
+        },
+      });
+    };
+
+    const renderDealList = () => {
+      return <DealList {...{
+        edit,
+        currency,
         render_head: renderCreateNewDealLink,
-        deal_index_a,
-        deal_a: this.state.deal_a || [],
+        deal_filtered_a,
         value_getter,
       }}
-      />);
+      />;
+    };
 
     const renderActivityList =
-      () => <ActivityList {...{ activity_json_a }} />;
+      () => <ActivityList {...{ activity_filtered_a }} />;
 
     const renderNoteList =
-      () => <NoteList {...{ note_json_a }} />;
+      () => <NoteList {...{ note_filtered_a }} />;
 
     const oauth_nocsrf_a_state = LocalStorageState({
       key: "deskpro_hubspot_oauth_nocsrf_a",
@@ -240,12 +281,17 @@ class App extends React.Component {
 
     const renderDefaultScreen = () => (
       <div>
-        <Panel title={name}>
-          <PersonDataList getter={get_n} />
-        </Panel>
-        <Panel title={company}>
-          <CompanyDataList getter={get_c} />
-        </Panel>
+        <XList
+          iter={[{
+            pannelProps: { title: contact_name },
+            children: <PersonDataList getter={get_n} />,
+          }, {
+            pannelProps: { title: company },
+            children: <CompanyDataList getter={get_c} />,
+          }]}
+          callback={((props, i) => { return { ...props, key: i }; })}
+          Outer="div"
+        />
         <Tabs
           active={this.state.activeTab}
           onChange={(clickedTab) => {
@@ -259,12 +305,12 @@ class App extends React.Component {
           </TabMenu>
           <TabMenu name="activities">{
             `Activities${
-            show_engagement_count ? ` (${activity_json_a.length})` : ""}`
+            show_engagement_count ? ` (${activity_filtered_a.length})` : ""}`
           }
           </TabMenu>
           <TabMenu name="notes">{
             `Notes${
-            show_engagement_count ? ` (${note_json_a.length})` : ""}`
+            show_engagement_count ? ` (${note_filtered_a.length})` : ""}`
           }
           </TabMenu>
         </Tabs>
@@ -284,9 +330,14 @@ class App extends React.Component {
       this.setState({ screen: "default_screen" }, resolve);
     });
 
-    const renderCreateDealScreen = () =>
-      (<CreateDealForm
-        {...{ name, get_n }}
+    const renderEditDealScreen = () => {
+      return <EditDealForm
+        {...{
+          contact_name,
+          currency,
+          fetcher,
+        }}
+        title={this.state.edit_deal.title}
         cancel_f={goto_default_screen}
         submit_f={(form, { setSubmitting }) => {
           const property_o = {};
@@ -296,23 +347,25 @@ class App extends React.Component {
               property_o[deal_name] = { name: deal_name, value };
             }
           });
-          fetcher.create_deal({
+          fetcher.update_deal({
+            dealId: this.state.edit_deal.dealId,
             body: { properties: property_o },
           }).catch((error) => {
-            console.error("fetcher.create_deal", error);
+            console.error("fetcher.update_deal", error);
           }).then(async () => {
             setSubmitting(false);
             await goto_default_screen();
             await this.fetch_data();
           });
         }}
-      />);
+      />;
+    };
 
     return (<SwitchCase
       on={this.state.screen}
       render_o={{
         default_screen: renderDefaultScreen,
-        create_deal_screen: renderCreateDealScreen,
+        edit_deal_screen: renderEditDealScreen,
         oauth_screen: renderOauthScreen,
       }}
     />);

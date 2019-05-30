@@ -1,20 +1,12 @@
 /* eslint-disable react/jsx-closing-tag-location */
-/** @jsx jsx */
-import { jsx } from "@emotion/core";
+import React from "react";
 import PropTypes from "prop-types";
-
-import { disabled_link_css } from "../css";
 
 function CreateNewDealLink({ enable_create_deal, callback_f }) {
   return (
-    <div css={{
-      textAlign: "right",
-      // eslint-disable-next-line
-    }}><a
-      css={{
-        ...(enable_create_deal ? {} : disabled_link_css),
-        textDecoration: "underline",
-      }}
+    // eslint-disable-next-line
+    <div className="dealLinkDiv"><a
+      {...(enable_create_deal ? {} : { disabled: true })}
       onClick={() => {
         if (enable_create_deal) {
           callback_f();

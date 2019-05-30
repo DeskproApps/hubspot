@@ -1,4 +1,52 @@
-/*
-  This is a placeholder CSS file you can use to add custom styles.
-  It is included by default in App.js.
-*/
+#dealForm label,
+#dealForm input {
+  display: block;
+}
+
+#dealForm > * {
+  margin-top: 1em;
+}
+
+#dealForm input {
+  border-radius: 0.25rem;
+  border-style: solid;
+  border-color: #d2dce4;
+  border-width: 2px;
+}
+
+#dealForm [type="submit"] {
+  float: right;
+}
+
+.dealLinkDiv {
+  text-align: right;
+}
+
+.dealLinkDiv a[disabled] {
+  color: grey;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+.topRight,
+.bottomRight {
+  text-align: right;
+  position: relative;
+}
+
+.topRight > *,
+.bottomRight > * {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.amount {
+  font-weight: bold;
+  color: #4696dc;
+}
+
+.dp-Button.edit {
+  padding: 4px 0.4rem;
+}

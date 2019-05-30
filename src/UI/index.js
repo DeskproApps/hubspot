@@ -1,4 +1,4 @@
-export * from "./CreateDealForm";
+export * from "./EditDealForm";
 
 export * from "./PersonDataList";
 export * from "./CompanyDataList";

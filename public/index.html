@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   </head>
   <body>
+    <script>
+      // https://github.com/facebook/react-devtools/issues/76#issuecomment-128091900
+      if (window.parent !== window) {
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+      }
+    </script>
     <div id="root"></div>
   </body>
 </html>

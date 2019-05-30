@@ -3,26 +3,26 @@ import PropTypes from "prop-types";
 
 import { XList } from "../component";
 
-const ActivityList = ({ activity_json_a }) => (
+const ActivityList = ({ activity_filtered_a }) => (
   <XList
-    iter={activity_json_a}
-    callback={(value) => [
-      {
+    iter={activity_filtered_a}
+    callback={(value) => {
+      return {
         key: value.engagement.id,
-        title: value.engagement.type,
-      },
-      value.engagement.bodyPreview,
-    ]}
+        pannelProps: { title: value.engagement.type },
+        children: value.engagement.bodyPreview,
+      };
+    }}
   />);
 
-ActivityList.prototype = {
-  activity_json_a: PropTypes.arrayOf(PropTypes.shape({
+ActivityList.propTypes = {
+  activity_filtered_a: PropTypes.arrayOf(PropTypes.shape({
     engagement: PropTypes.shape({
       id: PropTypes.any,
       type: PropTypes.any,
       bodyPreview: PropTypes.any,
     }),
-  })),
+  })).isRequired,
 };
 
 export { ActivityList };
