@@ -3,7 +3,7 @@ import React from "react";
 import { createApp } from "@deskpro/apps-sdk";
 import { DefaultDeskproApp } from "@deskpro/apps-components";
 
-import { } from "./helper/clear_console";
+import { } from "./helper/clearConsole";
 
 import App from "./App";
 // eslint-disable-next-line import/no-unresolved
@@ -36,7 +36,7 @@ createApp((dpapp) => (props) => {
       document.getElementById("root")
     );
   } catch (e) {
-    if (e._info) {
+    if (e.Info) {
       e.show();
     }
     throw e;

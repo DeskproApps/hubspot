@@ -2,14 +2,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function CreateNewDealLink({ enable_create_deal, callback_f }) {
+function CreateNewDealLink({ enableCreateDeal, callbackF }) {
   return (
     // eslint-disable-next-line
     <div className="dealLinkDiv"><a
-      {...(enable_create_deal ? {} : { disabled: true })}
+      {...(enableCreateDeal ? {} : { disabled: true })}
       onClick={() => {
-        if (enable_create_deal) {
-          callback_f();
+        if (enableCreateDeal) {
+          callbackF();
         }
       }}>
         Create new deal
@@ -17,8 +17,8 @@ function CreateNewDealLink({ enable_create_deal, callback_f }) {
 }
 
 CreateNewDealLink.propTypes = {
-  enable_create_deal: PropTypes.bool.isRequired,
-  callback_f: PropTypes.func.isRequired,
+  enableCreateDeal: PropTypes.bool.isRequired,
+  callbackF: PropTypes.func.isRequired,
 };
 
 export { CreateNewDealLink };

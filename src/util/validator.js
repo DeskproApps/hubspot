@@ -1,16 +1,16 @@
-function generic_validator({ required, valid }) {
+function genericValidator({ required, valid }) {
   const valid_S = new Set(valid.concat(required));
 
-  return ({ name_a }) => {
+  return ({ nameA }) => {
     try {
-      const name_S = new Set(name_a);
+      const name_S = new Set(nameA);
       [
         [required, name_S, "Missing property"],
         [name_S, valid_S, "Invalid property"],
-      ].forEach(([subset, superset, error_text]) => {
+      ].forEach(([subset, superset, errorText]) => {
         subset.forEach((name) => {
           if (!superset.has(name)) {
-            throw new Error(`${error_text}: ${name}`);
+            throw new Error(`${errorText}: ${name}`);
           }
         });
       });
@@ -24,4 +24,4 @@ function generic_validator({ required, valid }) {
   };
 }
 
-export { generic_validator };
+export { genericValidator };

@@ -10,24 +10,24 @@ import { DealDataList } from ".";
 
 
 const DealList = ({
-  render_head,
+  renderHead,
   currency,
   edit,
-  deal_filtered_a, value_getter,
+  dealFilteredA, valueGetter,
 }) => {
   return <XList
-    render_head={render_head}
-    iter={deal_filtered_a}
+    renderHead={renderHead}
+    iter={dealFilteredA}
     callback={(deal, k) => {
-      const get_d = value_getter(deal.properties);
+      const getD = valueGetter(deal.properties);
       const { dealId } = deal;
-      const amount = `${get_d("amount_in_home_currency")} ${currency}`;
+      const amount = `${getD("amountIn_home_currency")} ${currency}`;
       return {
         key: k,
-        pannelProps: { title: get_d("dealname") },
-        children: <DealDataList getter={get_d} currency={currency} />,
-        top_right: () => <span className="amount">{amount}</span>,
-        bottom_right: () => <Button
+        pannelProps: { title: getD("dealname") },
+        children: <DealDataList getter={getD} currency={currency} />,
+        topRight: () => <span className="amount">{amount}</span>,
+        bottomRight: () => <Button
           className="edit"
           onClick={edit(dealId)}
         >Edit</Button>,
@@ -38,10 +38,10 @@ const DealList = ({
 
 DealList.propTypes = {
   edit: PropTypes.func.isRequired,
-  render_head: PropTypes.func.isRequired,
+  renderHead: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
-  deal_filtered_a: PropTypes.arrayOf(PropTypes.object).isRequired,
-  value_getter: PropTypes.func.isRequired,
+  dealFilteredA: PropTypes.arrayOf(PropTypes.object).isRequired,
+  valueGetter: PropTypes.func.isRequired,
 };
 
 export { DealList };

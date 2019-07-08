@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { XList } from "../component";
 
-const NoteList = ({ note_filtered_a }) => (<XList
-  iter={note_filtered_a}
+const NoteList = ({ noteFilteredA }) => (<XList
+  iter={noteFilteredA}
   callback={(value) => {
     return {
       key: value.engagement.id,
@@ -13,7 +13,7 @@ const NoteList = ({ note_filtered_a }) => (<XList
  />);
 
 NoteList.propTypes = {
-  note_filtered_a: PropTypes.arrayOf(PropTypes.object).isRequired,
+  noteFilteredA: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export { NoteList };

@@ -1,5 +1,5 @@
-const identity_f = (x) => x;
+const identityF = (x) => x;
 
-const null_f = () => null;
+const nullF = () => null;
 
-export { identity_f, null_f };
+export { identityF, nullF };

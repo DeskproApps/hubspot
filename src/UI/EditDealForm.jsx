@@ -15,7 +15,7 @@ import {
 } from "@deskpro/apps-components";
 
 /* OA code used for development not production */
-const debug_state = true;
+const debugState = true;
 const DisplayFormikState = (props) => (
   <div style={{ margin: "1rem 0" }}>
     <pre
@@ -60,9 +60,9 @@ const formValidation = {
 
 const EditDealForm = (props) => {
   const {
-    cancel_f,
-    submit_f,
-    contact_name,
+    cancelF,
+    submitF,
+    contactName,
     currency,
     title,
   } = props;
@@ -77,12 +77,12 @@ const EditDealForm = (props) => {
         dealstage: "",
         amount: "",
         startdate: "",
-        hubspot_owner_id: "",
+        hubspotOwnerId: "",
         company: "",
       }}
-        onSubmit={submit_f}
+        onSubmit={submitF}
         validationSchema={formValidation}
-    >{(formik_props) => {
+    >{(formikProps) => {
       const {
         // values,
         // touched,
@@ -90,13 +90,13 @@ const EditDealForm = (props) => {
         // dirty,
         isSubmitting,
         handleSubmit,
-      } = formik_props;
+      } = formikProps;
 
       return (
         <Form id="dealForm" onSubmit={handleSubmit}>
           <label>
             Contact
-            <Field type="select" name="contact" value={contact_name} readOnly />
+            <Field type="select" name="contact" value={contactName} readOnly />
           </label>
           <label>
             Deal Name
@@ -123,7 +123,7 @@ const EditDealForm = (props) => {
             <Field type="text" name="owner" />
             <Field
               type="text"
-              name="hubspot_owner_id"
+              name="hubspotOwnerId"
               value="42"
               style={{ display: "none" }}
             />
@@ -134,7 +134,7 @@ const EditDealForm = (props) => {
           </label>
 
           <div>
-            <Button type="button" onClick={cancel_f}>
+            <Button type="button" onClick={cancelF}>
               Cancel
             </Button>
 
@@ -146,7 +146,7 @@ const EditDealForm = (props) => {
             </Button>
           </div>
 
-          {debug_state ? <DisplayFormikState {...formik_props} /> : null}
+          {debugState ? <DisplayFormikState {...formikProps} /> : null}
         </Form>
       );
     }}
@@ -155,9 +155,9 @@ const EditDealForm = (props) => {
 };
 
 EditDealForm.propTypes = {
-  cancel_f: PropTypes.func.isRequired,
-  submit_f: PropTypes.func.isRequired,
-  contact_name: PropTypes.string.isRequired,
+  cancelF: PropTypes.func.isRequired,
+  submitF: PropTypes.func.isRequired,
+  contactName: PropTypes.string.isRequired,
   currency: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
 };

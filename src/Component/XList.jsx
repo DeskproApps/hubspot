@@ -7,7 +7,7 @@ import {
 } from "@deskpro/apps-components";
 
 import {
-  null_f,
+  nullF,
 } from "../util";
 
 /**
@@ -20,25 +20,25 @@ const XList = ({
   iter,
   callback,
   Outer = Panel,
-  render_head = null_f,
+  renderHead = nullF,
 }) => {
   return <Outer>
-    {render_head()}
+    {renderHead()}
     <List>{[...iter].map(callback).map((props) => {
       const {
         key,
         pannelProps = {},
         children = null,
-        top_right = null_f,
-        bottom_right = null_f,
+        topRight = nullF,
+        bottomRight = nullF,
       } = props;
       return <Panel
         key={key}
         {...pannelProps}
       >
-        <div className="topRight"><div>{top_right()}</div></div>
+        <div className="topRight"><div>{topRight()}</div></div>
         {children}
-        <div className="bottomRight"><div>{bottom_right()}</div></div>
+        <div className="bottomRight"><div>{bottomRight()}</div></div>
       </Panel>;
     })}
     </List>
@@ -50,7 +50,7 @@ const XList = ({
  * @param value from the array
  * @param index - the corresponding index
  * @param array - the full array
- * @returns {key, pannelProps?, children?, top_right?, bottom_right?}
+ * @returns {key, pannelProps?, children?, topRight?, bottomRight?}
  * @var {} props [mandatory] - can be empty - the props that XList will pass to
  *  the element
  * @var {} children the children that XList will pass to the element
@@ -60,7 +60,7 @@ XList.propTypes = {
   iter: PropTypes.arrayOf(PropTypes.any).isRequired,
   callback: PropTypes.func.isRequired,
   Outer: PropTypes.node,
-  render_head: PropTypes.func,
+  renderHead: PropTypes.func,
 };
 
 export { XList };

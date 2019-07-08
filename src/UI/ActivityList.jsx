@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 import { XList } from "../component";
 
-const ActivityList = ({ activity_filtered_a }) => (
+const ActivityList = ({ activityFilteredA }) => (
   <XList
-    iter={activity_filtered_a}
+    iter={activityFilteredA}
     callback={(value) => {
       return {
         key: value.engagement.id,
@@ -16,7 +16,7 @@ const ActivityList = ({ activity_filtered_a }) => (
   />);
 
 ActivityList.propTypes = {
-  activity_filtered_a: PropTypes.arrayOf(PropTypes.shape({
+  activityFilteredA: PropTypes.arrayOf(PropTypes.shape({
     engagement: PropTypes.shape({
       id: PropTypes.any,
       type: PropTypes.any,

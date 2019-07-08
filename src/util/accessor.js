@@ -1,36 +1,35 @@
-import { is_iterable } from "./checking";
+import { isIterable } from "./checking";
 
 /**
- * parse_dotted_name
+ * parseDottedName
  *
  * Splits the given string on dot. If a key begins with a digit, convert
  * it to number
- * @param {string} dotted_name
+ * @param {string} dottedName
  * @returns {Array<string|number}
  */
-function parse_dotted_name(dotted_name) {
-  return dotted_name
+function parseDottedName(dottedName) {
+  return dottedName
     .split(".")
     .map((key) => (key.match(/^[0-9]/) ? Number(key) : key));
 }
-
 
 /**
  * obtain
  *
  * @param {Object} object
- * @param {string} dotted_name
- * @param {*} success_f callback function in case of success
+ * @param {string} dottedName
+ * @param {*} successF callback function in case of success
  * -- will be passed the obtained value as single argument
- * @param {*} failure_f callback function in case of failure
+ * @param {*} failureF callback function in case of failure
  * -- is documented far below
- * @returns {*} the return value of success_f in case of success. That
- * of failure_f otherwise
+ * @returns {*} the return value of successF in case of success. That
+ * of failureF otherwise
  */
-function obtain(object, dotted_name, success_f, failure_f) {
-  const key_a = (dotted_name ? parse_dotted_name(dotted_name) : []);
+function obtain(object, dottedName, successF, failureF) {
+  const keyA = dottedName ? parseDottedName(dottedName) : [];
   let value = object;
-  for (const key of key_a) {
+  for (const key of keyA) {
     if (value) {
       value = value[key];
     } else {
@@ -38,74 +37,71 @@ function obtain(object, dotted_name, success_f, failure_f) {
     }
   }
   if (value === undefined || value === null) {
-    return failure_f({
-      key: dotted_name,
+    return failureF({
+      key: dottedName,
       obj: object,
       val: value,
       from: "obtain",
     });
   }
-  return success_f(value);
+  return successF(value);
 }
-
 
 /**
  * access
  *
  * @param {Object} object
- * @param {string} dotted_name
+ * @param {string} dottedName
  * @param {*} alternative replacement value
  */
-function access(object, dotted_name, alternative) {
-  return obtain(object, dotted_name, (x) => x, (_o, _d) => alternative);
+function access(object, dottedName, alternative) {
+  return obtain(object, dottedName, (x) => x, () => alternative);
 }
 
-
 /**
- * see_through
+ * seeThrough
  *
- * @param {string|Array<any>} dotted_name the dot-separated property path or an
+ * @param {string|Array<any>} dottedName the dot-separated property path or an
  * array of properties
  * @param {Object} object
  * @returns {Object} an object gathering all values found at the different depth
  * in `object`
  */
-function see_through(dotted_name) {
-  let name_a;
-  if (typeof dotted_name === "string") {
-    name_a = parse_dotted_name(dotted_name);
-  } else if (is_iterable(dotted_name)) {
-    name_a = dotted_name;
+function seeThrough(dottedName) {
+  let nameA;
+  if (typeof dottedName === "string") {
+    nameA = parseDottedName(dottedName);
+  } else if (isIterable(dottedName)) {
+    nameA = dottedName;
   } else {
-    throw new Error(
-      `see_through: bad argument \`dotted_name\`: ${dotted_name}`
-    );
+    throw new Error(`seeThrough: bad argument \`dottedName\`: ${dottedName}`);
   }
-  const [name, ...key_a] = name_a;
+  const [name, ...keyA] = nameA;
   return (object) => {
     const info = { [name]: object };
-    let progressive_name = name;
+    let progressiveName = name;
     let obj = object;
-    for (const key of key_a) {
-      progressive_name += `.${key}`;
+    for (const key of keyA) {
+      progressiveName += `.${key}`;
       obj = obj[key];
-      info[progressive_name] = obj;
-      if (!obj) { break; }
+      info[progressiveName] = obj;
+      if (!obj) {
+        break;
+      }
     }
     return info;
   };
 }
 
-
 /**
  * what
  *
- * Allows you to inspect a "thing" with a custom function: info_extractor
- * @param {string|any -> object} info_extractor
- * * if info_extractor is a function, it will be passed the
+ * Allows you to inspect a "thing" with a custom function: infoExtractor
+ * @param {string|any -> object} infoExtractor
+ * * if infoExtractor is a function, it will be passed the
  * should return an object with one or a small number of entries.
  * key-values will be logged to console one by one
- * * if info_extractor is a string, it is split on dot. The leftmost
+ * * if infoExtractor is a string, it is split on dot. The leftmost
  * part is used to name the what log entry, while the rest is used as an
  * access path into the inspected object.
  *
@@ -116,17 +112,17 @@ function see_through(dotted_name) {
  * ```
  */
 function what(arg) {
-  let info_extractor;
+  let infoExtractor;
   if (typeof arg === "function") {
-    info_extractor = arg;
-  } else if (typeof arg === "string" || is_iterable(arg)) {
-    info_extractor = see_through(arg);
+    infoExtractor = arg;
+  } else if (typeof arg === "string" || isIterable(arg)) {
+    infoExtractor = seeThrough(arg);
   } else {
-    console.warn("what: unexpected type for info_extractor", info_extractor);
+    console.warn("what: unexpected type for infoExtractor", infoExtractor);
     return (thing) => thing;
   }
   return (thing) => {
-    const logme = info_extractor(thing);
+    const logme = infoExtractor(thing);
     if (typeof logme === "object") {
       console.group();
       Object.entries(logme).forEach(([key, val]) => {
@@ -134,15 +130,13 @@ function what(arg) {
       });
       console.groupEnd();
     } else {
-      const msg = logme === undefined ?
-        "returned undefined" :
-        "didn't return an object";
-      console.warn(`what: info_extractor ${msg} -- no info`);
+      const msg =
+        logme === undefined ? "returned undefined" : "didn't return an object";
+      console.warn(`what: infoExtractor ${msg} -- no info`);
     }
     return thing;
   };
 }
-
 
 /**
  * take
@@ -151,32 +145,27 @@ function what(arg) {
  *
  * @param {object|any} obj
  * @param {string} key
- * @param {(val, key, obj) -> any} fail_f callback documented below
+ * @param {(val, key, obj) -> any} failF callback documented below
  */
-const take = (obj, key) => (failure_f) =>
-  ((obj[key] !== null && obj[key] !== undefined) ?
-    obj[key] :
-    failure_f({
-      key,
-      obj,
-      val: obj[key],
-      from: "take",
-    }));
-
+const take = (obj, key) => (failureF) => {
+  if (obj[key] !== null && obj[key] !== undefined) {
+    return obj[key];
+  }
+  return failureF({
+    key,
+    obj,
+    val: obj[key],
+    from: "take",
+  });
+};
 /**
- * @callback failure_f
+ * @callback failureF
  * @param {key: string, obj: object, val: null|undefined, from: string}
  * @param key the key whose access failed
  * @param obj the given object
  * @param val the failing result value -- null or undefined
- * @param from the name of the util function calling failure_f
+ * @param from the name of the util function calling failureF
  * @returns {any} the substitution value
  */
 
-export {
-  access,
-  obtain,
-  see_through,
-  what,
-  take,
-};
+export { access, obtain, seeThrough, what, take };

@@ -1,11 +1,11 @@
 /**
- * is_iterable
+ * isIterable
  *
  * @param {any} object
  * @returns true if the object is iterable, false otherwise
  */
-function is_iterable(object) {
+function isIterable(object) {
   return object && object[Symbol.iterator] === "function";
 }
 
-export { is_iterable };
+export { isIterable };
