@@ -60,7 +60,6 @@ const formValidation = {
 
 const EditDealForm = (props) => {
   const {
-    fetcher,
     cancel_f,
     submit_f,
     contact_name,
@@ -156,7 +155,6 @@ const EditDealForm = (props) => {
 };
 
 EditDealForm.propTypes = {
-  fetcher: PropTypes.shape({}).isRequired,
   cancel_f: PropTypes.func.isRequired,
   submit_f: PropTypes.func.isRequired,
   contact_name: PropTypes.string.isRequired,

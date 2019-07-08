@@ -58,6 +58,7 @@
     "@deskpro/apps-react-scripts": "0.5.1",
     "@deskpro/apps-sdk": "0.12.1",
     "@emotion/core": "^10.0.10",
+    "ajv": "^6.10.1",
     "d3-format": "^1.3.2",
     "formik": "^1.5.2",
     "prop-types": "^15.6.2",
