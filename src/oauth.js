@@ -7,7 +7,7 @@ import { Panel } from "@deskpro/apps-components";
 
 const oauth = {
   // "dev oauth integration dp"
-  clientId: "ba933fa1-14d1-4f38-af70-b45343a3192a"
+  clientId: "ba933fa1-14d1-4f38-af70-b45343a3192a",
 };
 
 const redirect_uri = "http://localhost:3000/dev.html";
@@ -23,9 +23,9 @@ function makeOauthlink({ addNocsrfF }) {
     clientId: oauth.clientId,
     redirect_uri,
     scope: "contacts", // space separated
-    state: nocsrf
+    state: nocsrf,
   };
-  Object.keys(queryStringParam).forEach(key => {
+  Object.keys(queryStringParam).forEach((key) => {
     url.searchParams.append(key, queryStringParam[key]);
   });
   return url;
@@ -36,7 +36,7 @@ const OauthPanel = ({ oauthNocsrfAState, oauthCodeState }) => {
   if (!(oauthNocsrfA instanceof Array)) {
     oauthNocsrfA = [];
   }
-  const addNocsrfF = nocsrf => {
+  const addNocsrfF = (nocsrf) => {
     oauthNocsrfA.push(nocsrf);
     if (oauthNocsrfA.length > 10) {
       oauthNocsrfA.unshif();
@@ -54,7 +54,7 @@ const OauthPanel = ({ oauthNocsrfAState, oauthCodeState }) => {
       }}
     >
       Authenticate with OAuth
-    </a>
+    </a>,
   ];
 
   const search = new URL(window.top.location.href).searchParams;
@@ -77,9 +77,9 @@ const OauthPanel = ({ oauthNocsrfAState, oauthCodeState }) => {
 OauthPanel.propTypes = {
   oauthNocsrfAState: PropTypes.shape({
     get: PropTypes.func,
-    set: PropTypes.func
+    set: PropTypes.func,
   }).isRequired,
-  oauthCodeState: PropTypes.shape({ get: PropTypes.func }).isRequired
+  oauthCodeState: PropTypes.shape({ get: PropTypes.func }).isRequired,
 };
 
 export { makeOauthlink, OauthPanel };
