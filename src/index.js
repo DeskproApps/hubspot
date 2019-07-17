@@ -1,1 +1,1 @@
-import { } from "./index.jsx";
+import {} from "./index.jsx";

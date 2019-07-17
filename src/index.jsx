@@ -3,7 +3,7 @@ import React from "react";
 import { createApp } from "@deskpro/apps-sdk";
 import { DefaultDeskproApp } from "@deskpro/apps-components";
 
-import { } from "./helper/clearConsole";
+import {} from "./helper/clearConsole";
 
 import App from "./App";
 // eslint-disable-next-line import/no-unresolved

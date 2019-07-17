@@ -3,10 +3,10 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
-    node: true
+    node: true,
   },
   globals: {
-    __PATH_PREFIX__: true
+    __PATH_PREFIX__: true,
   },
   extends: ["eslint:recommended", "plugin:react/recommended", "airbnb"],
   plugins: ["compat", "import", "promise", "react"],
@@ -18,14 +18,14 @@ module.exports = {
   rules: {
     "arrow-body-style": "off",
     "arrow-parens": ["error", "always"],
-    "camelcase": "off",
+    camelcase: "off",
     "comma-dangle": ["error", "always-multiline"],
     "compat/compat": "off",
     "consistent-return": ["error"],
     "function-paren-newline": "off",
     "generator-star-spacing": "off",
     "implicit-arrow-linebreak": "off",
-    "import/no-extraneous-dependencies": ["error", { "packageDir": "./" }],
+    "import/no-extraneous-dependencies": ["error", { packageDir: "./" }],
     "import/no-unresolved": ["error", { ignore: ["electron"] }],
     "import/prefer-default-export": "off",
     "jsx-a11y/label-has-associated-control": "off", // Broken?
@@ -38,6 +38,7 @@ module.exports = {
     "no-underscore-dangle": "off",
     "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
     "no-use-before-define": ["warn"],
+    "object-curly-newline": "off",
     "operator-linebreak": ["error", "after"],
     "prefer-const": ["warn", { destructuring: "all" }],
     "promise/no-native": "off",
@@ -58,7 +59,7 @@ module.exports = {
     "require-jsdoc": "off",
     "valid-jsdoc": "off",
 
-    "quotes": ["error", "double"],
-    "semi": ["error"],
-  }
-}
+    quotes: ["error", "double"],
+    semi: ["error"],
+  },
+};
