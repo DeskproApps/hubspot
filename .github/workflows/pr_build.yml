@@ -1,0 +1,71 @@
+name: PR Build
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  deskpro_app_test_and_build:
+    name: Test / Build
+    timeout-minutes: 30
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --no-tags --depth=1 origin master
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Clone repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Restore Yarn cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Type check
+        run: yarn tsc --noemit
+
+      - name: Run tests
+        run: yarn test:coverage
+
+      - name: Build
+        run: yarn build
+
+      - name: Package app zip
+        working-directory: dist
+        run: |
+          zip -rq ../app.zip *
+          mv ../app.zip .
+
+      - name: Upload package
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-package
+          path: |
+            dist/app.zip
+            dist/manifest.json
+          retention-days: 1
+
+  deploy:
+    uses: DeskproApps/app-template-vite/.github/workflows/subworkflow-deploy.yml@master
+    secrets: inherit
+    needs: [deskpro_app_test_and_build]

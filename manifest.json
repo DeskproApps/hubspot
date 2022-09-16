@@ -1,0 +1,28 @@
+{
+  "name": "@deskpro-apps/my_app",
+  "title": "My App",
+  "description": "My Deskpro app",
+  "version": "1.0.0",
+  "scope": "agent",
+  "isSingleInstall": false,
+  "targets": [{
+    "target": "ticket_sidebar",
+    "entrypoint": "index.html"
+  }],
+  "settings": {
+    "example": {
+      "title": "Example Setting",
+      "description": "Example backend only setting",
+      "type": "string",
+      "isRequired": false,
+      "isBackendOnly": true
+    }
+  },
+  "proxy": {
+    "whitelist": [{
+      "url": "https://example.com/.*",
+      "methods": ["GET", "POST", "PUT"],
+      "timeout": 10
+    }]
+  }
+}
