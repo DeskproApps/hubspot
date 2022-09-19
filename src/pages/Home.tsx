@@ -1,7 +1,9 @@
 import { Button } from "@deskpro/app-sdk";
 
-export const Main = () => {
+const Home = () => {
     return (
         <Button text="Greet" onClick={() => alert("Hello")} />
     );
 };
+
+export { Home };

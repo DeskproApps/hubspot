@@ -1,21 +1,29 @@
 {
-  "name": "@deskpro-apps/my_app",
-  "title": "My App",
-  "description": "My Deskpro app",
+  "name": "@deskpro-apps/hubspot",
+  "title": "HubSpot",
+  "description": "Synchronize your support and sales teams for better and faster results.",
   "version": "1.0.0",
   "scope": "agent",
   "isSingleInstall": false,
+  "hasDevMode": true,
   "targets": [{
     "target": "ticket_sidebar",
     "entrypoint": "index.html"
   }],
   "settings": {
-    "example": {
-      "title": "Example Setting",
-      "description": "Example backend only setting",
+    "client_id": {
+      "title": "Client Id",
       "type": "string",
-      "isRequired": false,
-      "isBackendOnly": true
+      "isRequired": true,
+      "isBackendOnly": false,
+      "order": 10
+    },
+    "client_secret": {
+      "title": "Client Secret",
+      "type": "string",
+      "isRequired": true,
+      "isBackendOnly": true,
+      "order": 20
     }
   },
   "proxy": {

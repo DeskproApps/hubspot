@@ -1,20 +1,25 @@
-import { DeskproAppProvider } from "@deskpro/app-sdk";
-import { Main } from "./pages/Main";
-import "./App.css";
-
-import "flatpickr/dist/themes/light.css";
-import "tippy.js/dist/tippy.css";
-import "simplebar/dist/simplebar.min.css";
-
-import "@deskpro/deskpro-ui/dist/deskpro-ui.css";
-import "@deskpro/deskpro-ui/dist/deskpro-custom-icons.css";
+import { Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
+import {
+    LoadingSpinner,
+    useInitialisedDeskproAppClient,
+} from "@deskpro/app-sdk";
+import { Home } from "./pages/Home";
 
 function App() {
-  return (
-      <DeskproAppProvider>
-        <Main />
-      </DeskproAppProvider>
-  );
+    useInitialisedDeskproAppClient((client) => {
+        client?.registerElement("refreshButton", {
+            type: "refresh_button"
+        });
+    });
+
+    return (
+        <Suspense fallback={<LoadingSpinner/>}>
+            <Routes>
+                <Route path="/" element={<Home/>} />
+            </Routes>
+        </Suspense>
+    );
 }
 
 export default App;
