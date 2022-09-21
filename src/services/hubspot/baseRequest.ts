@@ -6,7 +6,6 @@ import { getQueryParams } from "../../utils";
 
 const baseRequest: Request = async (client, {
     url,
-    rawUrl,
     data = {},
     method = "GET",
     queryParams = {},
@@ -17,7 +16,7 @@ const baseRequest: Request = async (client, {
     let body = undefined;
     const headers: Record<string, string> = {};
 
-    const baseUrl = `${rawUrl ? rawUrl : `${BASE_URL}${url}`}`;
+    const baseUrl = `${BASE_URL}${url}`;
     const params = `${isEmpty(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
     const requestUrl = `${baseUrl}${params}`;
 
@@ -43,8 +42,8 @@ const baseRequest: Request = async (client, {
         },
     });
 
-    if ([400, 401].includes(res.status)) {
-        return await res.json();
+    if (res.status >= 400 && res.status <= 499) {
+        return Promise.reject(await res.json());
     }
 
     if (res.status < 200 || res.status >= 400) {

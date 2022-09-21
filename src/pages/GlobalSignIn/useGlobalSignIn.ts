@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import every from "lodash/every";
-import isEmpty from "lodash/isEmpty";
 import {
     adminGenericProxyFetch,
     useDeskproAppClient,
     useDeskproAppEvents,
     useInitialisedDeskproAppClient
 } from "@deskpro/app-sdk";
-import { getCurrentUserInfoService } from "../../services/hubspot";
-import { Settings } from "../../services/hubspot/types";
+import { getAccessTokenInfoService } from "../../services/hubspot";
+import { Settings, AuthTokens, AccessTokenInfo } from "../../services/hubspot/types";
 
 export const useGlobalSignIn = () => {
     const { client } = useDeskproAppClient();
@@ -19,7 +18,7 @@ export const useGlobalSignIn = () => {
     const [ isLoading, setIsLoading ] = useState<boolean>(false);
     const [ isBlocking, setIsBlocking ] = useState<boolean>(true);
     const [ accessCode, setAccessCode ] = useState<string|null>(null);
-    const [ user, setUser ] = useState<any>(null);
+    const [ user, setUser ] = useState<AccessTokenInfo|null>(null);
 
     const key = useMemo(() => uuidv4(), []);
 
@@ -58,6 +57,7 @@ export const useGlobalSignIn = () => {
     useInitialisedDeskproAppClient((client) => {
         const canRequestAccessToken = every([
             accessCode,
+            callbackUrl,
             settings?.client_id,
             settings?.client_secret,
             settings?.redirect_uri,
@@ -93,7 +93,7 @@ export const useGlobalSignIn = () => {
                 expires_in: number,
             } = await response.json();
 
-            const tokens = {
+            const tokens: AuthTokens = {
                 accessToken: data.access_token,
                 refreshToken: data.refresh_token,
             };
@@ -104,15 +104,16 @@ export const useGlobalSignIn = () => {
         })();
     }, [
         accessCode,
+        callbackUrl,
         settings?.client_id,
         settings?.client_secret,
         settings?.redirect_uri,
     ]);
 
-    // Get current TeamViewer user
+    // Get current user
     useInitialisedDeskproAppClient((client) => {
-        if (!isEmpty(settings)) {
-            getCurrentUserInfoService(client)
+        if (settings?.global_access_token) {
+            getAccessTokenInfoService(client, { settings }, true)
                 .then(setUser)
                 .catch(signOut)
         }
@@ -124,8 +125,8 @@ export const useGlobalSignIn = () => {
             return null;
         }
 
-        return settings.redirect_uri;
-    }, [settings?.redirect_uri]);
+        return `${settings.redirect_uri}&state=${key}`;
+    }, [settings?.redirect_uri, key]);
 
     // Set blocking flag
     useEffect(() => {

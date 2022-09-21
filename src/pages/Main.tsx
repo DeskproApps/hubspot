@@ -1,44 +1,34 @@
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     LoadingSpinner,
-    useDeskproAppClient,
+    useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
-import { QueryKey } from "../query";
-import { useQueryWithClient } from "../hooks";
-import { getCurrentUserInfoService } from "../services/hubspot";
+import { checkAuthService } from "../services/hubspot";
+import { ErrorBlock } from "../components/common";
 
 const Main = () => {
-    const location = useLocation();
     const navigate = useNavigate();
-    const { client } = useDeskproAppClient();
+    const [isAuth, setIsAuth] = useState<boolean|null>(null);
 
-    /*const currentUser = useQueryWithClient(
-        [QueryKey.CURRENT_ACCOUNT],
-        (client) => getCurrentUserInfoService(client),
-        {
-            retry: 0,
-            onError: (err) => {
-                console.log(">>> onError:", err);
-            },
-            onSuccess: (res) => {
-                console.log(">>> onSuccess:", res);
-                if (res?.status === "error" && res?.category === "INVALID_AUTHENTICATION") {
-                    navigate("/log-in");
+    useInitialisedDeskproAppClient((client) => {
+        checkAuthService(client)
+            .then((isAuth) => {
+                if (isAuth) {
+                    navigate("/home");
+                } else {
+                    setIsAuth(false);
                 }
-            }
-        }
-    );*/
+            })
+    });
 
-    useEffect(() => {
-        if (!client) {
-            return;
-        }
-
-        getCurrentUserInfoService(client)
-            .then((res) => console.log(">>> current:then:", res))
-            .catch((err) => console.log(">>> current:catch:", err))
-    }, [client]);
+    if (isAuth === false) {
+        return (
+            <ErrorBlock
+                text="Go back to the admin settings form for the app and re-auth from there"
+            />
+        );
+    }
 
     return (<LoadingSpinner/>);
 };

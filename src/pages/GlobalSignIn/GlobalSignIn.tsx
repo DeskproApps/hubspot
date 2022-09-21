@@ -14,6 +14,7 @@ import {
 } from "@deskpro/app-sdk";
 import { useGlobalSignIn } from "./useGlobalSignIn";
 import { Loading, OverflowText } from "../../components/common";
+import { AccessTokenInfo } from "../../services/hubspot/types";
 
 const GlobalSignInContainerCallback = styled(Stack)`
     margin: 3px 0 0 0;
@@ -80,12 +81,12 @@ const Login = ({ url, isLoading, signIn, cancel }: { url: string, isLoading: boo
     );
 };
 
-const Logout = ({ signOut, user }: { user: any, signOut: () => void }) => {
+const Logout = ({ signOut, user }: { user: AccessTokenInfo, signOut: () => void }) => {
     const { theme } = useDeskproAppTheme();
     return (
         <>
             <P1 style={{ marginBottom: "6px" }}>
-                Signed-in as <span style={{ color: theme.colors.grey100 }}>{user.name} {user.email ? `<${user.email}>` : ""}</span>
+                Signed-in as <span style={{ color: theme.colors.grey100 }}>&lt;{user.user}&gt;</span>
             </P1>
             <Button text="Sign-out" intent="secondary" icon={faSignOut} onClick={signOut} />
         </>

@@ -11,7 +11,7 @@ import {
 } from "@deskpro/app-sdk";
 import { Main } from "./pages/Main";
 import { Home } from "./pages/Home";
-import { GlobalSignIn } from "./pages/GlobalSignIn/GlobalSignIn";
+import { GlobalSignIn } from "./pages/GlobalSignIn";
 
 function App() {
     useInitialisedDeskproAppClient((client) => {
@@ -29,7 +29,12 @@ function App() {
                         fallbackRender={({ resetErrorBoundary }) => (
                             <Stack gap={6} vertical style={{ padding: "8px" }}>
                                 There was an error!
-                                <Button text="Reload" onClick={() => resetErrorBoundary()} icon={faRefresh} intent="secondary" />
+                                <Button
+                                    text="Reload"
+                                    icon={faRefresh}
+                                    intent="secondary"
+                                    onClick={() => resetErrorBoundary()}
+                                />
                             </Stack>
                         )}
                     >
