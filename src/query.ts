@@ -10,5 +10,5 @@ export const query = new QueryClient({
 });
 
 export enum QueryKey {
-    //...
+    CURRENT_ACCOUNT = "currentUserAccount",
 }

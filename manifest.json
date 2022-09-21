@@ -24,12 +24,29 @@
       "isRequired": true,
       "isBackendOnly": true,
       "order": 20
+    },
+    "redirect_uri": {
+      "title": "Install URL (OAuth)",
+      "type": "string",
+      "isRequired": true,
+      "isBackendOnly": true,
+      "order": 30
+    },
+    "global_access_token": {
+      "title": "",
+      "type": "app_embedded",
+      "options": {
+        "entrypoint": "http://localhost:3001/#/admin/global-sign-in"
+      },
+      "isRequired": true,
+      "isBackendOnly": true,
+      "order": 40
     }
   },
   "proxy": {
     "whitelist": [{
-      "url": "https://example.com/.*",
-      "methods": ["GET", "POST", "PUT"],
+      "url": "https://api.hubapi.com/.*",
+      "methods": ["GET", "POST"],
       "timeout": 10
     }]
   }

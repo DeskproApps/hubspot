@@ -15,5 +15,6 @@ module.exports = {
       "warn",
       { ignoreRestSiblings: true, argsIgnorePattern: "^_" },
     ],
+    "no-console": "error",
   },
 };
