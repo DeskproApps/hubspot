@@ -8,7 +8,12 @@ import {
     useInitialisedDeskproAppClient
 } from "@deskpro/app-sdk";
 import { getAccessTokenInfoService } from "../../services/hubspot";
-import { Settings, AuthTokens, AccessTokenInfo } from "../../services/hubspot/types";
+import {
+    Settings,
+    AuthTokens,
+    AccessTokenInfo,
+    AccessTokenResponse,
+} from "../../services/hubspot/types";
 
 export const useGlobalSignIn = () => {
     const { client } = useDeskproAppClient();
@@ -86,13 +91,7 @@ export const useGlobalSignIn = () => {
         (async () => {
             const fetch = await adminGenericProxyFetch(client);
             const response = await fetch(url.toString(), requestOptions);
-            const data: {
-                token_type: "bearer",
-                refresh_token: string,
-                access_token: string,
-                expires_in: number,
-            } = await response.json();
-
+            const data: AccessTokenResponse = await response.json();
             const tokens: AuthTokens = {
                 accessToken: data.access_token,
                 refreshToken: data.refresh_token,

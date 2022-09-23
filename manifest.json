@@ -7,7 +7,7 @@
   "isSingleInstall": false,
   "hasDevMode": true,
   "targets": [{
-    "target": "ticket_sidebar",
+    "target": "user_sidebar",
     "entrypoint": "index.html"
   }],
   "settings": {
@@ -36,7 +36,7 @@
       "title": "",
       "type": "app_embedded",
       "options": {
-        "entrypoint": "http://localhost:3001/#/admin/global-sign-in"
+        "entrypoint": "#/admin/global-sign-in"
       },
       "isRequired": true,
       "isBackendOnly": true,

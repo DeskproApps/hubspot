@@ -46,8 +46,15 @@ export type PreInstalledRequest = <T>(
  */
 export type DateTime = string;
 
+export type AccessTokenResponse = {
+    token_type: "bearer",
+    refresh_token: string,
+    access_token: string,
+    expires_in: number,
+};
+
 export type AccessTokenInfo = {
-    user: string, // "ilia.makarov@me.com"
+    user: string,
     user_id: number,
     token: string,
     app_id: number,
