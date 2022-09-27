@@ -27,6 +27,7 @@
     "react-router-dom": "^6.4.0",
     "styled-components": "^5.3.3",
     "ts-pattern": "^4.0.5",
+    "use-debounce": "^8.0.4",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

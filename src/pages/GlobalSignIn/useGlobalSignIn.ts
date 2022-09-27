@@ -7,10 +7,9 @@ import {
     useDeskproAppEvents,
     useInitialisedDeskproAppClient
 } from "@deskpro/app-sdk";
+import { Settings, AuthTokens } from "../../types";
 import { getAccessTokenInfoService } from "../../services/hubspot";
 import {
-    Settings,
-    AuthTokens,
     AccessTokenInfo,
     AccessTokenResponse,
 } from "../../services/hubspot/types";

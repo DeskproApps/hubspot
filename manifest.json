@@ -2,7 +2,7 @@
   "name": "@deskpro-apps/hubspot",
   "title": "HubSpot",
   "description": "Synchronize your support and sales teams for better and faster results.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,
@@ -10,6 +10,13 @@
     "target": "user_sidebar",
     "entrypoint": "index.html"
   }],
+  "entityAssociations": {
+    "linkedHubspotContacts": {
+      "title": "Linked HubSpot Contact",
+      "entity": "person",
+      "type": "external_id"
+    }
+  },
   "settings": {
     "client_id": {
       "title": "Client Id",
@@ -36,7 +43,7 @@
       "title": "",
       "type": "app_embedded",
       "options": {
-        "entrypoint": "#/admin/global-sign-in"
+        "entrypoint": "http://localhost:3001/#/admin/global-sign-in"
       },
       "isRequired": true,
       "isBackendOnly": true,

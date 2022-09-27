@@ -5,7 +5,7 @@ import {
     useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
 import { checkAuthService } from "../services/hubspot";
-import { ErrorBlock } from "../components/common";
+import { ErrorBlock, BaseContainer } from "../components/common";
 
 const Main = () => {
     const navigate = useNavigate();
@@ -24,9 +24,11 @@ const Main = () => {
 
     if (isAuth === false) {
         return (
-            <ErrorBlock
-                text="Go back to the admin settings form for the app and re-auth from there"
-            />
+            <BaseContainer>
+                <ErrorBlock
+                    text="Go back to the admin settings form for the app and re-auth from there"
+                />
+            </BaseContainer>
         );
     }
 

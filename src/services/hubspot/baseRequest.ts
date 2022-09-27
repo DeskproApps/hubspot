@@ -1,6 +1,6 @@
 import isEmpty from "lodash/isEmpty";
 import { proxyFetch } from "@deskpro/app-sdk";
-import { Request } from "./types";
+import { Request } from "../../types";
 import { BASE_URL, placeholders } from "./constants";
 import { getQueryParams } from "../../utils";
 

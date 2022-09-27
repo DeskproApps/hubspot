@@ -4,7 +4,7 @@ import {
     IDeskproClient,
     adminGenericProxyFetch,
 } from "@deskpro/app-sdk";
-import { AuthTokens, PreInstalledRequest } from "./types";
+import { AuthTokens, PreInstalledRequest } from "../../types";
 import { BASE_URL } from "./constants";
 import { isResponseError } from "./utils";
 
