@@ -14,25 +14,6 @@ const searchContactsService = (
     });
 };
 
-const searchContactsByEmailService = (
-    client: IDeskproClient,
-    q: string,
-) => {
-    return searchContactsService(client, {
-        filterGroups: [
-            {
-                filters: [
-                    {
-                        propertyName: "email",
-                        operator: "CONTAINS_TOKEN",
-                        value: q,
-                    }
-                ]
-            }
-        ]
-    })
-}
-
 const getContactsByEmailService = (
     client: IDeskproClient,
     email: string,
@@ -50,10 +31,37 @@ const getContactsByEmailService = (
             }
         ]
     })
+};
+
+const searchContactsByService = (
+    client: IDeskproClient,
+    q: string,
+) => {
+    return searchContactsService(client, {
+        filterGroups: [{
+            filters: [{
+                propertyName: "email",
+                operator: "CONTAINS_TOKEN",
+                value: `*${q}*`,
+            }],
+        }, {
+            filters: [{
+                propertyName: "firstname",
+                operator: "CONTAINS_TOKEN",
+                value: `*${q}*`,
+            }],
+        }, {
+            filters: [{
+                propertyName: "lastname",
+                operator: "CONTAINS_TOKEN",
+                value: `*${q}*`,
+            }],
+        }],
+    })
 }
 
 export {
     searchContactsService,
+    searchContactsByService,
     getContactsByEmailService,
-    searchContactsByEmailService,
 };

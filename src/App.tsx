@@ -1,4 +1,4 @@
-import { Suspense, useCallback } from "react";
+import { Suspense } from "react";
 import { match } from "ts-pattern";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { QueryErrorResetBoundary } from "react-query";

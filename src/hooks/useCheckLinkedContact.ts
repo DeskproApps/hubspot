@@ -1,12 +1,10 @@
-import { useState } from "react";
 import {
     useDeskproLatestAppContext,
     useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
-import { UserContext } from "../types";
 import { getEntityContactList, setEntityContact } from "../services/entityAssociation";
-import { getContactsByEmailService, getContactService } from "../services/hubspot";
-import type { Contact } from "../services/hubspot/types";
+import { getContactsByEmailService } from "../services/hubspot";
+import type { UserContext } from "../types";
 
 type UseCheckLinkedContact = (
     isAuth: boolean|null,

@@ -12,7 +12,7 @@ import {
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
 import { setEntityContact } from "../services/entityAssociation";
-import { searchContactsByEmailService } from "../services/hubspot";
+import { searchContactsByService } from "../services/hubspot";
 import { useSetAppTitle } from "../hooks";
 import {
     NoFound,
@@ -54,7 +54,7 @@ const Link: FC = () => {
 
         setLoading(true);
 
-        searchContactsByEmailService(client, q)
+        searchContactsByService(client, q)
             .then(({ results }) => setContacts(results))
             .catch((err) => {
                 console.log(">>> search:catch:", err);
