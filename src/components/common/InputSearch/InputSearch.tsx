@@ -8,7 +8,7 @@ import {
 import { Props } from "./types";
 
 const InputSearch: FC<Props> = ({ value, onChange, onClear }) => (
-    <Label label="Name or email address" required style={{ marginBottom: 11 }}>
+    <Label style={{ margin: "14px 0 11px" }}>
         <Input
             value={value}
             onChange={onChange}

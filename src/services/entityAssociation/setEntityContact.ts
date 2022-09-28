@@ -3,7 +3,7 @@ import { HUBSPOT_ENTITY } from "./constants";
 import type { DeskproUser } from "../../types";
 import type { Contact } from "../hubspot/types";
 
-const setEntityContactService = (
+const setEntityContact = (
     client: IDeskproClient,
     deskproUserId: DeskproUser["id"],
     contactId: Contact["id"],
@@ -14,4 +14,4 @@ const setEntityContactService = (
         .set(contactId, metaData);
 };
 
-export { setEntityContactService };
+export { setEntityContact };

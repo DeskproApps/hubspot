@@ -1,23 +1,24 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
+    Context,
     useDeskproElements,
     useDeskproLatestAppContext,
     useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
 import { BaseContainer } from "../components/common";
-import { getEntityContactList } from "../services/entityAssociation";
+import {
+    getEntityContactList,
+} from "../services/entityAssociation";
 import { useSetAppTitle } from "../hooks";
-import type { UserContext } from "../types";
+import type { UserContext, ContextData } from "../types";
 import type { Contact } from "../services/hubspot/types";
 
 const Home = () => {
-    const navigate = useNavigate();
     const { context } = useDeskproLatestAppContext() as { context: UserContext };
 
-    const [contactId, setContactId] = useState<Contact["id"]>();
+    const [contactId, setContactId] = useState<Contact["id"]|null>(null);
 
-    const userId = context.data?.user.id;
+    const userId = (context as Context<ContextData>).data?.user.id;
 
     useSetAppTitle("Contact");
 
@@ -42,20 +43,18 @@ const Home = () => {
 
         getEntityContactList(client, userId)
             .then((contactIds) => {
-                if (contactIds.length > 0) {
+                if (contactIds.length !== 0) {
                     setContactId(contactIds[0]);
-                } else {
-                    navigate("/link");
                 }
             })
-            .catch((err) => {
-                console.log(">>> home:entity:catch:", err);
-            });
     }, [userId]);
 
     return (
         <BaseContainer>
-            Home Page
+            {!contactId
+                ? <></>
+                : <>HomePage: {contactId}</>
+            }
         </BaseContainer>
     );
 };

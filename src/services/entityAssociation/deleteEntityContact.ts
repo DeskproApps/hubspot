@@ -3,7 +3,7 @@ import { HUBSPOT_ENTITY } from "./constants";
 import { DeskproUser } from "../../types";
 import { Contact } from "../hubspot/types";
 
-const deleteEntityContactService = (
+const deleteEntityContact = (
     client: IDeskproClient,
     deskproUserId: DeskproUser["id"],
     contactId: Contact["id"],
@@ -13,4 +13,4 @@ const deleteEntityContactService = (
         .delete(contactId);
 };
 
-export { deleteEntityContactService };
+export { deleteEntityContact };

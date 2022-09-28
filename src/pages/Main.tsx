@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useCallback, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {
     LoadingSpinner,
@@ -6,20 +6,20 @@ import {
 } from "@deskpro/app-sdk";
 import { checkAuthService } from "../services/hubspot";
 import { ErrorBlock, BaseContainer } from "../components/common";
+import { useCheckLinkedContact } from "../hooks";
 
 const Main = () => {
     const navigate = useNavigate();
     const [isAuth, setIsAuth] = useState<boolean|null>(null);
 
+    useCheckLinkedContact(
+        isAuth,
+        useCallback(() => navigate("/home"), [navigate]),
+        useCallback(() => navigate("/link"), [navigate]),
+    );
+
     useInitialisedDeskproAppClient((client) => {
-        checkAuthService(client)
-            .then((isAuth) => {
-                if (isAuth) {
-                    navigate("/home");
-                } else {
-                    setIsAuth(false);
-                }
-            })
+        checkAuthService(client).then(setIsAuth)
     });
 
     if (isAuth === false) {

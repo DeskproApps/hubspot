@@ -5,3 +5,4 @@ export {
     getContactsByEmailService,
     searchContactsByEmailService,
 } from "./searchContactsService";
+export { getContactService } from "./getContactService";

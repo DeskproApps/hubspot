@@ -1,3 +1,3 @@
 export { getEntityContactList } from "./getEntityContactList";
-export { setEntityContactService } from "./setEntityContactService";
-export { deleteEntityContactService } from "./deleteEntityContactService";
+export { setEntityContact } from "./setEntityContact";
+export { deleteEntityContact } from "./deleteEntityContact";

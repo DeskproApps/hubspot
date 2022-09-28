@@ -10,33 +10,34 @@ import {
     LoadingSpinner,
     useDeskproElements,
     useDeskproAppClient,
-    useDeskproAppEvents,
+    useDeskproAppEvents, IDeskproClient,
 } from "@deskpro/app-sdk";
-import { deleteEntityContactService } from "./services/entityAssociation";
+import { deleteEntityContact } from "./services/entityAssociation";
 import { Main } from "./pages/Main";
 import { GlobalSignIn } from "./pages/GlobalSignIn";
 import { Home } from "./pages/Home";
 import { Link } from "./pages/Link";
-import type { EventsPayload } from "./types";
+import type { EventsPayload, DeskproUser } from "./types";
+import type { Contact } from "./services/hubspot/types";
+
+const unlink = (client: IDeskproClient|null, successFn: () => void) => (userId: DeskproUser["id"], contactId: Contact["id"]) => {
+    if (client && userId && contactId) {
+        deleteEntityContact(client, userId, contactId)
+            .then((isSuccess) => {
+                if (isSuccess) {
+                    successFn();
+                }
+            })
+            .catch((err) => {
+                console.log(">>> delete:catch:", err);
+            });
+    }
+};
 
 function App() {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
-
-    const unlink = useCallback((userId, contactId) => {
-        if (client && userId && contactId) {
-            deleteEntityContactService(client, userId, contactId)
-                .then((isSuccess) => {
-                    if (isSuccess) {
-                        navigate("/link");
-                    }
-                })
-                .catch((err) => {
-                    console.log(">>> delete:catch:", err);
-                });
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [client]);
+    const unlinkContact = unlink(client, () => navigate("/link"));
 
     useDeskproElements(({ registerElement }) => {
         registerElement("refreshButton", { type: "refresh_button" });
@@ -46,7 +47,7 @@ function App() {
         onElementEvent: (id, type, payload: EventsPayload) => {
             match(payload)
                 .with({ type: "unlink" }, () => {
-                    unlink(payload?.userId, payload?.contactId)
+                    unlinkContact(payload?.userId, payload?.contactId);
                 })
                 .run();
         },

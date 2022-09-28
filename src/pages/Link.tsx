@@ -11,7 +11,7 @@ import {
     useDeskproAppClient,
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
-import { setEntityContactService } from "../services/entityAssociation";
+import { setEntityContact } from "../services/entityAssociation";
 import { searchContactsByEmailService } from "../services/hubspot";
 import { useSetAppTitle } from "../hooks";
 import {
@@ -34,7 +34,7 @@ const Link: FC = () => {
     const [selectedContactId, setSelectedContactId] = useState<Contact['id']>('');
     const [loading, setLoading] = useState<boolean>(false);
 
-    const deskproUserId = (context as Context<ContextData>).data?.user.id;
+    const deskproUserId = (context as Context<ContextData>)?.data?.user.id;
 
     useSetAppTitle("Add contact");
 
@@ -85,7 +85,7 @@ const Link: FC = () => {
             return;
         }
 
-        setEntityContactService(client, deskproUserId, selectedContactId)
+        setEntityContact(client, deskproUserId, selectedContactId)
             .then((isSuccess) => {
                 if (isSuccess) {
                     navigate("/home");
