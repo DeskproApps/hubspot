@@ -1,5 +1,9 @@
 import { IDeskproClient, proxyFetch } from "@deskpro/app-sdk";
-import { placeholders } from "./constants";
+import {
+    placeholders,
+    ACCESS_TOKEN_PATH,
+    REFRESH_TOKEN_PATH,
+} from "./constants";
 
 const refreshTokenService = async (client: IDeskproClient) => {
     const fetch = await proxyFetch(client);
@@ -15,11 +19,12 @@ const refreshTokenService = async (client: IDeskproClient) => {
     const refreshRes = await fetch("https://api.hubapi.com/oauth/v1/token", refreshRequestOptions);
     const refreshData = await refreshRes.json();
 
-    await client.setState<string>("oauth/global/accesstoken", refreshData.access_token, {
-        backend: true,
-    });
-
-    return Promise.resolve(true);
+    return Promise.all([
+        client.setState<string>(ACCESS_TOKEN_PATH, refreshData.access_token, { backend: true }),
+        client.setState<string>(REFRESH_TOKEN_PATH, refreshData.refresh_token, { backend: true }),
+    ])
+        .then(() => true)
+        .catch(() => false);
 };
 
 export { refreshTokenService };
