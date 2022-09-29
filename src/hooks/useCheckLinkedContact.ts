@@ -45,7 +45,10 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
                 return;
             }
 
-            const isSuccess = await setEntityContact(client, userId, results[0].id);
+
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const isSuccess: boolean = await setEntityContact(client, userId, results[0].id);
 
             if (isSuccess) {
                 onExistLinkedItemsFn();

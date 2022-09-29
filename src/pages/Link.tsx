@@ -56,9 +56,7 @@ const Link: FC = () => {
 
         searchContactsByService(client, q)
             .then(({ results }) => setContacts(results))
-            .catch((err) => {
-                console.log(">>> search:catch:", err);
-            })
+            .catch(() => {})
             .finally(() => setLoading(false));
     }, 500);
 
@@ -86,7 +84,9 @@ const Link: FC = () => {
         }
 
         setEntityContact(client, deskproUserId, selectedContactId)
-            .then((isSuccess) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            .then((isSuccess: boolean) => {
                 if (isSuccess) {
                     navigate("/home");
                 }

@@ -23,14 +23,14 @@ import type { Contact } from "./services/hubspot/types";
 const unlink = (client: IDeskproClient|null, successFn: () => void) => (userId: DeskproUser["id"], contactId: Contact["id"]) => {
     if (client && userId && contactId) {
         deleteEntityContact(client, userId, contactId)
-            .then((isSuccess) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            .then((isSuccess: boolean) => {
                 if (isSuccess) {
                     successFn();
                 }
             })
-            .catch((err) => {
-                console.log(">>> delete:catch:", err);
-            });
+            .catch(() => {});
     }
 };
 
@@ -44,6 +44,8 @@ function App() {
     });
 
     useDeskproAppEvents({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         onElementEvent: (id, type, payload: EventsPayload) => {
             match(payload)
                 .with({ type: "unlink" }, () => {
