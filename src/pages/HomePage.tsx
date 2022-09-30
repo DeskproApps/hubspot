@@ -5,20 +5,20 @@ import {
     useDeskproLatestAppContext,
     useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
-import { BaseContainer } from "../components/common";
 import {
     getEntityContactList,
 } from "../services/entityAssociation";
 import { useSetAppTitle } from "../hooks";
+import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
 import type { Contact } from "../services/hubspot/types";
 
-const Home = () => {
+const HomePage = () => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext };
 
     const [contactId, setContactId] = useState<Contact["id"]|null>(null);
 
-    const userId = (context as Context<ContextData>).data?.user.id;
+    const userId = (context as Context<ContextData>)?.data?.user.id;
 
     useSetAppTitle("Contact");
 
@@ -50,13 +50,8 @@ const Home = () => {
     }, [userId]);
 
     return (
-        <BaseContainer>
-            {!contactId
-                ? <></>
-                : <>HomePage: {contactId}</>
-            }
-        </BaseContainer>
+        <Home />
     );
 };
 
-export { Home };
+export { HomePage };

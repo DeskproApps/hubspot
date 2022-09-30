@@ -24,7 +24,7 @@ import { ContactItem } from "../components/Link";
 import type { Contact } from "../services/hubspot/types";
 import type { ContextData } from "../types";
 
-const Link: FC = () => {
+const LinkPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
@@ -130,4 +130,4 @@ const Link: FC = () => {
     );
 };
 
-export { Link };
+export { LinkPage };

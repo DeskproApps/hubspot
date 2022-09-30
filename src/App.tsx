@@ -15,8 +15,8 @@ import {
 import { deleteEntityContact } from "./services/entityAssociation";
 import { Main } from "./pages/Main";
 import { GlobalSignIn } from "./pages/GlobalSignIn";
-import { Home } from "./pages/Home";
-import { Link } from "./pages/Link";
+import { HomePage } from "./pages/HomePage";
+import { LinkPage } from "./pages/LinkPage";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 
@@ -44,6 +44,9 @@ function App() {
     });
 
     useDeskproAppEvents({
+        onShow: () => {
+            client && setTimeout(() => client.resize(), 200);
+        },
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         onElementEvent: (id, type, payload: EventsPayload) => {
@@ -79,8 +82,8 @@ function App() {
                                     <Route path="global-sign-in" element={<GlobalSignIn/>} />
                                 </Route>
                             </Route>
-                            <Route path="home" element={<Home/>} />
-                            <Route path="link" element={<Link/>} />
+                            <Route path="home" element={<HomePage/>} />
+                            <Route path="link" element={<LinkPage/>} />
                             <Route index element={<Main/>} />
                         </Routes>
                     </ErrorBoundary>
