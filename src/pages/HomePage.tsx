@@ -8,7 +8,12 @@ import {
 import {
     getEntityContactList,
 } from "../services/entityAssociation";
-import { useSetAppTitle } from "../hooks";
+import {
+    checkAuthService,
+    getContactService,
+} from "../services/hubspot";
+import { useSetAppTitle, useQueryWithClient } from "../hooks";
+import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
 import type { Contact } from "../services/hubspot/types";
@@ -19,6 +24,19 @@ const HomePage = () => {
     const [contactId, setContactId] = useState<Contact["id"]|null>(null);
 
     const userId = (context as Context<ContextData>)?.data?.user.id;
+
+    const contact = useQueryWithClient(
+        [QueryKey.CONTACT, contactId],
+        (client) => getContactService(client, contactId as string),
+        { enabled: !!contactId }
+    );
+
+    const check = useQueryWithClient(
+        [QueryKey.CHECK_AUTH],
+        checkAuthService
+    )
+
+    console.log(">>> home:", check.data);
 
     useSetAppTitle("Contact");
 

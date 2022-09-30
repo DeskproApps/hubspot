@@ -6,11 +6,19 @@ import {
 } from "@deskpro/app-sdk";
 import { checkAuthService } from "../services/hubspot";
 import { ErrorBlock, BaseContainer } from "../components/common";
-import { useCheckLinkedContact } from "../hooks";
+import {useCheckLinkedContact, useQueryWithClient} from "../hooks";
+import {QueryKey} from "../query";
 
 const Main = () => {
     const navigate = useNavigate();
     const [isAuth, setIsAuth] = useState<boolean|null>(null);
+
+    const check = useQueryWithClient(
+        [QueryKey.CHECK_AUTH],
+        checkAuthService
+    );
+
+    console.log(">>> home:", check.data);
 
     useCheckLinkedContact(
         isAuth,

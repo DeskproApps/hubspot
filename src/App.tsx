@@ -7,10 +7,11 @@ import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import {
     Stack,
     Button,
+    IDeskproClient,
     LoadingSpinner,
     useDeskproElements,
     useDeskproAppClient,
-    useDeskproAppEvents, IDeskproClient,
+    useDeskproAppEvents,
 } from "@deskpro/app-sdk";
 import { deleteEntityContact } from "./services/entityAssociation";
 import { Main } from "./pages/Main";
