@@ -3,14 +3,21 @@ import { ContactInfo } from "./ContactInfo";
 import { Deals } from "./Deals";
 import { Notes } from "./Notes";
 import { Activities } from "./Activities";
+import type { Contact, Company, Owner } from "../../services/hubspot/types";
 
-const Home: FC = () => {
+type Props = {
+    contact: Contact,
+    companies: Array<Company["properties"]>,
+    owner: Owner,
+}
+
+const Home: FC<Props> = ({ contact, companies, owner }) => {
     return (
         <>
-            <ContactInfo/>
-            <Deals/>
-            <Notes/>
-            <Activities/>
+            <ContactInfo contact={contact.properties} companies={companies} owner={owner} />
+            <Deals {...contact.properties} />
+            <Notes {...contact.properties} />
+            <Activities {...contact.properties} />
         </>
     );
 };

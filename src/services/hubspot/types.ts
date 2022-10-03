@@ -25,6 +25,8 @@ export type AccessTokenInfo = {
     token_type: string,
 }
 
+export type EntityType = "contacts" | "companies" | "deals";
+
 export type Contact = {
     id: string,
     properties: {
@@ -43,4 +45,26 @@ export type Contact = {
 export type Contacts = {
     results: Contact[],
     total: number,
+};
+
+export type Company = {
+    id: string,
+    properties: {
+        createdate: DateTime,
+        domain?: string,
+        hs_lastmodifieddate: DateTime,
+        hs_object_id: Company["id"],
+        name: string,
+    },
+};
+
+export type Owner = {
+    archived: boolean,
+    createdAt: DateTime,
+    email: string,
+    firstName: string,
+    id: string,
+    lastName: string,
+    updatedAt: DateTime,
+    userId: number,
 };

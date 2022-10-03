@@ -32,6 +32,22 @@ const baseRequest: Request = async (client, {
 
     let res = await dpFetch(requestUrl, options);
 
+    /** ToDo: handle missing scopes
+    category:"MISSING_SCOPES"
+    correlationId:"77eb4d5a-c125-4eb3-b30d-3442855d35d7"
+    errors
+        0:{
+            message: "One or more of the following scopes are required.",
+            context: {requiredScopes: ["contacts"]}
+        }
+    context
+        :{ requiredScopes: ["contacts"] }
+    message:"One or more of the following scopes are required."
+    links:{ scopes: "https://developers.hubspot.com/scopes" }
+    message:"This app hasn't been granted all required scopes to make this call. Read more about required scopes here: https://developers.hubspot.com/scopes."
+    status:"error"
+     */
+
     if ([401].includes(res.status)) {
         options.headers = {
             ...options.headers,

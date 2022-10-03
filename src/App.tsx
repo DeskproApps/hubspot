@@ -59,6 +59,10 @@ function App() {
         },
     }, [client]);
 
+    if (!client) {
+        return (<LoadingSpinner/>);
+    }
+
     return (
         <Suspense fallback={<LoadingSpinner/>}>
             <QueryErrorResetBoundary>

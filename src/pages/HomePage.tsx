@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import get from "lodash/get";
 import {
     Context,
+    LoadingSpinner,
     useDeskproElements,
     useDeskproLatestAppContext,
     useInitialisedDeskproAppClient,
@@ -9,14 +11,21 @@ import {
     getEntityContactList,
 } from "../services/entityAssociation";
 import {
-    checkAuthService,
+    getOwnersService,
     getContactService,
+    getCompanyService,
+    getEntityAssocService,
 } from "../services/hubspot";
-import { useSetAppTitle, useQueryWithClient } from "../hooks";
+import { useSetAppTitle, useQueryWithClient, useQueriesWithClient } from "../hooks";
 import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
-import type { Contact } from "../services/hubspot/types";
+import type { Contact, Company } from "../services/hubspot/types";
+
+const filterCompanies = (companies) => {
+    return companies?.filter((company) => (company.isFetched && company.isSuccess))
+        .map((company) => company.data.properties)
+};
 
 const HomePage = () => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext };
@@ -28,15 +37,28 @@ const HomePage = () => {
     const contact = useQueryWithClient(
         [QueryKey.CONTACT, contactId],
         (client) => getContactService(client, contactId as string),
-        { enabled: !!contactId }
+        { enabled: !!contactId },
     );
 
-    const check = useQueryWithClient(
-        [QueryKey.CHECK_AUTH],
-        checkAuthService
-    )
+    const companyIds = useQueryWithClient(
+        [QueryKey.ENTITY, "contacts", contactId, "companies"],
+        (client) => getEntityAssocService<Company["id"], "contact_to_company">(client, "contacts", contactId as string, "companies"),
+        { enabled: !!contactId },
+    );
 
-    console.log(">>> home:", check.data);
+    const rawCompanies = useQueriesWithClient(companyIds.data?.results?.map(({ id }) => ({
+        queryKey: [QueryKey.COMPANY, id],
+        queryFn: (client) => getCompanyService(client, id),
+        enabled: (companyIds.data?.results.length > 0),
+    })) ?? []);
+
+    const owner = useQueryWithClient(
+        [QueryKey.OWNERS, get(contact, ["data", "properties", "hubspot_owner_id"], 0)],
+        (client) => getOwnersService(client, get(contact, ["data", "properties", "hubspot_owner_id"], 0)),
+        { enabled: !!get(contact, ["data", "properties", "hubspot_owner_id"], 0) }
+    );
+
+    console.log(">>> owner:", owner);
 
     useSetAppTitle("Contact");
 
@@ -67,8 +89,16 @@ const HomePage = () => {
             })
     }, [userId]);
 
+    if (!contact.isSuccess || !owner.isSuccess) {
+        return <LoadingSpinner/>
+    }
+
     return (
-        <Home />
+        <Home
+            contact={contact.data}
+            owner={owner.data}
+            companies={filterCompanies(rawCompanies)}
+        />
     );
 };
 

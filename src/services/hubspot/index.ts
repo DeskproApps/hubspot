@@ -6,3 +6,6 @@ export {
     getContactsByEmailService,
 } from "./searchContactsService";
 export { getContactService } from "./getContactService";
+export { getEntityAssocService } from "./getEntityAssocService";
+export { getCompanyService } from "./getCompanyService";
+export { getOwnersService } from "./getOwnersService";
