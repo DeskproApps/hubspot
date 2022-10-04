@@ -1,6 +1,5 @@
 import { useState } from "react";
 import get from "lodash/get";
-import uniq from "lodash/uniq";
 import {
     Context,
     LoadingSpinner,
@@ -8,11 +7,10 @@ import {
     useDeskproLatestAppContext,
     useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
-import {
-    getEntityContactList,
-} from "../services/entityAssociation";
+import { getEntityContactList } from "../services/entityAssociation";
 import {
     getDealService,
+    getNoteService,
     getOwnersService,
     getContactService,
     getCompanyService,
@@ -22,7 +20,7 @@ import { useSetAppTitle, useQueryWithClient, useQueriesWithClient } from "../hoo
 import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
-import type { Contact, Company, Deal } from "../services/hubspot/types";
+import type { Contact, Company, Deal, Note } from "../services/hubspot/types";
 
 const filterEntities = (entities) => {
     return entities?.filter((entity) => (entity.isFetched && entity.isSuccess))
@@ -93,6 +91,24 @@ const HomePage = () => {
         enabled: (rawDeals.length > 0) && rawDeals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
     })) ?? []);
 
+    const noteIds = useQueryWithClient(
+        [QueryKey.NOTES, "contacts", contactId, "notes"],
+        (client) => getEntityAssocService<Note["id"], "contact_to_note">(client, "contacts", contactId as string, "notes"),
+        { enabled: !!contactId },
+    );
+
+    const notes = useQueriesWithClient(noteIds.data?.results?.map(({ id }) => ({
+        queryKey: [QueryKey.NOTES, id],
+        queryFn: (client) => getNoteService(client, id),
+        enabled: (noteIds.data?.results.length > 0)
+    })) ?? []);
+
+    const noteOwners = useQueriesWithClient(notes?.map((note) => ({
+        queryKey: [QueryKey, get(note, ["data", "properties", "hubspot_owner_id"], 0)],
+        queryFn: (client) => getOwnersService(client, get(note, ["data", "properties", "hubspot_owner_id"], 0)),
+        enabled: (notes.length > 0) && notes.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
+    })) ?? []);
+
     useSetAppTitle("Contact");
 
     useDeskproElements(({ registerElement }) => {
@@ -129,6 +145,8 @@ const HomePage = () => {
             companies={filterEntities(rawCompanies)}
             deals={filterEntities(rawDeals)}
             dealOwners={normalize(dealOwners)}
+            notes={filterEntities(notes)}
+            noteOwners={normalize(noteOwners)}
         />
     );
 };

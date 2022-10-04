@@ -41,7 +41,7 @@ const Deal: FC<DealProps & { owner: DealOwner }> = ({ dealname, dealstage, amoun
             leftLabel="Stage"
             leftText={capitalize(dealstage)}
             rightLabel="Amount"
-            rightText={amount}
+            rightText={amount/* ToDo: add currency symbol */}
         />
         <TwoColumn
             leftLabel="Owner"

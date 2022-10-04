@@ -22,7 +22,7 @@ export type AccessTokenInfo = {
     token_type: string,
 }
 
-export type EntityType = "contacts" | "companies" | "deals";
+export type EntityType = "contacts" | "companies" | "deals" | "notes";
 
 export type Contact = {
     id: string,
@@ -80,5 +80,18 @@ export type Deal = {
         createdate: DateTime,
         hs_lastmodifieddate: DateTime,
         pipeline: string,
+    },
+};
+
+export type Note = {
+    id: string,
+    archived: boolean,
+    createdAt: DateTime,
+    updatedAt: DateTime,
+    properties: {
+        hs_note_body: string,
+        hs_object_id: Note["id"],
+        hubspot_owner_id: Owner["id"],
+        hs_lastmodifieddate: DateTime,
     },
 };
