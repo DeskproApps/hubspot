@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import get from "lodash/get";
+import uniq from "lodash/uniq";
 import {
     Context,
     LoadingSpinner,
@@ -11,6 +12,7 @@ import {
     getEntityContactList,
 } from "../services/entityAssociation";
 import {
+    getDealService,
     getOwnersService,
     getContactService,
     getCompanyService,
@@ -20,11 +22,26 @@ import { useSetAppTitle, useQueryWithClient, useQueriesWithClient } from "../hoo
 import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
-import type { Contact, Company } from "../services/hubspot/types";
+import type { Contact, Company, Deal } from "../services/hubspot/types";
 
-const filterCompanies = (companies) => {
-    return companies?.filter((company) => (company.isFetched && company.isSuccess))
-        .map((company) => company.data.properties)
+const filterEntities = (entities) => {
+    return entities?.filter((entity) => (entity.isFetched && entity.isSuccess))
+        .map((entity) => entity.data.properties)
+};
+
+const normalize = (source: undefined|any[], fieldName = "id") => {
+    if (!Array.isArray(source)) {
+        return {};
+    }
+
+    return source.reduce((acc, { data } = {}) => {
+        if (data && data[fieldName]) {
+            const key = data[fieldName];
+            acc[key] = data;
+        }
+
+        return acc;
+    }, {});
 };
 
 const HomePage = () => {
@@ -52,13 +69,29 @@ const HomePage = () => {
         enabled: (companyIds.data?.results.length > 0),
     })) ?? []);
 
-    const owner = useQueryWithClient(
+    const contactOwner = useQueryWithClient(
         [QueryKey.OWNERS, get(contact, ["data", "properties", "hubspot_owner_id"], 0)],
         (client) => getOwnersService(client, get(contact, ["data", "properties", "hubspot_owner_id"], 0)),
         { enabled: !!get(contact, ["data", "properties", "hubspot_owner_id"], 0) }
     );
 
-    console.log(">>> owner:", owner);
+    const dealIds = useQueryWithClient(
+        [QueryKey.DEALS, "contacts", contactId, "deals"],
+        (client) => getEntityAssocService<Deal["id"], "contact_to_deal">(client, "contacts", contactId as string, "deals"),
+        { enabled: !!contactId },
+    );
+
+    const rawDeals = useQueriesWithClient(dealIds.data?.results?.map(({ id }) => ({
+        queryKey: [QueryKey.DEALS, id],
+        queryFn: (client) => getDealService(client, id),
+        enabled: (dealIds.data?.results.length > 0),
+    })) ?? []);
+
+    const dealOwners = useQueriesWithClient(rawDeals?.map((deal) => ({
+        queryKey: [QueryKey.OWNERS, get(deal, ["data", "properties", "hubspot_owner_id"], 0)],
+        queryFn: (client) => getOwnersService(client, get(deal, ["data", "properties", "hubspot_owner_id"], 0)),
+        enabled: (rawDeals.length > 0) && rawDeals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
+    })) ?? []);
 
     useSetAppTitle("Contact");
 
@@ -67,11 +100,7 @@ const HomePage = () => {
             type: "menu",
             items: [{
                 title: "Unlink contact",
-                payload: {
-                    type: "unlink",
-                    userId,
-                    contactId,
-                },
+                payload: {type: "unlink", userId, contactId },
             }],
         });
     }, [userId, contactId]);
@@ -89,15 +118,17 @@ const HomePage = () => {
             })
     }, [userId]);
 
-    if (!contact.isSuccess || !owner.isSuccess) {
+    if (!contact.isSuccess || !contactOwner.isSuccess) {
         return <LoadingSpinner/>
     }
 
     return (
         <Home
             contact={contact.data}
-            owner={owner.data}
-            companies={filterCompanies(rawCompanies)}
+            contactOwner={contactOwner.data}
+            companies={filterEntities(rawCompanies)}
+            deals={filterEntities(rawDeals)}
+            dealOwners={normalize(dealOwners)}
         />
     );
 };

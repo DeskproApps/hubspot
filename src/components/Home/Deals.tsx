@@ -1,58 +1,68 @@
 import { FC } from "react";
 import styled from "styled-components";
+import capitalize from "lodash/capitalize";
 import { H3, HorizontalDivider } from "@deskpro/app-sdk";
+import { getFullName } from "../../utils";
+import { format } from "../../utils/date";
 import {
     Title,
     TwoColumn,
     BaseContainer,
 } from "../common";
 
-const deals = [
-    { id: 0, title: "London Cleaning Contract", stage: "Negotiation", amount: "£10,000", owner: "Steve Smith", closeDate: "15 Mar, 2021" },
-    { id: 1, title: "Deal Name", stage: "Negotiation", amount: "£50,000", owner: "Steve Smith", closeDate: "15 Mar, 2021" },
-];
-
 const DealContainer = styled.div`
     margin-bottom: 14px;
 `;
 
-type DealProps = {
-    title: string,
-    stage: string,
-    amount: string,
-    owner: string,
-    closeDate: string,
+type DealOwner = {
+    id: string,
+    firstName: string,
+    lastName: string,
 };
 
-const Deal: FC<DealProps> = ({ title, stage, amount, owner, closeDate }) => (
+type DealProps = {
+    hs_object_id: string,
+    dealname: string,
+    dealstage: string,
+    amount: string,
+    closedate: string,
+    hubspot_owner_id: DealOwner["id"],
+};
+
+type Props = {
+    deals: DealProps[],
+    owners: Record<DealOwner["id"], DealOwner>,
+};
+
+const Deal: FC<DealProps & { owner: DealOwner }> = ({ dealname, dealstage, amount, closedate, owner }) => (
     <DealContainer>
-        <Title as={H3} title={title} link="https://github.com/zpawn" marginBottom={7} />
+        <Title as={H3} title={dealname} link="" marginBottom={7} />
         <TwoColumn
             leftLabel="Stage"
-            leftText={stage}
+            leftText={capitalize(dealstage)}
             rightLabel="Amount"
             rightText={amount}
         />
         <TwoColumn
             leftLabel="Owner"
-            leftText={owner}
+            leftText={getFullName(owner) || "-"}
             rightLabel="Close Date"
-            rightText={closeDate}
+            rightText={format(closedate)}
         />
     </DealContainer>
 );
 
-const Deals: FC = () => {
+const Deals: FC<Props> = ({ deals, owners }) => {
     return (
         <>
             <BaseContainer>
                 <Title
-                    link="https://github.com/zpawn"
-                    title="Deals (2)"
+                    link=""
+                    title={`Deals (${deals.length})`}
                     onClick={() => {}}
                 />
                 {deals.map((deal) => (
-                    <Deal key={deal.id} {...deal} />
+                    <Deal key={deal.hs_object_id} {...deal} owner={owners[deal?.hubspot_owner_id] || {}} />
                 ))}
             </BaseContainer>
             <HorizontalDivider/>

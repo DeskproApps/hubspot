@@ -16,6 +16,7 @@
     "@deskpro/app-sdk": "^1.1.10",
     "@deskpro/deskpro-ui": "^2.5.1",
     "@fortawesome/free-solid-svg-icons": "6.1.1",
+    "date-fns": "^2.29.3",
     "iframe-resizer": "^4.3.2",
     "javascript-time-ago": "^2.5.7",
     "lodash": "^4.17.21",

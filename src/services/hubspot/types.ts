@@ -1,7 +1,4 @@
-/**
- * An ISO-8601 encoded UTC date time string. Example value: `""2019-09-07T15:50:00Z"`.
- */
-export type DateTime = string;
+import type { DateTime } from "../../types";
 
 export type AccessTokenResponse = {
     token_type: "bearer",
@@ -67,4 +64,21 @@ export type Owner = {
     lastName: string,
     updatedAt: DateTime,
     userId: number,
+};
+
+export type Deal = {
+    id: string,
+    archived: boolean,
+    createdAt: DateTime,
+    updatedAt: DateTime,
+    properties: {
+        hs_object_id: Deal["id"],
+        dealname: string,
+        amount: string,
+        dealstage: string,
+        closedate: DateTime,
+        createdate: DateTime,
+        hs_lastmodifieddate: DateTime,
+        pipeline: string,
+    },
 };

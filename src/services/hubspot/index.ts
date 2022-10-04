@@ -9,3 +9,4 @@ export { getContactService } from "./getContactService";
 export { getEntityAssocService } from "./getEntityAssocService";
 export { getCompanyService } from "./getCompanyService";
 export { getOwnersService } from "./getOwnersService";
+export { getDealService } from "./getDealService";
