@@ -33,7 +33,7 @@ type ActivityProps = {
     type: "call" | "email";
 };
 
-const normalizeCallFn = (call) => ({
+const normalizeCallFn = (call: CallActivity): ActivityProps => ({
     id: call.hs_object_id,
     title: call.hs_call_title,
     body: call.hs_call_body,
@@ -41,7 +41,7 @@ const normalizeCallFn = (call) => ({
     type: "call",
 });
 
-const normalizeEmailFn = (email) => ({
+const normalizeEmailFn = (email: EmailActivity): ActivityProps => ({
     id: email.hs_object_id,
     title: email.hs_email_subject,
     body: email.hs_email_html,
@@ -49,7 +49,7 @@ const normalizeEmailFn = (email) => ({
     type: "email",
 });
 
-const sortDateFn = (a, b) => isAfter(new Date(a.date), new Date(b.date)) ? 1 : -1;
+const sortDateFn = (a: ActivityProps, b: ActivityProps) => isAfter(new Date(a.date), new Date(b.date)) ? 1 : -1;
 
 const Activity: FC<ActivityProps> = ({ title, body, date, type }) => (
     <>

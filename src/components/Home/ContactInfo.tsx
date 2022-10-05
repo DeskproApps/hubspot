@@ -45,12 +45,12 @@ const ContactInfo: FC<Props> = ({
                 {/* https://app.hubspot.com/contacts/{portalId}/{objectType}/{objectId} */}
                 {/* https://api.hubapi.com/integrations/v1/me?hapikey=demo */}
                 <Title
-                    title={getFullName({ firstName, lastName }) || email}
+                    title={getFullName({ firstName, lastName }) || email || ""}
                     link=""
                 />
-                <TextBlockWithLabel label="Email" text={email ?? "-"} />
-                <TextBlockWithLabel label="Phone" text={phone ?? "-"} />
-                <TextBlockWithLabel label="Job title" text={jobtitle ?? "-"} />
+                <TextBlockWithLabel label="Email" text={email || "-"} />
+                <TextBlockWithLabel label="Phone" text={phone || "-"} />
+                <TextBlockWithLabel label="Job title" text={jobtitle || "-"} />
                 <TextBlockWithLabel label="Owner" text={getFullName(owner) || "-"} />
                 <TextBlockWithLabel
                     label="Lifecycle stage"

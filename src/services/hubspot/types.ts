@@ -35,10 +35,13 @@ export type Contact = {
     properties: {
         hs_object_id: Contact["id"],
         email: string,
+        phone: string,
         firstname: string,
         lastname: string,
         createdate: DateTime,
         lastmodifieddate: DateTime,
+        jobtitle: string,
+        lifecyclestage: string,
     },
     archived: boolean,
     createdAt: DateTime,
@@ -86,6 +89,7 @@ export type Deal = {
         createdate: DateTime,
         hs_lastmodifieddate: DateTime,
         pipeline: string,
+        hubspot_owner_id: Owner["id"],
     },
 };
 

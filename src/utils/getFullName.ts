@@ -3,7 +3,7 @@ type User = {
     lastName?: string,
 };
 
-const getFullName = (user: User = {}) => {
+const getFullName = (user: User = {}): string => {
     const fullName = [];
 
     if (user?.firstName) {

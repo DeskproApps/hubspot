@@ -38,7 +38,7 @@ type OwnerProps = {
 };
 
 type NoteProps = {
-    id: string,
+    hs_object_id: string,
     hs_note_body: string,
     hs_lastmodifieddate: string,
     hubspot_owner_id: OwnerProps["id"],
@@ -70,7 +70,7 @@ const Notes: FC<Props> = ({ notes, owners }) => (
         <BaseContainer>
             <Title title={`Notes (${notes.length})`} />
             {notes.map((note) => (
-                <Note key={note.id} {...note} owner={get(owners, [note?.hubspot_owner_id], undefined)} />
+                <Note key={note.hs_object_id} {...note} owner={get(owners, [note?.hubspot_owner_id], undefined)} />
             ))}
         </BaseContainer>
         <HorizontalDivider/>

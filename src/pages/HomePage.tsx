@@ -1,5 +1,6 @@
 import { useState } from "react";
 import get from "lodash/get";
+import { UseQueryResult } from "react-query/types/react/types";
 import {
     Context,
     LoadingSpinner,
@@ -19,30 +20,16 @@ import {
     getEmailActivityService,
 } from "../services/hubspot";
 import { useSetAppTitle, useQueryWithClient, useQueriesWithClient } from "../hooks";
+import { normalize } from "../utils";
 import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
 import type { Contact, Company, Deal, Note, EmailActivity, CallActivity } from "../services/hubspot/types";
 
-const filterEntities = (entities) => {
+function filterEntities(entities: UseQueryResult[]) {
     return entities?.filter((entity) => (entity.isFetched && entity.isSuccess))
-        .map((entity) => entity.data.properties)
-};
-
-const normalize = (source: undefined|any[], fieldName = "id") => {
-    if (!Array.isArray(source)) {
-        return {};
-    }
-
-    return source.reduce((acc, { data } = {}) => {
-        if (data && data[fieldName]) {
-            const key = data[fieldName];
-            acc[key] = data;
-        }
-
-        return acc;
-    }, {});
-};
+        .map((entity) => (entity as { data: Company|Deal|Note|EmailActivity|CallActivity }).data.properties);
+}
 
 const HomePage = () => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext };
@@ -63,17 +50,17 @@ const HomePage = () => {
         { enabled: !!contactId },
     );
 
-    const rawCompanies = useQueriesWithClient(companyIds.data?.results?.map(({ id }) => ({
-        queryKey: [QueryKey.COMPANY, id],
-        queryFn: (client) => getCompanyService(client, id),
-        enabled: (companyIds.data?.results.length > 0),
-    })) ?? []);
-
     const contactOwner = useQueryWithClient(
         [QueryKey.OWNERS, get(contact, ["data", "properties", "hubspot_owner_id"], 0)],
         (client) => getOwnersService(client, get(contact, ["data", "properties", "hubspot_owner_id"], 0)),
         { enabled: !!get(contact, ["data", "properties", "hubspot_owner_id"], 0) }
     );
+
+    const companies = useQueriesWithClient(companyIds.data?.results?.map(({ id }) => ({
+        queryKey: [QueryKey.COMPANY, id],
+        queryFn: (client) => getCompanyService(client, id),
+        enabled: (companyIds.data?.results.length > 0),
+    })) ?? []);
 
     const dealIds = useQueryWithClient(
         [QueryKey.DEALS, "contacts", contactId, "deals"],
@@ -81,16 +68,16 @@ const HomePage = () => {
         { enabled: !!contactId },
     );
 
-    const rawDeals = useQueriesWithClient(dealIds.data?.results?.map(({ id }) => ({
+    const deals = useQueriesWithClient(dealIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.DEALS, id],
         queryFn: (client) => getDealService(client, id),
         enabled: (dealIds.data?.results.length > 0),
     })) ?? []);
 
-    const dealOwners = useQueriesWithClient(rawDeals?.map((deal) => ({
+    const dealOwners = useQueriesWithClient(deals?.map((deal) => ({
         queryKey: [QueryKey.OWNERS, get(deal, ["data", "properties", "hubspot_owner_id"], 0)],
         queryFn: (client) => getOwnersService(client, get(deal, ["data", "properties", "hubspot_owner_id"], 0)),
-        enabled: (rawDeals.length > 0) && rawDeals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
+        enabled: (deals.length > 0) && deals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
     })) ?? []);
 
     const noteIds = useQueryWithClient(
@@ -166,15 +153,15 @@ const HomePage = () => {
 
     return (
         <Home
-            contact={contact.data}
+            contact={contact.data.properties}
             contactOwner={contactOwner.data}
-            companies={filterEntities(rawCompanies)}
-            deals={filterEntities(rawDeals)}
+            companies={filterEntities(companies) as Array<Company["properties"]>}
+            deals={filterEntities(deals) as Array<Deal["properties"]>}
             dealOwners={normalize(dealOwners)}
-            notes={filterEntities(notes)}
+            notes={filterEntities(notes) as Array<Note["properties"]>}
             noteOwners={normalize(noteOwners)}
-            emailActivities={filterEntities(emailActivities)}
-            callActivities={filterEntities(callActivities)}
+            emailActivities={filterEntities(emailActivities) as Array<EmailActivity["properties"]>}
+            callActivities={filterEntities(callActivities) as Array<CallActivity["properties"]>}
         />
     );
 };
