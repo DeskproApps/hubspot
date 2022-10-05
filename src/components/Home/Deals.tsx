@@ -56,11 +56,7 @@ const Deals: FC<Props> = ({ deals, owners }) => {
     return (
         <>
             <BaseContainer>
-                <Title
-                    link=""
-                    title={`Deals (${deals.length})`}
-                    onClick={() => {}}
-                />
+                <Title title={`Deals (${deals.length})`} />
                 {deals.map((deal) => (
                     <Deal key={deal.hs_object_id} {...deal} owner={owners[deal?.hubspot_owner_id] || {}} />
                 ))}

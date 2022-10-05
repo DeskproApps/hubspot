@@ -18,4 +18,6 @@ export enum QueryKey {
     OWNERS = "owners",
     DEALS = "deals",
     NOTES = "notes",
+    EMAIL_ACTIVITIES = "emailActivities",
+    CALL_ACTIVITIES = "callActivities",
 }

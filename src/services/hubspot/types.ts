@@ -22,7 +22,13 @@ export type AccessTokenInfo = {
     token_type: string,
 }
 
-export type EntityType = "contacts" | "companies" | "deals" | "notes";
+export type EntityType =
+    | "contacts"
+    | "companies"
+    | "deals"
+    | "notes"
+    | "emails"
+    | "calls";
 
 export type Contact = {
     id: string,
@@ -93,5 +99,31 @@ export type Note = {
         hs_object_id: Note["id"],
         hubspot_owner_id: Owner["id"],
         hs_lastmodifieddate: DateTime,
+    },
+};
+
+export type EmailActivity = {
+    id: string,
+    archived: boolean,
+    createdAt: DateTime,
+    updatedAt: DateTime,
+    properties: {
+        hs_object_id: EmailActivity["id"],
+        hs_email_html: string,
+        hs_timestamp: DateTime,
+        hs_email_subject?: string,
+    },
+};
+
+export type CallActivity = {
+    id: string,
+    archived: boolean,
+    createdAt: DateTime,
+    updatedAt: DateTime,
+    properties: {
+        hs_object_id: CallActivity["id"],
+        hs_call_body: string,
+        hs_call_title?: string,
+        hs_timestamp: DateTime,
     },
 };

@@ -15,12 +15,14 @@ import {
     getContactService,
     getCompanyService,
     getEntityAssocService,
+    getCallActivityService,
+    getEmailActivityService,
 } from "../services/hubspot";
 import { useSetAppTitle, useQueryWithClient, useQueriesWithClient } from "../hooks";
 import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
-import type { Contact, Company, Deal, Note } from "../services/hubspot/types";
+import type { Contact, Company, Deal, Note, EmailActivity, CallActivity } from "../services/hubspot/types";
 
 const filterEntities = (entities) => {
     return entities?.filter((entity) => (entity.isFetched && entity.isSuccess))
@@ -109,6 +111,30 @@ const HomePage = () => {
         enabled: (notes.length > 0) && notes.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
     })) ?? []);
 
+    const emailActivityIds = useQueryWithClient(
+        [QueryKey.EMAIL_ACTIVITIES, "contacts", contactId, "emails"],
+        (client) => getEntityAssocService<EmailActivity["id"], "contact_to_email">(client, "contacts", contactId as string, "emails"),
+        { enabled: !!contactId }
+    );
+
+    const callActivityIds = useQueryWithClient(
+        [QueryKey.CALL_ACTIVITIES, "contacts", contactId, "calls"],
+        (client) => getEntityAssocService<CallActivity["id"], "contact_to_call">(client, "contacts", contactId as string, "calls"),
+        { enabled: !!contactId }
+    );
+
+    const emailActivities = useQueriesWithClient(emailActivityIds.data?.results?.map(({ id }) => ({
+        queryKey: [QueryKey.EMAIL_ACTIVITIES, id],
+        queryFn: (client) => getEmailActivityService(client, id),
+        enabled: (emailActivityIds.data?.results.length > 0),
+    })) ?? []);
+
+    const callActivities = useQueriesWithClient(callActivityIds.data?.results?.map(({ id }) => ({
+        queryKey: [QueryKey.EMAIL_ACTIVITIES, id],
+        queryFn: (client) => getCallActivityService(client, id),
+        enabled: (callActivityIds.data?.results.length > 0),
+    })) ?? []);
+
     useSetAppTitle("Contact");
 
     useDeskproElements(({ registerElement }) => {
@@ -147,6 +173,8 @@ const HomePage = () => {
             dealOwners={normalize(dealOwners)}
             notes={filterEntities(notes)}
             noteOwners={normalize(noteOwners)}
+            emailActivities={filterEntities(emailActivities)}
+            callActivities={filterEntities(callActivities)}
         />
     );
 };
