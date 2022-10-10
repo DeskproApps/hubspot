@@ -9,3 +9,4 @@ export { HubSpotLink } from "./HubSpotLink";
 export { Title } from "./Title";
 export { TextBlockWithLabel } from "./TextBlockWithLabel";
 export { TwoColumn } from "./TwoColumn";
+export { Link } from "./Link";

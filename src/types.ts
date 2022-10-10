@@ -72,4 +72,5 @@ export type ContextData = {
 export type UserContext = Context<ContextData>;
 
 export type EventsPayload =
+    | { type: "changePage", path: string }
     | { type: "unlink", userId: string, contactId: string };

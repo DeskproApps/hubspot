@@ -5,6 +5,7 @@ import { H3, HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName } from "../../utils";
 import { format } from "../../utils/date";
 import {
+    Link,
     Title,
     TwoColumn,
     BaseContainer,
@@ -34,9 +35,23 @@ type Props = {
     owners: Record<DealOwner["id"], DealOwner>,
 };
 
-const Deal: FC<DealProps & { owner: DealOwner }> = ({ dealname, dealstage, amount, closedate, owner }) => (
+const Deal: FC<DealProps & { owner: DealOwner }> = ({
+    owner,
+    amount,
+    dealname,
+    dealstage,
+    closedate,
+    hs_object_id: dealId,
+}) => (
     <DealContainer>
-        <Title as={H3} title={dealname} link="" marginBottom={7} />
+        <Title
+            as={H3}
+            title={(
+                <Link to={`/deal/${dealId}`}>{dealname}</Link>
+            )}
+            link=""
+            marginBottom={7}
+        />
         <TwoColumn
             leftLabel="Stage"
             leftText={capitalize(dealstage)}

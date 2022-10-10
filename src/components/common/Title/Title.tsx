@@ -1,11 +1,11 @@
-import { FC, ComponentType } from "react";
+import { FC, ComponentType, ReactNode } from "react";
 import styled from "styled-components";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { H1, Stack, Button } from "@deskpro/app-sdk";
 import { HubSpotLink } from "../HubSpotLink";
 
 type Props = {
-    title: string,
+    title: string | ReactNode,
     link?: string,
     onClick?: () => void,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

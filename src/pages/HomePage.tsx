@@ -124,12 +124,14 @@ const HomePage = () => {
 
     useSetAppTitle("Contact");
 
-    useDeskproElements(({ registerElement }) => {
-        registerElement("hubspotMenu", {
+    useDeskproElements(({ registerElement, deRegisterElement }) => {
+        deRegisterElement("home");
+
+        registerElement("menu", {
             type: "menu",
             items: [{
                 title: "Unlink contact",
-                payload: {type: "unlink", userId, contactId },
+                payload: { type: "unlink", userId, contactId },
             }],
         });
     }, [userId, contactId]);
