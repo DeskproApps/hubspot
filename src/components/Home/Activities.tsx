@@ -2,8 +2,9 @@ import { FC } from "react";
 import concat from "lodash/concat";
 import capitalize from "lodash/capitalize";
 import isAfter from "date-fns/isAfter";
-import { P5, H3, HorizontalDivider } from "@deskpro/app-sdk";
+import { H3, HorizontalDivider } from "@deskpro/app-sdk";
 import {
+    Link,
     Title,
     TwoColumn,
     BaseContainer,
@@ -51,10 +52,24 @@ const normalizeEmailFn = (email: EmailActivity): ActivityProps => ({
 
 const sortDateFn = (a: ActivityProps, b: ActivityProps) => isAfter(new Date(a.date), new Date(b.date)) ? 1 : -1;
 
-const Activity: FC<ActivityProps> = ({ title, body, date, type }) => (
+const Activity: FC<ActivityProps> = ({ id, title, body, date, type }) => (
     <>
-        {title && <Title as={H3} title={title} marginBottom={7} />}
-        {(!title && body) && <P5 dangerouslySetInnerHTML={{ __html: body }} style={{ marginBottom: 7 }} />}
+        {title && (
+            <Title
+                as={H3}
+                title={(
+                    <Link
+                        to={`/contacts/activities?type=${type}&activityId=${id}`}
+                    >{title}</Link>
+                )}
+                marginBottom={7}
+            />
+        )}
+        {(!title && body) && (
+            <Link to={`/contacts/activities?type=${type}&activityId=${id}`}>
+                <H3 dangerouslySetInnerHTML={{ __html: body }} style={{ marginBottom: 7 }} />
+            </Link>
+        )}
         <TwoColumn
             leftLabel="Type"
             leftText={capitalize(type)}

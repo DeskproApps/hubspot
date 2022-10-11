@@ -13,3 +13,4 @@ export { getDealService } from "./getDealService";
 export { getNoteService } from "./getNoteService";
 export { getCallActivityService } from "./getCallActivityService";
 export { getEmailActivityService } from "./getEmailActivityService";
+export { getActivityService } from "./getActivityService";
