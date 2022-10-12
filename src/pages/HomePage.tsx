@@ -53,7 +53,7 @@ const HomePage = () => {
     const contactOwner = useQueryWithClient(
         [QueryKey.OWNERS, get(contact, ["data", "properties", "hubspot_owner_id"], 0)],
         (client) => getOwnersService(client, get(contact, ["data", "properties", "hubspot_owner_id"], 0)),
-        { enabled: !!get(contact, ["data", "properties", "hubspot_owner_id"], 0) }
+        { enabled: contact.isSuccess && get(contact, ["data", "properties", "hubspot_owner_id"], null) !== null }
     );
 
     const companies = useQueriesWithClient(companyIds.data?.results?.map(({ id }) => ({
@@ -147,7 +147,7 @@ const HomePage = () => {
             })
     }, [userId]);
 
-    if (!contact.isSuccess || !contactOwner.isSuccess) {
+    if (!contact.isSuccess) {
         return <LoadingSpinner/>
     }
 

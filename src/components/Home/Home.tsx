@@ -15,7 +15,7 @@ import type {
 
 type Props = {
     contact: Contact["properties"],
-    contactOwner: Owner,
+    contactOwner?: Owner,
     dealOwners: Record<Owner["id"], Owner>,
     companies: Array<Company["properties"]>,
     deals: Array<Deal["properties"]>,
