@@ -1,6 +1,6 @@
 import { FC, ReactElement, isValidElement } from "react";
 import styled from "styled-components";
-import { P8, P5, Stack } from "@deskpro/app-sdk";
+import { P8, P5/*, Stack*/ } from "@deskpro/app-sdk";
 
 export type Props = {
     label?: string | ReactElement,
@@ -22,7 +22,8 @@ const TextBlockWithLabel: FC<Props> = ({ text, label, marginBottom = 10 }) => {
     if (typeof text === "string" || typeof text === "number") {
         textBlock = (<P5>{text}</P5>);
     } else if (isValidElement(text)) {
-        textBlock = (<Stack gap={5} align="baseline">{text}</Stack>)
+        // textBlock = (<Stack gap={5} align="baseline">{text}</Stack>)
+        textBlock = text;
     }
 
     return (

@@ -1,12 +1,13 @@
 import { FC } from "react";
 import styled from "styled-components";
 import capitalize from "lodash/capitalize";
-import { H3, HorizontalDivider } from "@deskpro/app-sdk";
+import { P5, H3, HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName } from "../../utils";
 import { format } from "../../utils/date";
 import {
     Title,
     TwoColumn,
+    OverflowText,
     BaseContainer,
 } from "../common";
 
@@ -39,7 +40,7 @@ const Deal: FC<DealProps & { owner: DealOwner }> = ({ dealname, dealstage, amoun
         <Title as={H3} title={dealname} link="" marginBottom={7} />
         <TwoColumn
             leftLabel="Stage"
-            leftText={capitalize(dealstage)}
+            leftText={<P5><OverflowText>{capitalize(dealstage)}</OverflowText></P5>}
             rightLabel="Amount"
             rightText={amount/* ToDo: add currency symbol */}
         />
