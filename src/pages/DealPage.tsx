@@ -6,18 +6,23 @@ import { useDeskproElements } from "@deskpro/app-sdk";
 import {
     getDealService,
     getOwnerService,
+    getContactService,
+    getCompanyService,
     getPipelineService,
     getDealTypesService,
     getAccountInfoService,
+    getEntityAssocService,
 } from "../services/hubspot";
 import {
     useSetAppTitle,
     useQueryWithClient,
+    useQueriesWithClient,
 } from "../hooks";
+import { filterEntities } from "../utils";
 import { QueryKey } from "../query";
 import { Deal } from "../components/Deal";
 import { Loading, BaseContainer } from "../components/common";
-import type { Deal as DealType, Pipeline } from "../services/hubspot/types";
+import type { Deal as DealType, Pipeline, Contact, Company } from "../services/hubspot/types";
 
 const DealPage: FC = () => {
     const { dealId } = useParams();
@@ -47,6 +52,30 @@ const DealPage: FC = () => {
 
     const dealTypes = useQueryWithClient([QueryKey.DEALS, "types"], getDealTypesService);
 
+    const contactIds = useQueryWithClient(
+        [QueryKey.ENTITY, "deals", dealId, "contacts"],
+        (client) => getEntityAssocService<Contact["id"], "deal_to_contact">(client, "deals", dealId as string, "contacts"),
+        { enabled: !!dealId },
+    );
+
+    const contacts = useQueriesWithClient(contactIds.data?.results?.map(({ id }) => ({
+        queryKey: [QueryKey.CONTACT, id],
+        queryFn: (client) => getContactService(client, id),
+        enabled: (contactIds.data?.results.length > 0),
+    })) ?? []);
+
+    const companyIds = useQueryWithClient(
+        [QueryKey.ENTITY, "deals", dealId, "companies"],
+        (client) => getEntityAssocService<Company["id"], "deal_to_company">(client, "deals", dealId as string, "companies"),
+        { enabled: !!dealId }
+    );
+
+    const companies = useQueriesWithClient(companyIds.data?.results?.map(({ id }) => ({
+        queryKey: [QueryKey.CONTACT, id],
+        queryFn: (client) => getCompanyService(client, id),
+        enabled: (companyIds.data?.results.length > 0),
+    })) ?? []);
+
     useSetAppTitle("Deal details");
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
@@ -69,6 +98,8 @@ const DealPage: FC = () => {
             deal={deal.data?.properties}
             pipeline={pipeline.data}
             owner={owner?.data}
+            contacts={filterEntities(contacts)}
+            companies={filterEntities(companies)}
         />
     );
 };

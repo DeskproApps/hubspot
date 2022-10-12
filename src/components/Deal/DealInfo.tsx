@@ -12,17 +12,15 @@ import { Props } from "./types";
 
 const DealInfo: FC<Props> = ({ deal, pipeline, accountInfo, owner, dealTypes }) => {
     const stage = pipeline.stages.find(({ id }) => id === deal.dealstage) || {};
-    const dealType = dealTypes.options.find(({ value }) => value === deal.dealtype);
+    const dealType = dealTypes?.options.find(({ value }) => value === deal.dealtype);
+    const amount = deal.amount ? `${deal.amount} ${getSymbolFromCurrency(accountInfo?.companyCurrency)}` : "-";
 
     return (
         <BaseContainer>
             <Title title={deal?.dealname} />
             <TextBlockWithLabel label="Pipeline" text={pipeline.label} />
             <TextBlockWithLabel label="Deal stage" text={get(stage, ["label"], deal.dealstage)} />
-            <TextBlockWithLabel
-                label="Amount"
-                text={`${deal.amount} ${getSymbolFromCurrency(accountInfo.companyCurrency)}`}
-            />
+            <TextBlockWithLabel label="Amount" text={amount} />
             <TextBlockWithLabel label="Close date" text={format(deal.closedate)} />
             <TextBlockWithLabel label="Deal owner" text={getFullName(owner)}/>
             <TextBlockWithLabel label="Deal type" text={get(dealType, ["label"], "-")} />

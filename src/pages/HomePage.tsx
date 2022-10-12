@@ -1,6 +1,5 @@
 import { useState } from "react";
 import get from "lodash/get";
-import { UseQueryResult } from "react-query/types/react/types";
 import {
     Context,
     LoadingSpinner,
@@ -20,16 +19,11 @@ import {
     getEmailActivityService,
 } from "../services/hubspot";
 import { useSetAppTitle, useQueryWithClient, useQueriesWithClient } from "../hooks";
-import { normalize } from "../utils";
+import { normalize, filterEntities } from "../utils";
 import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
 import type { Contact, Company, Deal, Note, EmailActivity, CallActivity } from "../services/hubspot/types";
-
-function filterEntities(entities: UseQueryResult[]) {
-    return entities?.filter((entity) => (entity.isFetched && entity.isSuccess))
-        .map((entity) => (entity as { data: Company|Deal|Note|EmailActivity|CallActivity }).data.properties);
-}
 
 const HomePage = () => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext };

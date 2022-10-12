@@ -54,9 +54,13 @@ function App() {
         onElementEvent: (id, type, payload: EventsPayload) => {
             match(payload.type)
                 .with("changePage", () => {
-                    payload.path && navigate(payload.path);
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    payload?.path && navigate(payload.path);
                 })
                 .with("unlink", () => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     unlinkContact(payload?.userId, payload?.contactId);
                 })
                 .otherwise(() => {});

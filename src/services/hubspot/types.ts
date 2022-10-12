@@ -1,5 +1,4 @@
 import type { DateTime } from "../../types";
-import {string} from "ts-pattern/dist/patterns";
 
 export type AccessTokenResponse = {
     token_type: "bearer",

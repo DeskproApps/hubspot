@@ -4,8 +4,7 @@ import { DealInfo } from "./DealInfo";
 import { AssociatedWith } from "./AssociatedWith";
 import type { Props } from "./types";
 
-const Deal: FC<Props> = ({ deal, pipeline, accountInfo, owner, dealTypes }) => {
-    // console.log(">>> deal:", deal);
+const Deal: FC<Props> = ({ deal, pipeline, accountInfo, owner, dealTypes, contacts, companies }) => {
     return (
         <>
             <DealInfo
@@ -16,7 +15,7 @@ const Deal: FC<Props> = ({ deal, pipeline, accountInfo, owner, dealTypes }) => {
                 dealTypes={dealTypes}
             />
             <HorizontalDivider/>
-            <AssociatedWith/>
+            <AssociatedWith contacts={contacts} companies={companies} />
         </>
     );
 };
