@@ -12,7 +12,7 @@ import { getEntityContactList } from "../services/entityAssociation";
 import {
     getDealService,
     getNoteService,
-    getOwnersService,
+    getOwnerService,
     getContactService,
     getCompanyService,
     getEntityAssocService,
@@ -52,7 +52,7 @@ const HomePage = () => {
 
     const contactOwner = useQueryWithClient(
         [QueryKey.OWNERS, get(contact, ["data", "properties", "hubspot_owner_id"], 0)],
-        (client) => getOwnersService(client, get(contact, ["data", "properties", "hubspot_owner_id"], 0)),
+        (client) => getOwnerService(client, get(contact, ["data", "properties", "hubspot_owner_id"], 0)),
         { enabled: !!get(contact, ["data", "properties", "hubspot_owner_id"], 0) }
     );
 
@@ -76,7 +76,7 @@ const HomePage = () => {
 
     const dealOwners = useQueriesWithClient(deals?.map((deal) => ({
         queryKey: [QueryKey.OWNERS, get(deal, ["data", "properties", "hubspot_owner_id"], 0)],
-        queryFn: (client) => getOwnersService(client, get(deal, ["data", "properties", "hubspot_owner_id"], 0)),
+        queryFn: (client) => getOwnerService(client, get(deal, ["data", "properties", "hubspot_owner_id"], 0)),
         enabled: (deals.length > 0) && deals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
     })) ?? []);
 
@@ -94,7 +94,7 @@ const HomePage = () => {
 
     const noteOwners = useQueriesWithClient(notes?.map((note) => ({
         queryKey: [QueryKey, get(note, ["data", "properties", "hubspot_owner_id"], 0)],
-        queryFn: (client) => getOwnersService(client, get(note, ["data", "properties", "hubspot_owner_id"], 0)),
+        queryFn: (client) => getOwnerService(client, get(note, ["data", "properties", "hubspot_owner_id"], 0)),
         enabled: (notes.length > 0) && notes.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
     })) ?? []);
 
