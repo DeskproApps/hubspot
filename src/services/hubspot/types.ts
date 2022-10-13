@@ -120,6 +120,7 @@ export type EmailActivity = {
         hs_email_from_lastname?: string,
         hs_email_to_firstname?: string,
         hs_email_to_lastname?: string,
+        hubspot_owner_id: string,
     },
 };
 
@@ -130,8 +131,10 @@ export type CallActivity = {
     updatedAt: DateTime,
     properties: {
         hs_object_id: CallActivity["id"],
-        hs_call_body: string,
+        hs_call_body?: string,
         hs_call_title?: string,
         hs_timestamp: DateTime,
+        hs_call_duration?: number,
+        hubspot_owner_id: string,
     },
 };

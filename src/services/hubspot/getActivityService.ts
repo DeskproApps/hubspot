@@ -7,9 +7,9 @@ type GetActivityService = (
     client: IDeskproClient,
     entity: "email" | "call",
     entityId: CallActivity["id"] | EmailActivity["id"],
-) => Promise<any>;
+) => Promise<CallActivity|EmailActivity>;
 
-const getActivityService: GetActivityService = async (client, entity, entityId) => {
+const getActivityService: GetActivityService = (client, entity, entityId) => {
     const activityService = (entity === "email") ? getEmailActivityService : getCallActivityService;
 
     return activityService(client, entityId);

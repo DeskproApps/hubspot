@@ -9,6 +9,7 @@ import {
 import { QueryKey } from "../query";
 import { Deal } from "../components/Deal";
 import { Loading, BaseContainer } from "../components/common";
+import type { Deal as DealType } from "../services/hubspot/types";
 
 const DealPage: FC = () => {
     const { dealId } = useParams();
@@ -34,7 +35,7 @@ const DealPage: FC = () => {
     }
 
     return (
-        <Deal />
+        <Deal deal={data?.properties as DealType["properties"]} />
     );
 };
 

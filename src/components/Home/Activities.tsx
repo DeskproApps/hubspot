@@ -11,30 +11,17 @@ import {
 } from "../common";
 import { format } from "../../utils/date";
 import type { DateTime } from "../../types";
-
-type EmailActivity = {
-    hs_object_id: string,
-    hs_email_html: string,
-    hs_timestamp: DateTime,
-    hs_email_subject?: string,
-};
-
-type CallActivity = {
-    hs_object_id: string,
-    hs_call_body: string,
-    hs_call_title?: string,
-    hs_timestamp: DateTime,
-};
+import type { EmailActivity, CallActivity } from "../../services/hubspot/types";
 
 type ActivityProps = {
     id: string,
     title?: string,
-    body: string,
+    body?: string,
     date: DateTime,
     type: "call" | "email";
 };
 
-const normalizeCallFn = (call: CallActivity): ActivityProps => ({
+const normalizeCallFn = (call: CallActivity["properties"]): ActivityProps => ({
     id: call.hs_object_id,
     title: call.hs_call_title,
     body: call.hs_call_body,
@@ -42,7 +29,7 @@ const normalizeCallFn = (call: CallActivity): ActivityProps => ({
     type: "call",
 });
 
-const normalizeEmailFn = (email: EmailActivity): ActivityProps => ({
+const normalizeEmailFn = (email: EmailActivity["properties"]): ActivityProps => ({
     id: email.hs_object_id,
     title: email.hs_email_subject,
     body: email.hs_email_html,
@@ -81,8 +68,8 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type }) => (
 );
 
 const Activities: FC<{
-    calls: CallActivity[],
-    emails: EmailActivity[],
+    calls: Array<CallActivity["properties"]>,
+    emails: Array<EmailActivity["properties"]>,
 }> = ({ calls, emails }) => {
     const normalizeCall = calls.map(normalizeCallFn);
     const normalizeEmail = emails.map(normalizeEmailFn);
