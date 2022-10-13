@@ -19,7 +19,7 @@ import { GlobalSignIn } from "./pages/GlobalSignIn";
 import { HomePage } from "./pages/HomePage";
 import { LinkPage } from "./pages/LinkPage";
 import { DealPage } from "./pages/DealPage";
-import { ActivitiesPage } from "./pages/ActivitiesPage";
+import { ActivityPage } from "./pages/ActivityPage";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 
@@ -95,7 +95,7 @@ function App() {
                             <Route path="home" element={<HomePage/>} />
                             <Route path="link" element={<LinkPage/>} />
                             <Route path="deal/:dealId" element={<DealPage/>} />
-                            <Route path="contacts/activities" element={<ActivitiesPage/>} />
+                            <Route path="contacts/activities" element={<ActivityPage/>} />
                             <Route index element={<Main/>} />
                         </Routes>
                     </ErrorBoundary>

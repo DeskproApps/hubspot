@@ -17,7 +17,7 @@ const Label = styled(P8)`
 `;
 
 const TextBlockWithLabel: FC<Props> = ({ text, label, marginBottom = 10 }) => {
-    let textBlock: ReactElement | null = null;
+    let textBlock: ReactElement|string = "-";
 
     if (typeof text === "string" || typeof text === "number") {
         textBlock = (<P5>{text}</P5>);

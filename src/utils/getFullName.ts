@@ -1,3 +1,5 @@
+import isEmpty from "lodash/isEmpty";
+
 type User = {
     firstName?: string,
     lastName?: string,
@@ -14,7 +16,7 @@ const getFullName = (user: User = {}): string => {
         fullName.push(user.lastName)
     }
 
-    return fullName.join(" ");
+    return isEmpty(fullName) ? "-" : fullName.join(" ");
 };
 
 export { getFullName };

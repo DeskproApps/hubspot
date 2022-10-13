@@ -113,9 +113,13 @@ export type EmailActivity = {
     updatedAt: DateTime,
     properties: {
         hs_object_id: EmailActivity["id"],
-        hs_email_html: string,
+        hs_email_html?: string,
         hs_timestamp: DateTime,
         hs_email_subject?: string,
+        hs_email_from_firstname?: string,
+        hs_email_from_lastname?: string,
+        hs_email_to_firstname?: string,
+        hs_email_to_lastname?: string,
     },
 };
 

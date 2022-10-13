@@ -8,7 +8,7 @@ import {
 import { useSetAppTitle, useQueryWithClient } from "../hooks";
 import { QueryKey } from "../query";
 import { getActivityService } from "../services/hubspot";
-import {  Activities} from "../components/Activities";
+import { Activity } from "../components/Activity";
 
 const getActivityQueryKey = (type: string | null): string | undefined => {
     if (!type) {
@@ -18,7 +18,7 @@ const getActivityQueryKey = (type: string | null): string | undefined => {
     return type === "email" ? QueryKey.EMAIL_ACTIVITIES : QueryKey.CALL_ACTIVITIES;
 };
 
-const ActivitiesPage: FC = () => {
+const ActivityPage: FC = () => {
     const location = useLocation();
     const queryParams = useMemo(() => (new URLSearchParams(location.search)), [location.search]);
 
@@ -44,8 +44,8 @@ const ActivitiesPage: FC = () => {
     }
 
     return (
-        <Activities activity={data}/>
+        <Activity activity={data.properties}/>
     );
 };
 
-export { ActivitiesPage };
+export { ActivityPage };
