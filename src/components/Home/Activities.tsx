@@ -74,7 +74,7 @@ const Activities: FC<{
     const activities = concat(normalizeCall, normalizeEmail).sort(sortDateFn);
 
     return (
-        <BaseContainer>
+        <BaseContainer style={{ marginBottom: 50 }}>
             <Title title={`Activities (${activities.length})`}/>
             {activities.map((activity) => (
                 <Activity key={activity.id} {...activity} />

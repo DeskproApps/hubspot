@@ -132,3 +132,15 @@ export type CallActivity = {
         hs_timestamp: DateTime,
     },
 };
+
+export type AccountInto = {
+    accountType: string,
+    additionalCurrencies: string[],
+    companyCurrency: string,
+    dataHostingLocation: string,
+    portalId: number,
+    timeZone: string,
+    uiDomain: string,
+    utcOffset: string,
+    utcOffsetMilliseconds: number,
+}

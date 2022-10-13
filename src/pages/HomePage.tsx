@@ -15,6 +15,7 @@ import {
     getOwnersService,
     getContactService,
     getCompanyService,
+    getAccountInfoService,
     getEntityAssocService,
     getCallActivityService,
     getEmailActivityService,
@@ -122,6 +123,11 @@ const HomePage = () => {
         enabled: (callActivityIds.data?.results.length > 0),
     })) ?? []);
 
+    const accountInfo = useQueryWithClient(
+        [QueryKey.ACCOUNT_INFO],
+        getAccountInfoService,
+    );
+
     useSetAppTitle("Contact");
 
     useDeskproElements(({ registerElement }) => {
@@ -162,6 +168,7 @@ const HomePage = () => {
             noteOwners={normalize(noteOwners)}
             emailActivities={filterEntities(emailActivities) as Array<EmailActivity["properties"]>}
             callActivities={filterEntities(callActivities) as Array<CallActivity["properties"]>}
+            accountInfo={accountInfo.data}
         />
     );
 };

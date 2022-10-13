@@ -20,4 +20,5 @@ export enum QueryKey {
     NOTES = "notes",
     EMAIL_ACTIVITIES = "emailActivities",
     CALL_ACTIVITIES = "callActivities",
+    ACCOUNT_INFO = "accountInfo",
 }

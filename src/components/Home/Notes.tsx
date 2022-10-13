@@ -1,6 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 import get from "lodash/get";
+import isAfter from "date-fns/isAfter";
 import ReactTimeAgo from "react-time-ago";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { Avatar } from "@deskpro/deskpro-ui";
@@ -23,6 +24,10 @@ const NoteBlock = styled(P1)`
     white-space: pre-wrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  
+  p:first-child {
+    margin-top: 0;
   }
 
   img {
@@ -49,6 +54,13 @@ type Props = {
     owners: Record<OwnerProps["id"], OwnerProps>,
 };
 
+const sortNotesFn = (
+    { hs_lastmodifieddate: a }: NoteProps,
+    { hs_lastmodifieddate: b }: NoteProps,
+): number => {
+    return isAfter(new Date(a), new Date(b)) ? -1 : 1;
+}
+
 const Note: FC<NoteProps & { owner?: OwnerProps }> = ({
     hs_note_body,
     hs_lastmodifieddate,
@@ -69,7 +81,7 @@ const Notes: FC<Props> = ({ notes, owners }) => (
     <>
         <BaseContainer>
             <Title title={`Notes (${notes.length})`} />
-            {notes.map((note) => (
+            {notes.sort(sortNotesFn).map((note) => (
                 <Note key={note.hs_object_id} {...note} owner={get(owners, [note?.hubspot_owner_id], undefined)} />
             ))}
         </BaseContainer>

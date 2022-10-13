@@ -1,3 +1,5 @@
+import { nbsp } from "../constants";
+
 type User = {
     firstName?: string,
     lastName?: string,
@@ -14,7 +16,7 @@ const getFullName = (user: User = {}): string => {
         fullName.push(user.lastName)
     }
 
-    return fullName.join(" ");
+    return fullName.join(nbsp);
 };
 
 export { getFullName };
