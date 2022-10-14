@@ -1,7 +1,8 @@
 import isEmpty from "lodash/isEmpty";
 import { proxyFetch } from "@deskpro/app-sdk";
-import { Request } from "./types";
+import { Request } from "../../types";
 import { BASE_URL, placeholders } from "./constants";
+import { refreshTokenService } from "./refreshTokenService";
 import { getQueryParams } from "../../utils";
 
 const baseRequest: Request = async (client, {
@@ -13,37 +14,42 @@ const baseRequest: Request = async (client, {
 }) => {
     const dpFetch = await proxyFetch(client);
 
-    let body = undefined;
-    const headers: Record<string, string> = {};
-
     const baseUrl = `${BASE_URL}${url}`;
     const params = `${isEmpty(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
     const requestUrl = `${baseUrl}${params}`;
-
-    if (data instanceof FormData) {
-        body = data;
-    } else if(data) {
-        body = JSON.stringify(data);
-    }
-
-    if (body instanceof FormData) {
-        //...
-    } else if (data) {
-        headers["Content-Type"] = "application/json";
-        headers["authorization"] = `Bearer ${placeholders.TOKEN}`;
-    }
-
-    const res = await dpFetch(requestUrl, {
+    const options: RequestInit = {
         method,
-        body,
         headers: {
-            ...headers,
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${placeholders.TOKEN}`,
             ...customHeaders,
         },
-    });
+    };
 
-    if (res.status >= 400 && res.status <= 499) {
-        return Promise.reject(await res.json());
+    if (data) {
+        options.body = JSON.stringify(data);
+    }
+
+    let res = await dpFetch(requestUrl, options);
+
+    if ([401].includes(res.status)) {
+        options.headers = {
+            ...options.headers,
+            "Authorization": `Bearer ${placeholders.TOKEN_IN_STATE}`,
+        };
+        res = await dpFetch(requestUrl, options);
+
+        if ([401].includes(res.status)) {
+            const isRefresh = await refreshTokenService(client);
+
+            if (isRefresh) {
+                options.headers = {
+                    ...options.headers,
+                    "Authorization": `Bearer ${placeholders.TOKEN_IN_STATE}`,
+                };
+                res = await dpFetch(requestUrl, options);
+            }
+        }
     }
 
     if (res.status < 200 || res.status >= 400) {

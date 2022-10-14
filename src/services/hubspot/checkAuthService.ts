@@ -1,10 +1,10 @@
 import { IDeskproClient } from "@deskpro/app-sdk";
-import { getAccessTokenInfoService } from "./getAccessTokenInfoService";
+import { getContactsByEmailService } from "./searchContactsService";
 
 const checkAuthService = (client: IDeskproClient): Promise<boolean> => {
-    return getAccessTokenInfoService(client)
-        .then((data) => Promise.resolve(!!data.user))
-        .catch(() => Promise.resolve(false));
+    return getContactsByEmailService(client, "just@for.ping")
+        .then(() => true)
+        .catch(() => false);
 };
 
 export { checkAuthService };

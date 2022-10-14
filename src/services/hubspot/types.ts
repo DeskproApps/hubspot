@@ -1,46 +1,3 @@
-import { IDeskproClient } from "@deskpro/app-sdk";
-
-export type Settings = {
-    client_id?: string,
-    client_secret?: string,
-    redirect_uri?: string,
-    global_access_token?: string,
-};
-
-export type AuthTokens = {
-    accessToken: string,
-    refreshToken: string,
-};
-
-export type ApiRequestMethod = "GET" | "POST";
-
-export type RequestParams = {
-    url: string,
-    method?: ApiRequestMethod,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?: any,
-    headers?: Record<string, string>,
-    queryParams?: Record<string, string|number|boolean>,
-};
-
-export type Request = <T>(
-    client: IDeskproClient,
-    params: RequestParams
-) => Promise<T>;
-
-export type PreRequestParams = {
-    url: string,
-    settings: Settings,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?: Record<string, any>,
-    method?: ApiRequestMethod,
-};
-
-export type PreInstalledRequest = <T>(
-    client: IDeskproClient,
-    params: PreRequestParams,
-) => Promise<T>;
-
 /**
  * An ISO-8601 encoded UTC date time string. Example value: `""2019-09-07T15:50:00Z"`.
  */
@@ -67,3 +24,23 @@ export type AccessTokenInfo = {
     expires_in: number,
     token_type: string,
 }
+
+export type Contact = {
+    id: string,
+    properties: {
+        hs_object_id: Contact["id"],
+        email: string,
+        firstname: string,
+        lastname: string,
+        createdate: DateTime,
+        lastmodifieddate: DateTime,
+    },
+    archived: boolean,
+    createdAt: DateTime,
+    updatedAt: DateTime,
+};
+
+export type Contacts = {
+    results: Contact[],
+    total: number,
+};

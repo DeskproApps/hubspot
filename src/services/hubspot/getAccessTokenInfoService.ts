@@ -1,5 +1,6 @@
 import { IDeskproClient } from "@deskpro/app-sdk";
-import { Settings, AuthTokens, AccessTokenInfo } from "./types";
+import { Settings, AuthTokens } from "../../types";
+import { AccessTokenInfo } from "./types";
 import { placeholders } from "./constants";
 import { baseRequest } from "./baseRequest";
 import { preInstalledRequest } from "./preInstalledRequest";
