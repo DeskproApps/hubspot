@@ -42,6 +42,7 @@ export type Contact = {
         lastmodifieddate: DateTime,
         jobtitle: string,
         lifecyclestage: string,
+        hubspot_owner_id: string|null,
     },
     archived: boolean,
     createdAt: DateTime,
@@ -85,11 +86,13 @@ export type Deal = {
         dealname: string,
         amount: string,
         dealstage: string,
+        dealtype: string,
         closedate: DateTime,
         createdate: DateTime,
         hs_lastmodifieddate: DateTime,
         pipeline: string,
         hubspot_owner_id: Owner["id"],
+        hs_priority: string,
     },
 };
 
@@ -137,4 +140,71 @@ export type CallActivity = {
         hs_call_duration?: number,
         hubspot_owner_id: string,
     },
+};
+
+export type PipelineTypes =
+    | "deals";
+
+export type PipelineStage = {
+    id: string,
+    label: string,
+    createdAt: DateTime,
+    updatedAt: DateTime,
+    archived: boolean,
+    displayOrder: number,
+    writePermissions: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    metadata: any,
+};
+
+export type Pipeline = {
+    id: string,
+    label: string,
+    createdAt: DateTime,
+    updatedAt: DateTime,
+    displayOrder: number,
+    archived: boolean,
+    stages: Array<PipelineStage>,
+};
+
+export type AccountInto = {
+    accountType: string,
+    additionalCurrencies: string[],
+    companyCurrency: string,
+    dataHostingLocation: string,
+    portalId: number,
+    timeZone: string,
+    uiDomain: string,
+    utcOffset: string,
+    utcOffsetMilliseconds: number,
+}
+
+export type DealTypes = {
+    "updatedAt": DateTime,
+    "createdAt": DateTime,
+    "name": "dealtype",
+    "label": string,
+    "type": "enumeration",
+    "fieldType": "radio",
+    "description": string,
+    "groupName": string,
+    "options": Array<{
+        "label": string,
+        "value": string,
+        "displayOrder": number,
+        "hidden": boolean,
+    }>,
+    "displayOrder": number,
+    "calculated": boolean,
+    "externalOptions": boolean,
+    "hasUniqueValue": boolean,
+    "hidden": boolean,
+    "hubspotDefined": boolean,
+    "modificationMetadata": {
+        "archivable": boolean,
+        "readOnlyDefinition": boolean,
+        "readOnlyOptions": boolean,
+        "readOnlyValue": boolean,
+    },
+    "formField": boolean,
 };

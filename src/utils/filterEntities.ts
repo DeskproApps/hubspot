@@ -1,5 +1,11 @@
-import {UseQueryResult} from "react-query/types/react/types";
-import {CallActivity, Company, Deal, EmailActivity, Note} from "../services/hubspot/types";
+import { UseQueryResult } from "react-query/types/react/types";
+import {
+    Deal,
+    Note,
+    Company,
+    CallActivity,
+    EmailActivity,
+} from "../services/hubspot/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const filterEntities = (entities: UseQueryResult[]): any[] => {

@@ -21,7 +21,7 @@ type Props = {
     companies: Array<{
         name: string,
     }>,
-    owner: {
+    owner?: {
         firstName: string,
         lastName: string,
     }

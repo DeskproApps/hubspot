@@ -57,7 +57,7 @@ function App() {
                 .with("changePage", () => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    payload.path && navigate(payload.path);
+                    payload?.path && navigate(payload.path);
                 })
                 .with("unlink", () => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -20,4 +20,6 @@ export enum QueryKey {
     NOTES = "notes",
     EMAIL_ACTIVITIES = "emailActivities",
     CALL_ACTIVITIES = "callActivities",
+    PIPELINES = "pipelines",
+    ACCOUNT_INFO = "accountInfo",
 }
