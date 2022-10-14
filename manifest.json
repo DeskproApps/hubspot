@@ -1,27 +1,52 @@
 {
-  "name": "@deskpro-apps/my_app",
-  "title": "My App",
-  "description": "My Deskpro app",
+  "name": "@deskpro-apps/hubspot",
+  "title": "HubSpot",
+  "description": "Synchronize your support and sales teams for better and faster results.",
   "version": "1.0.0",
   "scope": "agent",
   "isSingleInstall": false,
+  "hasDevMode": true,
   "targets": [{
-    "target": "ticket_sidebar",
+    "target": "user_sidebar",
     "entrypoint": "index.html"
   }],
   "settings": {
-    "example": {
-      "title": "Example Setting",
-      "description": "Example backend only setting",
+    "client_id": {
+      "title": "Client Id",
       "type": "string",
-      "isRequired": false,
-      "isBackendOnly": true
+      "isRequired": true,
+      "isBackendOnly": false,
+      "order": 10
+    },
+    "client_secret": {
+      "title": "Client Secret",
+      "type": "string",
+      "isRequired": true,
+      "isBackendOnly": true,
+      "order": 20
+    },
+    "redirect_uri": {
+      "title": "Install URL (OAuth)",
+      "type": "string",
+      "isRequired": true,
+      "isBackendOnly": true,
+      "order": 30
+    },
+    "global_access_token": {
+      "title": "",
+      "type": "app_embedded",
+      "options": {
+        "entrypoint": "#/admin/global-sign-in"
+      },
+      "isRequired": true,
+      "isBackendOnly": true,
+      "order": 40
     }
   },
   "proxy": {
     "whitelist": [{
-      "url": "https://example.com/.*",
-      "methods": ["GET", "POST", "PUT"],
+      "url": "https://api.hubapi.com/.*",
+      "methods": ["GET", "POST"],
       "timeout": 10
     }]
   }

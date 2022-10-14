@@ -13,19 +13,33 @@
     "test:coverage": "cross-env NODE_OPTIONS=--max-old-space-size=1024 jest --maxWorkers=75% --coverage"
   },
   "dependencies": {
-    "@deskpro/app-sdk": "^1.1.9",
+    "@deskpro/app-sdk": "^1.1.10",
+    "@deskpro/deskpro-ui": "^2.5.1",
+    "@fortawesome/free-solid-svg-icons": "6.1.1",
+    "iframe-resizer": "^4.3.2",
+    "lodash": "^4.17.21",
     "polished": "^4.1.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-dom": "^17.0.2",
+    "react-error-boundary": "^3.1.4",
+    "react-query": "^3.39.2",
+    "react-router-dom": "^6.4.0",
+    "styled-components": "^5.3.3",
+    "ts-pattern": "^4.0.5",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.4.0",
+    "@types/lodash": "^4.14.185",
     "@types/react": "^17.0.33",
+    "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-dom": "^17.0.10",
     "@types/styled-components": "^5.1.23",
     "@types/testing-library__jest-dom": "^5.14.2",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "5.6.0",
     "@typescript-eslint/parser": "5.6.0",
     "@vitejs/plugin-react": "^1.0.7",
@@ -38,7 +52,6 @@
     "rimraf": "^3.0.2",
     "rollup-plugin-copy": "3.4.0",
     "slugify": "^1.6.5",
-    "styled-components": "^5.3.5",
     "ts-jest": "^27.1.2",
     "typescript": "^4.4.4",
     "vite": "^2.7.2"
