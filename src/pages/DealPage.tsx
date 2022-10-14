@@ -22,7 +22,7 @@ import { filterEntities } from "../utils";
 import { QueryKey } from "../query";
 import { Deal } from "../components/Deal";
 import { Loading, BaseContainer } from "../components/common";
-import type { Deal as DealType, Pipeline, Contact, Company } from "../services/hubspot/types";
+import type {Deal as DealType, Pipeline, Contact, Company, Owner} from "../services/hubspot/types";
 
 const DealPage: FC = () => {
     const { dealId } = useParams();
@@ -97,7 +97,7 @@ const DealPage: FC = () => {
             dealTypes={dealTypes.data}
             deal={deal.data?.properties}
             pipeline={pipeline.data}
-            owner={owner?.data}
+            owner={owner?.data as Owner|undefined}
             contacts={filterEntities(contacts)}
             companies={filterEntities(companies)}
         />

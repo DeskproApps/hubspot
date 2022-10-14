@@ -8,7 +8,7 @@ import {
 } from "../services/hubspot/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const filterEntities = (entities: UseQueryResult[]): Array<any> => {
+const filterEntities = (entities: UseQueryResult[]): any[] => {
     return entities?.filter((entity) => (entity.isFetched && entity.isSuccess))
         .map((entity) => (entity as { data: Company|Deal|Note|EmailActivity|CallActivity }).data.properties);
 }

@@ -16,3 +16,4 @@ export { getEmailActivityService } from "./getEmailActivityService";
 export { getPipelineService } from "./getPipelineService";
 export { getAccountInfoService } from "./getAccountInfoService";
 export { getDealTypesService } from "./getDealTypesService";
+export { getActivityService } from "./getActivityService";

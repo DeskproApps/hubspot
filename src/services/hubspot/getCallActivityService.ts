@@ -4,7 +4,7 @@ import { CallActivity } from "./types";
 
 const getCallActivityService = async (client: IDeskproClient, callId: CallActivity["id"]) => {
     const properties = await baseRequest<string[]>(client, { url: "/crm/v3/objects/calls/properties" })
-    return baseRequest(client, {
+    return baseRequest<CallActivity>(client, {
         url: `/crm/v3/objects/calls/${callId}`,
         queryParams: {
             properties: properties.join(",")
