@@ -25,7 +25,6 @@ import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
 import type { Contact, Company, Deal, Note, EmailActivity, CallActivity } from "../services/hubspot/types";
-import {Pipeline} from "../services/hubspot/types";
 import {DealPipeline} from "../types";
 
 const HomePage = () => {

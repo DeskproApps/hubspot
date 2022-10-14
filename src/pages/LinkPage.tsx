@@ -9,7 +9,7 @@ import {
     HorizontalDivider,
     useDeskproElements,
     useDeskproAppClient,
-    useDeskproLatestAppContext, useInitialisedDeskproAppClient,
+    useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
 import { setEntityContact } from "../services/entityAssociation";
 import { searchContactsByService } from "../services/hubspot";
