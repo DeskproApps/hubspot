@@ -21,7 +21,7 @@ const baseRequest: Request = async (client, {
         method,
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${placeholders.TOKEN}`,
+            "Authorization": `Bearer __api_token__`,
             ...customHeaders,
         },
     };
