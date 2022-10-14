@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import get from "lodash/get";
 import {
     Context,
@@ -17,7 +17,7 @@ import {
     getAccountInfoService,
     getEntityAssocService,
     getCallActivityService,
-    getEmailActivityService,
+    getEmailActivityService, getPipelineService,
 } from "../services/hubspot";
 import { useSetAppTitle, useQueryWithClient, useQueriesWithClient } from "../hooks";
 import { normalize, filterEntities } from "../utils";
@@ -25,6 +25,8 @@ import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
 import type { Contact, Company, Deal, Note, EmailActivity, CallActivity } from "../services/hubspot/types";
+import {Pipeline} from "../services/hubspot/types";
+import {DealPipeline} from "../types";
 
 const HomePage = () => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext };
@@ -122,6 +124,12 @@ const HomePage = () => {
         getAccountInfoService,
     );
 
+    const dealPipelines = useQueriesWithClient(deals?.map((deal) => ({
+        queryKey: [QueryKey.PIPELINES, "homepage_deals", deal.data?.properties.pipeline],
+        queryFn: async (client) => ({ dealId: deal.data?.id as string, pipeline: await getPipelineService(client, "deals", deal.data?.properties.pipeline as string) }),
+        enabled: (deals.length > 0) && deals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
+    })) ?? []);
+
     useSetAppTitle("Contact");
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
@@ -149,6 +157,11 @@ const HomePage = () => {
             })
     }, [userId]);
 
+    const dealPipelinesData = useMemo(
+        () => (dealPipelines ?? []).map((d) => d.data as DealPipeline),
+        [dealPipelines]
+    );
+
     if (!contact.isSuccess) {
         return <LoadingSpinner/>
     }
@@ -160,6 +173,7 @@ const HomePage = () => {
             companies={filterEntities(companies) as Array<Company["properties"]>}
             deals={filterEntities(deals) as Array<Deal["properties"]>}
             dealOwners={normalize(dealOwners)}
+            dealPipelines={dealPipelinesData}
             notes={filterEntities(notes) as Array<Note["properties"]>}
             noteOwners={normalize(noteOwners)}
             emailActivities={filterEntities(emailActivities) as Array<EmailActivity["properties"]>}

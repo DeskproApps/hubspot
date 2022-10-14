@@ -13,18 +13,20 @@ import type {
     CallActivity,
     EmailActivity,
 } from "../../services/hubspot/types";
+import {DealPipeline} from "../../types";
 
 type Props = {
-    contact: Contact["properties"],
-    contactOwner?: Owner,
-    dealOwners: Record<Owner["id"], Owner>,
-    companies: Array<Company["properties"]>,
-    deals: Array<Deal["properties"]>,
-    notes: Array<Note["properties"]>,
-    noteOwners: Record<Owner["id"], Owner>,
-    callActivities: Array<CallActivity["properties"]>,
-    emailActivities: Array<EmailActivity["properties"]>,
-    accountInfo?: AccountInto,
+    contact: Contact["properties"];
+    contactOwner?: Owner;
+    dealOwners: Record<Owner["id"], Owner>;
+    companies: Array<Company["properties"]>;
+    deals: Array<Deal["properties"]>;
+    notes: Array<Note["properties"]>;
+    noteOwners: Record<Owner["id"], Owner>;
+    callActivities: Array<CallActivity["properties"]>;
+    emailActivities: Array<EmailActivity["properties"]>;
+    accountInfo?: AccountInto;
+    dealPipelines: DealPipeline[];
 }
 
 const Home: FC<Props> = ({
@@ -38,13 +40,14 @@ const Home: FC<Props> = ({
     contactOwner,
     callActivities,
     emailActivities,
+    dealPipelines,
 }) => {
     return (
         <>
             <ContactInfo contact={contact} companies={companies} owner={contactOwner} />
-            <Deals deals={deals} owners={dealOwners} accountInfo={accountInfo} />
-            <Notes notes={notes} owners={noteOwners} />
-            <Activities calls={callActivities} emails={emailActivities} />
+            <Deals deals={deals} owners={dealOwners} accountInfo={accountInfo} dealPipelines={dealPipelines} />
+            {notes.length > 0 && <Notes notes={notes} owners={noteOwners} />}
+            {(callActivities.length > 0 || emailActivities.length > 0) && <Activities calls={callActivities} emails={emailActivities} />}
         </>
     );
 };

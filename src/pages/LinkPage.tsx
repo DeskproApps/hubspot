@@ -9,7 +9,7 @@ import {
     HorizontalDivider,
     useDeskproElements,
     useDeskproAppClient,
-    useDeskproLatestAppContext,
+    useDeskproLatestAppContext, useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
 import { setEntityContact } from "../services/entityAssociation";
 import { searchContactsByService } from "../services/hubspot";
@@ -38,11 +38,9 @@ const LinkPage: FC = () => {
 
     useSetAppTitle("Add contact");
 
-    useDeskproElements(({ registerElement, deRegisterElement }) => {
+    useDeskproElements(({ deRegisterElement }) => {
         deRegisterElement("home");
         deRegisterElement("menu");
-
-        registerElement("home", { type: "home_button", payload: { type: "changePage", path: "/home" } });
     });
 
     const searchInHubspot = useDebouncedCallback<(q: string) => void>((q) => {
