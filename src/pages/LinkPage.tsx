@@ -38,11 +38,9 @@ const LinkPage: FC = () => {
 
     useSetAppTitle("Add contact");
 
-    useDeskproElements(({ registerElement, deRegisterElement }) => {
+    useDeskproElements(({ deRegisterElement }) => {
         deRegisterElement("home");
         deRegisterElement("menu");
-
-        registerElement("home", { type: "home_button", payload: { type: "changePage", path: "/home" } });
     });
 
     const searchInHubspot = useDebouncedCallback<(q: string) => void>((q) => {
@@ -129,6 +127,10 @@ const LinkPage: FC = () => {
                     onClick={onLinkContact}
                 />
             </Stack>
+            <br />
+            <br />
+            <br />
+            <br />
         </BaseContainer>
     );
 };

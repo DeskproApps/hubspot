@@ -13,13 +13,12 @@ import {
 import { filterEntities } from "../utils";
 import { QueryKey } from "../query";
 import {
-    getOwnersService,
     getContactService,
     getActivityService,
-    getEntityAssocService,
+    getEntityAssocService, getOwnerService,
 } from "../services/hubspot";
 import { Activity } from "../components/Activity";
-import {CallActivity, Contact, EmailActivity} from "../services/hubspot/types";
+import {CallActivity, Contact, EmailActivity, Owner} from "../services/hubspot/types";
 
 const getActivityQueryKey = (type: string | null): string | undefined => {
     if (!type) {
@@ -59,7 +58,7 @@ const ActivityPage: FC = () => {
 
     const owner = useQueryWithClient(
         [QueryKey.OWNERS, data?.properties?.hubspot_owner_id],
-        (client) => getOwnersService(client, data?.properties?.hubspot_owner_id as string),
+        (client) => getOwnerService(client, data?.properties?.hubspot_owner_id as string),
         { enabled: !!data?.properties?.hubspot_owner_id }
     );
 
@@ -77,7 +76,7 @@ const ActivityPage: FC = () => {
     return (
         <Activity
             type={type}
-            owner={owner.data}
+            owner={owner.data as Owner|undefined}
             activity={data.properties}
             contacts={filterEntities(contacts) as Array<Contact["properties"]>}
         />

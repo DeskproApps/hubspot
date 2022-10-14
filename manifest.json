@@ -1,8 +1,8 @@
 {
   "name": "@deskpro-apps/hubspot",
   "title": "HubSpot",
-  "description": "Synchronize your support and sales teams for better and faster results.",
-  "version": "1.0.4",
+  "description": "Connect with HubSpot and view and update information from your CRM while in Deskpro tickets",
+  "version": "1.0.0",
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,
@@ -18,36 +18,13 @@
     }
   },
   "settings": {
-    "client_id": {
-      "title": "Client Id",
+    "api_token": {
+      "title": "API Token",
+      "description": "Token provided when you set up the private app in HubSpot",
       "type": "string",
       "isRequired": true,
-      "isBackendOnly": false,
+      "isBackendOnly": true,
       "order": 10
-    },
-    "client_secret": {
-      "title": "Client Secret",
-      "type": "string",
-      "isRequired": true,
-      "isBackendOnly": true,
-      "order": 20
-    },
-    "redirect_uri": {
-      "title": "Install URL (OAuth)",
-      "type": "string",
-      "isRequired": true,
-      "isBackendOnly": true,
-      "order": 30
-    },
-    "global_access_token": {
-      "title": "",
-      "type": "app_embedded",
-      "options": {
-        "entrypoint": "#/admin/global-sign-in"
-      },
-      "isRequired": true,
-      "isBackendOnly": true,
-      "order": 40
     }
   },
   "proxy": {

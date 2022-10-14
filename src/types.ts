@@ -1,4 +1,5 @@
 import { IDeskproClient, Context } from "@deskpro/app-sdk";
+import {Pipeline} from "./services/hubspot/types";
 
 /**
  * An ISO-8601 encoded UTC date time string. Example value: `""2019-09-07T15:50:00Z"`.
@@ -74,3 +75,8 @@ export type UserContext = Context<ContextData>;
 export type EventsPayload =
     | { type: "changePage", path: string }
     | { type: "unlink", userId: string, contactId: string };
+
+export type DealPipeline = {
+    dealId: string;
+    pipeline: Pipeline;
+};

@@ -1,7 +1,5 @@
-My App
+HubSpot
 ===
-
-TODO: Include a summary of app functionality and a screenshot
 
 Basic Usage
 ---
