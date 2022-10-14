@@ -127,6 +127,10 @@ const LinkPage: FC = () => {
                     onClick={onLinkContact}
                 />
             </Stack>
+            <br />
+            <br />
+            <br />
+            <br />
         </BaseContainer>
     );
 };
