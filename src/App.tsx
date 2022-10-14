@@ -18,6 +18,7 @@ import { Main } from "./pages/Main";
 import { GlobalSignIn } from "./pages/GlobalSignIn";
 import { HomePage } from "./pages/HomePage";
 import { LinkPage } from "./pages/LinkPage";
+import { DealPage } from "./pages/DealPage";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 
@@ -51,11 +52,18 @@ function App() {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         onElementEvent: (id, type, payload: EventsPayload) => {
-            match(payload)
-                .with({ type: "unlink" }, () => {
+            match(payload.type)
+                .with("changePage", () => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    payload?.path && navigate(payload.path);
+                })
+                .with("unlink", () => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     unlinkContact(payload?.userId, payload?.contactId);
                 })
-                .run();
+                .otherwise(() => {});
         },
     }, [client]);
 
@@ -89,6 +97,7 @@ function App() {
                             </Route>
                             <Route path="home" element={<HomePage/>} />
                             <Route path="link" element={<LinkPage/>} />
+                            <Route path="deal/:dealId" element={<DealPage/>} />
                             <Route index element={<Main/>} />
                         </Routes>
                     </ErrorBoundary>

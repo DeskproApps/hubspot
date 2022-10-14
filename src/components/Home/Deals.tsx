@@ -5,6 +5,7 @@ import { P5, H3, HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName, getSymbolFromCurrency } from "../../utils";
 import { format } from "../../utils/date";
 import {
+    Link,
     Title,
     TwoColumn,
     OverflowText,
@@ -44,9 +45,17 @@ const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
     dealstage,
     closedate,
     accountInfo,
+    hs_object_id: dealId,
 }) => (
     <DealContainer>
-        <Title as={H3} title={dealname} link="" marginBottom={7} />
+        <Title
+            as={H3}
+            title={(
+                <Link to={`/deal/${dealId}`}>{dealname}</Link>
+            )}
+            link=""
+            marginBottom={7}
+        />
         <TwoColumn
             leftLabel="Stage"
             leftText={<OverflowText as={P5}>{capitalize(dealstage)}</OverflowText>}

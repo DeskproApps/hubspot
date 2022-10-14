@@ -30,7 +30,7 @@ export type RequestParams = {
 
 export type Request = <T>(
     client: IDeskproClient,
-    params: RequestParams
+    params: RequestParams,
 ) => Promise<T>;
 
 export type PreRequestParams = {
@@ -72,4 +72,5 @@ export type ContextData = {
 export type UserContext = Context<ContextData>;
 
 export type EventsPayload =
+    | { type: "changePage", path: string }
     | { type: "unlink", userId: string, contactId: string };

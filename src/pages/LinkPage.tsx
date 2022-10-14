@@ -38,8 +38,11 @@ const LinkPage: FC = () => {
 
     useSetAppTitle("Add contact");
 
-    useDeskproElements(({ deRegisterElement }) => {
-        deRegisterElement("hubspotMenu");
+    useDeskproElements(({ registerElement, deRegisterElement }) => {
+        deRegisterElement("home");
+        deRegisterElement("menu");
+
+        registerElement("home", { type: "home_button", payload: { type: "changePage", path: "/home" } });
     });
 
     const searchInHubspot = useDebouncedCallback<(q: string) => void>((q) => {
