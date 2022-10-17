@@ -25,7 +25,6 @@ import { QueryKey } from "../query";
 import { Home } from "../components/Home";
 import type { UserContext, ContextData } from "../types";
 import type { Contact, Company, Deal, Note, EmailActivity, CallActivity } from "../services/hubspot/types";
-import {DealPipeline} from "../types";
 
 const HomePage = () => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext };
@@ -124,8 +123,8 @@ const HomePage = () => {
     );
 
     const dealPipelines = useQueriesWithClient(deals?.map((deal) => ({
-        queryKey: [QueryKey.PIPELINES, "homepage_deals", deal.data?.properties.pipeline],
-        queryFn: async (client) => ({ dealId: deal.data?.id as string, pipeline: await getPipelineService(client, "deals", deal.data?.properties.pipeline as string) }),
+        queryKey: [QueryKey.PIPELINES, deal.data?.properties.pipeline],
+        queryFn: (client) => getPipelineService(client, "deals", deal.data?.properties.pipeline as string),
         enabled: (deals.length > 0) && deals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
     })) ?? []);
 
@@ -156,10 +155,13 @@ const HomePage = () => {
             })
     }, [userId]);
 
-    const dealPipelinesData = useMemo(
-        () => (dealPipelines ?? []).map((d) => d.data as DealPipeline),
-        [dealPipelines]
-    );
+    const dealPipelinesData = useMemo(() => {
+        if (!dealPipelines.every(({ isFetched, isSuccess }) => (isFetched && isSuccess))) {
+            return {};
+        }
+
+        return normalize(dealPipelines);
+    }, [dealPipelines]);
 
     if (!contact.isSuccess) {
         return <LoadingSpinner/>

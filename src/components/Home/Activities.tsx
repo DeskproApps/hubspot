@@ -7,6 +7,7 @@ import {
     Link,
     Title,
     TwoColumn,
+    OverflowText,
     BaseContainer,
 } from "../common";
 import { format } from "../../utils/date";
@@ -32,7 +33,7 @@ const normalizeCallFn = (call: CallActivity["properties"]): ActivityProps => ({
 const normalizeEmailFn = (email: EmailActivity["properties"]): ActivityProps => ({
     id: email.hs_object_id,
     title: email.hs_email_subject,
-    body: email.hs_email_html,
+    body: email.hs_email_text,
     date: email.hs_timestamp,
     type: "email",
 });
@@ -54,7 +55,7 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type }) => (
         )}
         {(!title && body) && (
             <Link to={`/contacts/activities?type=${type}&activityId=${id}`}>
-                <H3 dangerouslySetInnerHTML={{ __html: body }} style={{ marginBottom: 7 }} />
+                <OverflowText as={H3} style={{ marginBottom: 7 }}>{body}</OverflowText>
             </Link>
         )}
         <TwoColumn
@@ -76,7 +77,7 @@ const Activities: FC<{
     const activities = concat(normalizeCall, normalizeEmail).sort(sortDateFn);
 
     return (
-        <BaseContainer style={{ marginBottom: 50 }}>
+        <BaseContainer style={{ marginBottom: 40 }}>
             <Title title={`Activities (${activities.length})`}/>
             {activities.map((activity) => (
                 <Activity key={activity.id} {...activity} />
