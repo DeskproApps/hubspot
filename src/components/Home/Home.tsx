@@ -9,11 +9,11 @@ import type {
     Owner,
     Contact,
     Company,
+    Pipeline,
     AccountInto,
     CallActivity,
     EmailActivity,
 } from "../../services/hubspot/types";
-import {DealPipeline} from "../../types";
 
 type Props = {
     contact: Contact["properties"];
@@ -26,7 +26,7 @@ type Props = {
     callActivities: Array<CallActivity["properties"]>;
     emailActivities: Array<EmailActivity["properties"]>;
     accountInfo?: AccountInto;
-    dealPipelines: DealPipeline[];
+    dealPipelines: Record<Pipeline["id"], Pipeline>;
 }
 
 const Home: FC<Props> = ({
@@ -46,8 +46,8 @@ const Home: FC<Props> = ({
         <>
             <ContactInfo contact={contact} companies={companies} owner={contactOwner} />
             <Deals deals={deals} owners={dealOwners} accountInfo={accountInfo} dealPipelines={dealPipelines} />
-            {notes.length > 0 && <Notes notes={notes} owners={noteOwners} />}
-            {(callActivities.length > 0 || emailActivities.length > 0) && <Activities calls={callActivities} emails={emailActivities} />}
+            <Notes notes={notes} owners={noteOwners} />
+            <Activities calls={callActivities} emails={emailActivities} />
         </>
     );
 };

@@ -1,8 +1,6 @@
 HubSpot
 ===
 
-todo: description of HubSpot app
-
 Basic Usage
 ---
 

@@ -1,5 +1,6 @@
-import {FC, useMemo} from "react";
+import { FC } from "react";
 import styled from "styled-components";
+import get from "lodash/get";
 import capitalize from "lodash/capitalize";
 import { P5, H3, HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName, getSymbolFromCurrency } from "../../utils";
@@ -11,8 +12,12 @@ import {
     OverflowText,
     BaseContainer,
 } from "../common";
-import type {AccountInto, Pipeline, PipelineStage} from "../../services/hubspot/types";
-import {DealPipeline} from "../../types";
+import type {
+    Pipeline,
+    AccountInto,
+    PipelineStage,
+    Deal as DealType,
+} from "../../services/hubspot/types";
 
 const DealContainer = styled.div`
     margin-bottom: 14px;
@@ -31,38 +36,32 @@ type DealProps = {
     amount: string,
     closedate: string,
     hubspot_owner_id: DealOwner["id"],
-    dealPipelines?: DealPipeline[],
+    pipeline: DealType["properties"]["pipeline"],
+    dealPipelines?: Record<Pipeline["id"], Pipeline>,
 };
 
 type Props = {
     deals: DealProps[],
     accountInfo?: AccountInto,
     owners: Record<DealOwner["id"], DealOwner>,
-    dealPipelines?: DealPipeline[],
+    dealPipelines?: Record<Pipeline["id"], Pipeline>,
 };
 
 const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
     owner,
     amount,
     dealname,
+    pipeline,
     dealstage,
     closedate,
     accountInfo,
     dealPipelines,
     hs_object_id: dealId,
 }) => {
-    const pipeline: Pipeline|null = useMemo(() => {
-        if (dealPipelines && dealId) {
-            return dealPipelines.filter((dp) => dp && dp.dealId === dealId)[0]?.pipeline ?? null;
-        }
-
-        return null;
-    }, [dealPipelines, dealId]);
-
-    const stage: PipelineStage|null = pipeline
-        ? pipeline.stages.find(({ id }) => id === dealstage) || null
-        : null
-    ;
+    const pipelineData: Pipeline|null = get(dealPipelines, [pipeline], null);
+    const pipeLineStage: PipelineStage|null = pipelineData
+        ? pipelineData.stages.find(({ id }) => id === dealstage) || null
+        : null;
 
     return (
         <DealContainer>
@@ -76,7 +75,11 @@ const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
             />
             <TwoColumn
                 leftLabel="Stage"
-                leftText={<OverflowText as={P5}>{capitalize(stage ? stage.label : dealstage)}</OverflowText>}
+                leftText={(
+                    <OverflowText as={P5}>
+                        {capitalize(pipeLineStage ? pipeLineStage.label : dealstage)}
+                    </OverflowText>
+                )}
                 rightLabel="Amount"
                 rightText={amount ? `${getSymbolFromCurrency(accountInfo?.companyCurrency)} ${amount}` : "-"}
             />
