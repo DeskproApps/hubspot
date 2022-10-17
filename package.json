@@ -13,9 +13,10 @@
     "test:coverage": "cross-env NODE_OPTIONS=--max-old-space-size=1024 jest --maxWorkers=75% --coverage"
   },
   "dependencies": {
-    "@deskpro/app-sdk": "^1.1.10",
-    "@deskpro/deskpro-ui": "^2.5.1",
+    "@deskpro/app-sdk": "^1.2.0",
+    "@deskpro/deskpro-ui": "^4.2.0",
     "@fortawesome/free-solid-svg-icons": "6.1.1",
+    "@heroicons/react": "1.0.6",
     "date-fns": "^2.29.3",
     "iframe-resizer": "^4.3.2",
     "javascript-time-ago": "^2.5.7",
@@ -28,7 +29,7 @@
     "react-query": "^3.39.2",
     "react-router-dom": "^6.4.0",
     "react-time-ago": "^7.2.1",
-    "styled-components": "^5.3.3",
+    "styled-components": "^5.3.6",
     "ts-pattern": "^4.0.5",
     "use-debounce": "^8.0.4",
     "uuid": "^9.0.0"
