@@ -2,8 +2,16 @@ import { IDeskproClient } from "@deskpro/app-sdk";
 import { baseRequest } from "./baseRequest";
 import { CallActivity } from "./types";
 
-const getCallActivityService = async (client: IDeskproClient, callId: CallActivity["id"]) => {
-    const properties = await baseRequest<string[]>(client, { url: "/crm/v3/objects/calls/properties" })
+const properties = [
+    "hs_object_id",
+    "hs_call_body",
+    "hs_call_title",
+    "hs_timestamp",
+    "hs_call_duration",
+    "hubspot_owner_id",
+];
+
+const getCallActivityService = (client: IDeskproClient, callId: CallActivity["id"]) => {
     return baseRequest<CallActivity>(client, {
         url: `/crm/v3/objects/calls/${callId}`,
         queryParams: {
