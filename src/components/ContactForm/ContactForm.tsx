@@ -1,4 +1,6 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
+import { useFormik } from "formik";
+import concat from "lodash/concat";
 import { InputWithDisplay } from "@deskpro/deskpro-ui";
 import { Stack } from "@deskpro/app-sdk";
 import {
@@ -6,17 +8,80 @@ import {
     Button,
     SingleSelect,
 } from "../common";
-import type { Props } from "./types";
+import {
+    getOption,
+    getInitValues,
+    noOwnerOption,
+    validationSchema,
+} from "./utils";
+import { getFullName } from "../../utils";
+import type { Props, Values, Option } from "./types";
 
-const ContactForm: FC<Props> = ({ onSubmit, onCancel, isEditMode = false }) => {
+const ContactForm: FC<Props> = ({
+    owners,
+    onSubmit,
+    onCancel,
+    isEditMode = false,
+    lifecycleStages,
+    leadStatuses,
+}) => {
+    const [ownerOptions, setOwnerOptions] = useState<Array<Option<string>>>([]);
+    const [stageOptions, setStageOptions] = useState<Array<Option<string>>>([]);
+    const [statusOptions, setStatusOptions] = useState<Array<Option<string>>>([]);
+
+    const {
+        values,
+        errors,
+        touched,
+        handleSubmit,
+        isSubmitting,
+        setFieldValue,
+        getFieldProps,
+    } = useFormik<Values>({
+        initialValues: getInitValues(),
+        validationSchema,
+        onSubmit: async (values: Values) => {
+            await onSubmit(values);
+        },
+    });
+
+    useEffect(() => {
+        let options = [noOwnerOption];
+
+        if (Array.isArray(owners) && owners.length > 0) {
+            options = concat(
+                options,
+                owners.map((owner) => getOption(owner.id, getFullName(owner))),
+            );
+        }
+
+        setOwnerOptions(options);
+    }, [owners]);
+
+    useEffect(() => {
+        if (Array.isArray(lifecycleStages) && lifecycleStages.length > 0) {
+            setStageOptions(
+                lifecycleStages.map(({ id, label }) => getOption(id, label))
+            );
+        }
+    }, [lifecycleStages]);
+
+    useEffect(() => {
+        if (Array.isArray(leadStatuses) && leadStatuses.length > 0) {
+            setStatusOptions(leadStatuses.map(({ value, label }) => getOption(value, label)));
+        }
+    }, [leadStatuses]);
+
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit}>
             <Label htmlFor="email" label="Email">
                 <InputWithDisplay
                     type="text"
                     id="email"
                     inputsize="small"
                     placeholder="Enter value"
+                    {...getFieldProps("email")}
+                    error={!!(touched.email && errors.email)}
                 />
             </Label>
 
@@ -26,6 +91,8 @@ const ContactForm: FC<Props> = ({ onSubmit, onCancel, isEditMode = false }) => {
                     id="firstName"
                     inputsize="small"
                     placeholder="Enter value"
+                    {...getFieldProps("firstName")}
+                    error={!!(touched.firstName && errors.firstName)}
                 />
             </Label>
 
@@ -35,18 +102,18 @@ const ContactForm: FC<Props> = ({ onSubmit, onCancel, isEditMode = false }) => {
                     id="lastName"
                     inputsize="small"
                     placeholder="Enter value"
+                    {...getFieldProps("lastName")}
+                    error={!!(touched.lastName && errors.lastName)}
                 />
             </Label>
 
             <Label htmlFor="owner" label="Contact owner">
                 <SingleSelect
                     id="owner"
-                    showInternalSearch
-                    value={{ key: 0, value: 0, label: "No owner", type: "value" }}
-                    options={[
-                        { key: 0, value: 0, label: "No owner", type: "value" },
-                        { key: 1, value: 1, label: "ilia makarov", type: "value" },
-                    ]}
+                    value={values.owner}
+                    options={ownerOptions}
+                    error={!!(touched.owner && errors.owner)}
+                    onChange={(value: Option<string>) => setFieldValue("owner", value)}
                 />
             </Label>
 
@@ -56,37 +123,39 @@ const ContactForm: FC<Props> = ({ onSubmit, onCancel, isEditMode = false }) => {
                     id="jobTitle"
                     inputsize="small"
                     placeholder="Enter value"
+                    {...getFieldProps("jobTitle")}
+                    error={!!(touched.jobTitle && errors.jobTitle)}
                 />
             </Label>
 
-            <Label htmlFor="phone" label="jobTitle">
+            <Label htmlFor="phone" label="Phone">
                 <InputWithDisplay
                     type="text"
                     id="phone"
                     inputsize="small"
                     placeholder="Enter value"
+                    {...getFieldProps("phone")}
+                    error={!!(touched.phone && errors.phone)}
                 />
             </Label>
 
             <Label htmlFor="lifecycleStage" label="Lifecycle stage">
                 <SingleSelect
                     id="lifecycleStage"
-                    showInternalSearch
-                    options={[
-                        { key: 0, value: 0, label: "Stage 1", type: "value" },
-                        { key: 1, value: 1, label: "Stage 2", type: "value" },
-                    ]}
+                    value={values.lifecycleStage}
+                    options={stageOptions}
+                    error={!!(touched.lifecycleStage && errors.lifecycleStage)}
+                    onChange={(value: Option<string>) => setFieldValue("lifecycleStage", value)}
                 />
             </Label>
 
             <Label htmlFor="leadStatus" label="Lead status">
                 <SingleSelect
                     id="leadStatus"
-                    showInternalSearch
-                    options={[
-                        { key: 0, value: 0, label: "Status 1", type: "value" },
-                        { key: 1, value: 1, label: "Status 2", type: "value" },
-                    ]}
+                    value={values.leadStatus}
+                    options={statusOptions}
+                    error={!!(touched.leadStatus && errors.leadStatus)}
+                    onChange={(value: Option<string>) => setFieldValue("leadStatus", value)}
                 />
             </Label>
 
@@ -94,8 +163,8 @@ const ContactForm: FC<Props> = ({ onSubmit, onCancel, isEditMode = false }) => {
                 <Button
                     type="submit"
                     text={isEditMode ? "Save" : "Create"}
-                    disabled={false/*isSubmitting*/}
-                    loading={false/*isSubmitting*/}
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
                 />
                 <Button
                     text="Cancel"

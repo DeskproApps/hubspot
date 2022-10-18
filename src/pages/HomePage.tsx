@@ -14,10 +14,11 @@ import {
     getOwnerService,
     getContactService,
     getCompanyService,
+    getPipelineService,
     getAccountInfoService,
     getEntityAssocService,
     getCallActivityService,
-    getEmailActivityService, getPipelineService,
+    getEmailActivityService,
 } from "../services/hubspot";
 import { useSetAppTitle, useQueryWithClient, useQueriesWithClient } from "../hooks";
 import { normalize, filterEntities } from "../utils";

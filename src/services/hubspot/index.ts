@@ -8,7 +8,8 @@ export {
 export { getContactService } from "./getContactService";
 export { getEntityAssocService } from "./getEntityAssocService";
 export { getCompanyService } from "./getCompanyService";
-export { getOwnerService } from "./getOwnersService";
+export { getOwnerService } from "./getOwnerService";
+export { getOwnersService } from "./getOwnersService";
 export { getDealService } from "./getDealService";
 export { getNoteService } from "./getNoteService";
 export { getCallActivityService } from "./getCallActivityService";
@@ -17,3 +18,5 @@ export { getPipelineService } from "./getPipelineService";
 export { getAccountInfoService } from "./getAccountInfoService";
 export { getDealTypesService } from "./getDealTypesService";
 export { getActivityService } from "./getActivityService";
+export { getLeadStatusesService } from "./getLeadStatusesService";
+export { createContactService } from "./createContactService";

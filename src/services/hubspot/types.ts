@@ -144,7 +144,8 @@ export type CallActivity = {
 };
 
 export type PipelineTypes =
-    | "deals";
+    | "deals"
+    | "contacts";
 
 export type PipelineStage = {
     id: string,
@@ -206,6 +207,39 @@ export type DealTypes = {
         "readOnlyDefinition": boolean,
         "readOnlyOptions": boolean,
         "readOnlyValue": boolean,
+    },
+    "formField": boolean,
+};
+
+export type LeadStatusOption = {
+    label: string,
+    value: string,
+    description: string,
+    displayOrder: number,
+    hidden: boolean,
+};
+
+export type LeadStatus = {
+    "label": string,
+    "name": "hs_lead_status",
+    "description": string,
+    "options": LeadStatusOption[],
+    "updatedAt": DateTime,
+    "createdAt": DateTime,
+    "type": string,
+    "fieldType": string,
+    "groupName": string,
+    "displayOrder": number,
+    "calculated": boolean,
+    "externalOptions": boolean,
+    "hasUniqueValue": boolean,
+    "hidden": boolean,
+    "hubspotDefined": boolean,
+    "modificationMetadata": {
+        "archivable": true,
+        "readOnlyDefinition": true,
+        "readOnlyOptions": false,
+        "readOnlyValue": false
     },
     "formField": boolean,
 };

@@ -29,8 +29,7 @@ const SingleSelect: FC<any> = ({
 
     const selectedValue = useMemo(() => {
         return options.filter((o: DropdownValueType<string|number>) => o.value === value?.value)[0]?.label ?? "";
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value]);
+    }, [value, options]);
 
     useEffect(() => {
         setInput(value?.label || "Select Value");
