@@ -54,9 +54,9 @@ const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
     pipeline,
     dealstage,
     closedate,
-    accountInfo,
     dealPipelines,
     hs_object_id: dealId,
+    accountInfo: { portalId, companyCurrency } = {},
 }) => {
     const pipelineData: Pipeline|null = get(dealPipelines, [pipeline], null);
     const pipeLineStage: PipelineStage|null = pipelineData
@@ -70,7 +70,10 @@ const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
                 title={(
                     <Link to={`/deal/${dealId}`}>{dealname}</Link>
                 )}
-                link=""
+                link={(portalId && dealId)
+                    ? `https://app.hubspot.com/contacts/${portalId}/deal/${dealId}`
+                    : ""
+                }
                 marginBottom={7}
             />
             <TwoColumn
@@ -81,7 +84,7 @@ const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
                     </OverflowText>
                 )}
                 rightLabel="Amount"
-                rightText={amount ? `${getSymbolFromCurrency(accountInfo?.companyCurrency)} ${amount}` : "-"}
+                rightText={amount ? `${getSymbolFromCurrency(companyCurrency)} ${amount}` : "-"}
             />
             <TwoColumn
                 leftLabel="Owner"
@@ -97,7 +100,13 @@ const Deals: FC<Props> = ({ deals, owners, accountInfo, dealPipelines }) => {
     return (
         <>
             <BaseContainer>
-                <Title title={`Deals (${deals.length})`} />
+                <Title
+                    title={`Deals (${deals.length})`}
+                    link={accountInfo?.portalId
+                        ? `https://app.hubspot.com/contacts/${accountInfo?.portalId}/deals`
+                        : ""
+                    }
+                />
                 {deals.map((deal) => (
                     <Deal
                         key={deal.hs_object_id}

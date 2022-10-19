@@ -1,12 +1,32 @@
 import isEmpty from "lodash/isEmpty";
 import { proxyFetch } from "@deskpro/app-sdk";
-import { Request } from "../../types";
+import { Request, ApiRequestMethod } from "../../types";
 import { BASE_URL, placeholders } from "./constants";
-import { refreshTokenService } from "./refreshTokenService";
+// import { refreshTokenService } from "./refreshTokenService";
 import { getQueryParams } from "../../utils";
+
+type ErrorData = {
+    url: string,
+    code: number,
+    text: string,
+    entity: string|undefined,
+    method: ApiRequestMethod,
+};
+
+export class DeskproError extends Error {
+    code: number;
+    entity?: string;
+
+    constructor({ url, method, text, code, entity }: ErrorData) {
+        super(`${method} ${url}: Response Status [${text}]`);
+        this.code = code;
+        this.entity = entity;
+    }
+}
 
 const baseRequest: Request = async (client, {
     url,
+    entity,
     data = {},
     method = "GET",
     queryParams = {},
@@ -21,7 +41,7 @@ const baseRequest: Request = async (client, {
         method,
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer __api_token__`,
+            "Authorization": `Bearer ${placeholders.API_TOKEN}`,
             ...customHeaders,
         },
     };
@@ -30,7 +50,7 @@ const baseRequest: Request = async (client, {
         options.body = JSON.stringify(data);
     }
 
-    let res = await dpFetch(requestUrl, options);
+    const res = await dpFetch(requestUrl, options);
 
     /** ToDo: handle missing scopes
     category:"MISSING_SCOPES"
@@ -48,6 +68,7 @@ const baseRequest: Request = async (client, {
     status:"error"
      */
 
+    /** ToDo: Uncomment when we'll back to the OAuth2
     if ([401].includes(res.status)) {
         options.headers = {
             ...options.headers,
@@ -66,10 +87,20 @@ const baseRequest: Request = async (client, {
                 res = await dpFetch(requestUrl, options);
             }
         }
+    }*/
+
+    if (res.status === 400) {
+        return await res.json();
     }
 
     if (res.status < 200 || res.status >= 400) {
-        throw new Error(`${method} ${url}: Response Status [${await res.text()}]`);
+        throw new DeskproError({
+            url,
+            method,
+            entity,
+            code: res.status,
+            text: await res.text(),
+        });
     }
 
     return await res.json();
