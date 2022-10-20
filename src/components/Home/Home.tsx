@@ -44,7 +44,7 @@ const Home: FC<Props> = ({
 }) => {
     return (
         <>
-            <ContactInfo contact={contact} companies={companies} owner={contactOwner} />
+            <ContactInfo contact={contact} companies={companies} owner={contactOwner} accountInfo={accountInfo} />
             <Deals deals={deals} owners={dealOwners} accountInfo={accountInfo} dealPipelines={dealPipelines} />
             <Notes notes={notes} owners={noteOwners} />
             <Activities calls={callActivities} emails={emailActivities} />

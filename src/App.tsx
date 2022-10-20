@@ -23,6 +23,7 @@ import { DealPage } from "./pages/DealPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
+import type { DeskproError } from "./services/hubspot/baseRequest";
 
 const unlink = (client: IDeskproClient|null, successFn: () => void) => (userId: DeskproUser["id"], contactId: Contact["id"]) => {
     if (client && userId && contactId) {
@@ -79,17 +80,19 @@ function App() {
                 {({ reset }) => (
                     <ErrorBoundary
                         onReset={reset}
-                        fallbackRender={({ resetErrorBoundary }) => (
-                            <Stack gap={6} vertical style={{ padding: "8px" }}>
-                                There was an error!
-                                <Button
-                                    text="Reload"
-                                    icon={faRefresh}
-                                    intent="secondary"
-                                    onClick={() => resetErrorBoundary()}
-                                />
-                            </Stack>
-                        )}
+                        fallbackRender={({ resetErrorBoundary, error }) => {
+                            const { code, entity } = error as DeskproError;
+                            const message = match(code)
+                                .with(404, () => `Can't find ${entity ? entity : ""}`)
+                                .otherwise(() => "There was an error!");
+
+                            return (
+                                <Stack gap={6} vertical style={{ padding: "8px" }}>
+                                    {message}
+                                    <Button text="Reload" icon={faRefresh} intent="secondary" onClick={resetErrorBoundary} />
+                                </Stack>
+                            )
+                        }}
                     >
                         <Routes>
                             <Route path="/">

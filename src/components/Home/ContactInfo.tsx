@@ -8,23 +8,18 @@ import {
     BaseContainer,
     TextBlockWithLabel,
 } from "../common";
+import type { AccountInto, Contact } from "../../services/hubspot/types";
 
 type Props = {
-    contact: {
-        email: string,
-        phone: string,
-        jobtitle: string,
-        lastname: string,
-        firstname: string,
-        lifecyclestage: string,
-    },
+    contact: Contact["properties"],
     companies: Array<{
         name: string,
     }>,
     owner?: {
         firstName: string,
         lastName: string,
-    }
+    },
+    accountInfo?: AccountInto,
 };
 
 const ContactInfo: FC<Props> = ({
@@ -35,18 +30,21 @@ const ContactInfo: FC<Props> = ({
         lifecyclestage,
         lastname: lastName,
         firstname: firstName,
+        hs_object_id: contactId,
     } = {},
     owner,
     companies,
+    accountInfo: { portalId } = {},
 }) => {
     return (
         <section>
             <BaseContainer>
-                {/* https://app.hubspot.com/contacts/{portalId}/{objectType}/{objectId} */}
-                {/* https://api.hubapi.com/integrations/v1/me?hapikey=demo */}
                 <Title
                     title={getFullName({ firstName, lastName }) || email || ""}
-                    link=""
+                    link={(portalId && contactId)
+                        ? `https://app.hubspot.com/contacts/${portalId}/contact/${contactId}`
+                        : ""
+                    }
                 />
                 <TextBlockWithLabel label="Email" text={email || "-"} />
                 <TextBlockWithLabel label="Phone" text={phone || "-"} />
@@ -58,7 +56,10 @@ const ContactInfo: FC<Props> = ({
                 />
                 <TextBlockWithLabel
                     label="Primary company"
-                    text={companies?.map(({ name }) => name).filter(Boolean).join(", ") ?? "-"}
+                    text={(Array.isArray(companies) && companies.length > 0) ?
+                        companies.map(({ name }) => name).filter(Boolean).join(", ")
+                        : "-"
+                    }
                 />
             </BaseContainer>
             <HorizontalDivider/>

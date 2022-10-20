@@ -1,4 +1,4 @@
-import {useMemo, useState} from "react";
+import { useMemo, useState } from "react";
 import get from "lodash/get";
 import {
     Context,
@@ -49,13 +49,17 @@ const HomePage = () => {
     const contactOwner = useQueryWithClient(
         [QueryKey.OWNERS, get(contact, ["data", "properties", "hubspot_owner_id"], 0)],
         (client) => getOwnerService(client, get(contact, ["data", "properties", "hubspot_owner_id"], 0)),
-        { enabled: !!get(contact, ["data", "properties", "hubspot_owner_id"], 0) }
+        {
+            enabled: !!get(contact, ["data", "properties", "hubspot_owner_id"], 0),
+            useErrorBoundary: false,
+        }
     );
 
     const companies = useQueriesWithClient(companyIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.COMPANY, id],
         queryFn: (client) => getCompanyService(client, id),
         enabled: (companyIds.data?.results.length > 0),
+        useErrorBoundary: false,
     })) ?? []);
 
     const dealIds = useQueryWithClient(
@@ -68,12 +72,14 @@ const HomePage = () => {
         queryKey: [QueryKey.DEALS, id],
         queryFn: (client) => getDealService(client, id),
         enabled: (dealIds.data?.results.length > 0),
+        useErrorBoundary: false,
     })) ?? []);
 
     const dealOwners = useQueriesWithClient(deals?.map((deal) => ({
         queryKey: [QueryKey.OWNERS, get(deal, ["data", "properties", "hubspot_owner_id"], 0)],
         queryFn: (client) => getOwnerService(client, get(deal, ["data", "properties", "hubspot_owner_id"], 0)),
         enabled: (deals.length > 0) && deals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
+        useErrorBoundary: false,
     })) ?? []);
 
     const noteIds = useQueryWithClient(
@@ -85,13 +91,15 @@ const HomePage = () => {
     const notes = useQueriesWithClient(noteIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.NOTES, id],
         queryFn: (client) => getNoteService(client, id),
-        enabled: (noteIds.data?.results.length > 0)
+        enabled: (noteIds.data?.results.length > 0),
+        useErrorBoundary: false,
     })) ?? []);
 
     const noteOwners = useQueriesWithClient(notes?.map((note) => ({
         queryKey: [QueryKey, get(note, ["data", "properties", "hubspot_owner_id"], 0)],
         queryFn: (client) => getOwnerService(client, get(note, ["data", "properties", "hubspot_owner_id"], 0)),
         enabled: (notes.length > 0) && notes.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
+        useErrorBoundary: false,
     })) ?? []);
 
     const emailActivityIds = useQueryWithClient(
@@ -110,12 +118,14 @@ const HomePage = () => {
         queryKey: [QueryKey.EMAIL_ACTIVITIES, id],
         queryFn: (client) => getEmailActivityService(client, id),
         enabled: (emailActivityIds.data?.results.length > 0),
+        useErrorBoundary: false,
     })) ?? []);
 
     const callActivities = useQueriesWithClient(callActivityIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.EMAIL_ACTIVITIES, id],
         queryFn: (client) => getCallActivityService(client, id),
         enabled: (callActivityIds.data?.results.length > 0),
+        useErrorBoundary: false,
     })) ?? []);
 
     const accountInfo = useQueryWithClient(
@@ -127,6 +137,7 @@ const HomePage = () => {
         queryKey: [QueryKey.PIPELINES, deal.data?.properties.pipeline],
         queryFn: (client) => getPipelineService(client, "deals", deal.data?.properties.pipeline as string),
         enabled: (deals.length > 0) && deals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
+        useErrorBoundary: false,
     })) ?? []);
 
     useSetAppTitle("Contact");
@@ -164,13 +175,13 @@ const HomePage = () => {
         return normalize(dealPipelines);
     }, [dealPipelines]);
 
-    if (!contact.isSuccess) {
+    if (contact.isLoading) {
         return <LoadingSpinner/>
     }
 
     return (
         <Home
-            contact={contact.data.properties}
+            contact={contact.data?.properties as Contact["properties"]}
             contactOwner={contactOwner.data}
             companies={filterEntities(companies) as Array<Company["properties"]>}
             deals={filterEntities(deals) as Array<Deal["properties"]>}

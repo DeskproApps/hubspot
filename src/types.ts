@@ -26,6 +26,7 @@ export type RequestParams = {
     data?: any,
     headers?: Record<string, string>,
     queryParams?: Record<string, string|number|boolean>,
+    entity?: string,
 };
 
 export type Request = <T>(

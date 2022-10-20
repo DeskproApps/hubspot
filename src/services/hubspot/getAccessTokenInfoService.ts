@@ -17,7 +17,7 @@ const getAccessTokenInfoService = (
             ...params,
         });
     } else {
-        return baseRequest<AccessTokenInfo>(client, { url: `/oauth/v1/access-tokens/${placeholders.TOKEN}` });
+        return baseRequest<AccessTokenInfo>(client, { url: `/oauth/v1/access-tokens/${placeholders.API_TOKEN}` });
     }
 };
 

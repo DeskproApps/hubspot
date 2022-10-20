@@ -9,6 +9,7 @@ export const placeholders = {
     REFRESH_TOKEN: `__global_access_token.json("[refreshToken]")__`,
     TOKEN_IN_STATE: `[[${ACCESS_TOKEN_PATH}]]`,
     REFRESH_TOKEN_IN_STATE: `[[${REFRESH_TOKEN_PATH}]]`,
+    API_TOKEN: "__api_token__",
 };
 
 export const BASE_URL = "https://api.hubapi.com";
