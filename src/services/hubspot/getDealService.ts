@@ -17,6 +17,7 @@ const properties = [
 const getDealService = (client: IDeskproClient, dealId: Deal["id"]) => {
     return baseRequest<Deal>(client, {
         url: `/crm/v3/objects/deals/${dealId}`,
+        entity: "deal",
         queryParams: {
             properties: properties.join(",")
         }

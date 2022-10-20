@@ -28,6 +28,7 @@ const HubSpotIcon = styled(Icon)`
     width: 12px;
     height: 12px;
     padding: 0 6px 0 0;
+    cursor: pointer;
 `;
 
 const HubSpotLink = ({ href }: Props) => {

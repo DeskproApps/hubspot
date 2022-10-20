@@ -2,7 +2,7 @@
   "name": "@deskpro-apps/hubspot",
   "title": "HubSpot",
   "description": "Connect with HubSpot and view and update information from your CRM while in Deskpro tickets",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,

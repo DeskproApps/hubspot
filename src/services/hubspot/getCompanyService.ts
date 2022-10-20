@@ -5,6 +5,7 @@ import { Company } from "./types";
 const getCompanyService = (client: IDeskproClient, companyId: Company["id"]) => {
     return baseRequest<Company>(client, {
         url: `/crm/v3/objects/companies/${companyId}`,
+        entity: "company"
     });
 };
 

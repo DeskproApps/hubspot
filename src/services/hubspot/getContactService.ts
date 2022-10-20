@@ -18,8 +18,9 @@ const getContactService = (
 ) => {
     return baseRequest<Contact>(client, {
         url: `/crm/v3/objects/contacts/${contactId}`,
+        entity: "contact",
         queryParams: {
-            properties: properties.join(",")
+            properties: properties.join(","),
         }
     });
 };
