@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import get from "lodash/get";
 import { Values, Option } from "./types";
 import isEmpty from "lodash/isEmpty";
 
@@ -40,8 +41,8 @@ const getOption = <Value, >(
 
 const noOwnerOption = getOption("none", "No owner");
 
-const getInitValues = (): Values => ({
-    email: "",
+const getInitValues = (initValues: Values): Values => ({
+    email: get(initValues, ["email"], ""),
     firstName: "",
     lastName: "",
     owner: { ...noOwnerOption, selected: true },

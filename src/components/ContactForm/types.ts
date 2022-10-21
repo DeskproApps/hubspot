@@ -22,6 +22,8 @@ export type Values = {
 };
 
 export type Props = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    values: any,
     isEditMode?: boolean,
     onSubmit: (values: Values) => void,
     onCancel: () => void,

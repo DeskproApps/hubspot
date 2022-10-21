@@ -30,6 +30,7 @@ const CreateContactPage: FC = () => {
     const [error, setError] = useState<string|null>(null);
 
     const deskproUserId = (context as Context<ContextData>)?.data?.user.id;
+    const primaryEmail = (context as Context<ContextData>)?.data?.user.primaryEmail;
 
     const owners = useQueryWithClient(
         [QueryKey.OWNERS],
@@ -106,6 +107,7 @@ const CreateContactPage: FC = () => {
             {(owners.isLoading || lifecycleStages.isLoading || leadStatuses.isLoading)
                 ? <LoadingSpinner />
                 : <ContactForm
+                    values={{ email: primaryEmail }}
                     onSubmit={onSubmit}
                     onCancel={onCancel}
                     owners={owners.data?.results ?? []}

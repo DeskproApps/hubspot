@@ -18,6 +18,7 @@ import { getFullName } from "../../utils";
 import type { Props, Values, Option } from "./types";
 
 const ContactForm: FC<Props> = ({
+    values: initValues,
     owners,
     onSubmit,
     onCancel,
@@ -38,7 +39,7 @@ const ContactForm: FC<Props> = ({
         setFieldValue,
         getFieldProps,
     } = useFormik<Values>({
-        initialValues: getInitValues(),
+        initialValues: getInitValues(initValues),
         validationSchema,
         onSubmit: async (values: Values) => {
             await onSubmit(values);
@@ -74,7 +75,7 @@ const ContactForm: FC<Props> = ({
 
     return (
         <form onSubmit={handleSubmit}>
-            <Label htmlFor="email" label="Email">
+            <Label htmlFor="email" label="Email" required>
                 <InputWithDisplay
                     type="text"
                     id="email"
