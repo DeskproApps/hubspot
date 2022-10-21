@@ -20,3 +20,4 @@ export { getDealTypesService } from "./getDealTypesService";
 export { getActivityService } from "./getActivityService";
 export { getLeadStatusesService } from "./getLeadStatusesService";
 export { createContactService } from "./createContactService";
+export { updateContactService } from "./updateContactService";

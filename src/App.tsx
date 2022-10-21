@@ -21,6 +21,7 @@ import { LinkPage } from "./pages/LinkPage";
 import { CreateContactPage } from "./pages/CreateContactPage";
 import { DealPage } from "./pages/DealPage";
 import { ActivityPage } from "./pages/ActivityPage";
+import { UpdateContactPage } from "./pages/UpdateContactPage";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 import type { DeskproError } from "./services/hubspot/baseRequest";
@@ -106,6 +107,7 @@ function App() {
                                 <Route path="link" element={<LinkPage/>} />
                                 <Route path="deal/:dealId" element={<DealPage/>} />
                                 <Route path="contacts/create" element={<CreateContactPage/>} />
+                                <Route path="contacts/:contactId" element={<UpdateContactPage/>} />
                                 <Route path="contacts/activities" element={<ActivityPage/>} />
                                 <Route index element={<Main/>} />
                             </Routes>

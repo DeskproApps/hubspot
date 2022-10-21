@@ -1,27 +1,31 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { useFormik } from "formik";
-import concat from "lodash/concat";
+import get from "lodash/get";
 import { InputWithDisplay } from "@deskpro/deskpro-ui";
 import { Stack } from "@deskpro/app-sdk";
 import {
     Label,
     Button,
+    ErrorBlock,
     SingleSelect,
 } from "../common";
 import {
-    getOption,
     getInitValues,
-    noOwnerOption,
     validationSchema,
 } from "./utils";
-import { getFullName } from "../../utils";
+import {
+    useOwnerOptions,
+    useLeadStatusOptions,
+    useLifecycleStageOptions,
+} from "./hooks";
 import type { Props, Values, Option } from "./types";
 
 const ContactForm: FC<Props> = ({
-    values: initValues,
     owners,
     onSubmit,
     onCancel,
+    initValues,
+    formErrors = {},
     isEditMode = false,
     lifecycleStages,
     leadStatuses,
@@ -39,50 +43,30 @@ const ContactForm: FC<Props> = ({
         setFieldValue,
         getFieldProps,
     } = useFormik<Values>({
-        initialValues: getInitValues(initValues),
+        initialValues: getInitValues(initValues, { owners, lifecycleStages }),
         validationSchema,
         onSubmit: async (values: Values) => {
             await onSubmit(values);
         },
     });
 
-    useEffect(() => {
-        let options = [noOwnerOption];
-
-        if (Array.isArray(owners) && owners.length > 0) {
-            options = concat(
-                options,
-                owners.map((owner) => getOption(owner.id, getFullName(owner))),
-            );
-        }
-
-        setOwnerOptions(options);
-    }, [owners]);
-
-    useEffect(() => {
-        if (Array.isArray(lifecycleStages) && lifecycleStages.length > 0) {
-            setStageOptions(
-                lifecycleStages.map(({ id, label }) => getOption(id, label))
-            );
-        }
-    }, [lifecycleStages]);
-
-    useEffect(() => {
-        if (Array.isArray(leadStatuses) && leadStatuses.length > 0) {
-            setStatusOptions(leadStatuses.map(({ value, label }) => getOption(value, label)));
-        }
-    }, [leadStatuses]);
+    useOwnerOptions(owners, setOwnerOptions);
+    useLifecycleStageOptions(lifecycleStages, setStageOptions);
+    useLeadStatusOptions(leadStatuses, setStatusOptions);
 
     return (
         <form onSubmit={handleSubmit}>
+            {formErrors && <ErrorBlock text={Object.values(formErrors)} />}
+
             <Label htmlFor="email" label="Email" required>
                 <InputWithDisplay
                     type="text"
                     id="email"
                     inputsize="small"
                     placeholder="Enter value"
+                    disabled={Boolean(isEditMode)}
                     {...getFieldProps("email")}
-                    error={!!(touched.email && errors.email)}
+                    error={!!(touched.email && errors.email) || Boolean(get(formErrors, ["email"], false))}
                 />
             </Label>
 
@@ -93,7 +77,7 @@ const ContactForm: FC<Props> = ({
                     inputsize="small"
                     placeholder="Enter value"
                     {...getFieldProps("firstName")}
-                    error={!!(touched.firstName && errors.firstName)}
+                    error={!!(touched.firstName && errors.firstName) || Boolean(get(formErrors, ["firstName"], false))}
                 />
             </Label>
 
@@ -104,7 +88,7 @@ const ContactForm: FC<Props> = ({
                     inputsize="small"
                     placeholder="Enter value"
                     {...getFieldProps("lastName")}
-                    error={!!(touched.lastName && errors.lastName)}
+                    error={!!(touched.lastName && errors.lastName) || Boolean(get(formErrors, ["lastName"], false))}
                 />
             </Label>
 
@@ -125,7 +109,7 @@ const ContactForm: FC<Props> = ({
                     inputsize="small"
                     placeholder="Enter value"
                     {...getFieldProps("jobTitle")}
-                    error={!!(touched.jobTitle && errors.jobTitle)}
+                    error={!!(touched.jobTitle && errors.jobTitle) || Boolean(get(formErrors, ["jobTitle"], false))}
                 />
             </Label>
 
@@ -136,7 +120,7 @@ const ContactForm: FC<Props> = ({
                     inputsize="small"
                     placeholder="Enter value"
                     {...getFieldProps("phone")}
-                    error={!!(touched.phone && errors.phone)}
+                    error={!!(touched.phone && errors.phone) || Boolean(get(formErrors, ["phone"], false))}
                 />
             </Label>
 
@@ -150,7 +134,7 @@ const ContactForm: FC<Props> = ({
                 />
             </Label>
 
-            <Label htmlFor="leadStatus" label="Lead status">
+            {!isEditMode && <Label htmlFor="leadStatus" label="Lead status">
                 <SingleSelect
                     id="leadStatus"
                     value={values.leadStatus}
@@ -158,7 +142,7 @@ const ContactForm: FC<Props> = ({
                     error={!!(touched.leadStatus && errors.leadStatus)}
                     onChange={(value: Option<string>) => setFieldValue("leadStatus", value)}
                 />
-            </Label>
+            </Label>}
 
             <Stack justify="space-between">
                 <Button
@@ -170,7 +154,7 @@ const ContactForm: FC<Props> = ({
                 {isEditMode && <Button
                     text="Cancel"
                     intent="tertiary"
-                    onClick={onCancel}
+                    onClick={() => { onCancel && onCancel() }}
                 />}
             </Stack>
         </form>

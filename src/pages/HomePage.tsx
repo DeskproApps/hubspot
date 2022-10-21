@@ -145,6 +145,10 @@ const HomePage = () => {
     useDeskproElements(({ registerElement, deRegisterElement }) => {
         deRegisterElement("home");
 
+        registerElement("editButton", {
+            type: "edit_button",
+            payload: { type: "changePage", path: `/contacts/${contactId}` },
+        });
         registerElement("menu", {
             type: "menu",
             items: [{

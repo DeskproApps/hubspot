@@ -30,7 +30,7 @@
   "proxy": {
     "whitelist": [{
       "url": "https://api.hubapi.com/.*",
-      "methods": ["GET", "POST"],
+      "methods": ["GET", "POST", "PATCH"],
       "timeout": 30
     }]
   }

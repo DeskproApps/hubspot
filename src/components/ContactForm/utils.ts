@@ -1,7 +1,8 @@
 import * as yup from "yup";
 import get from "lodash/get";
-import { Values, Option } from "./types";
 import isEmpty from "lodash/isEmpty";
+import { getFullName } from "../../utils";
+import type { Values, Option, InitValues, InitValuesParams } from "./types";
 
 const validationSchema = yup.object().shape({
     email: yup.string().email().required(),
@@ -39,18 +40,29 @@ const getOption = <Value, >(
     type: "value",
 });
 
-const noOwnerOption = getOption("none", "No owner");
+const noOwnerOption = getOption("", "No owner");
 
-const getInitValues = (initValues: Values): Values => ({
-    email: get(initValues, ["email"], ""),
-    firstName: "",
-    lastName: "",
-    owner: { ...noOwnerOption, selected: true },
-    jobTitle: "",
-    phone: "",
-    lifecycleStage: getOption("", ""),
-    leadStatus: getOption("", ""),
-});
+const getInitValues = (
+    initValues?: InitValues,
+    {
+        owners = [],
+        lifecycleStages = [],
+    }: InitValuesParams = {}
+): Values => {
+    const owner = owners?.find(({ id }) => id === initValues?.ownerId);
+    const lifecycleStage = lifecycleStages?.find(({ id }) => id === initValues?.lifecycleStage);
+
+    return ({
+        email: get(initValues, ["email"], ""),
+        firstName: get(initValues, ["firstName"], ""),
+        lastName: get(initValues, ["lastName"], ""),
+        owner: !owner ? noOwnerOption : getOption(owner.id, getFullName(owner)),
+        jobTitle: get(initValues, ["jobTitle"], ""),
+        phone: get(initValues, ["phone"], ""),
+        lifecycleStage: !lifecycleStage ? getOption("", "") : getOption(lifecycleStage.id, lifecycleStage.label),
+        leadStatus: getOption("", ""),
+    });
+};
 
 const getContactValues = (values: Values) => ({
     ...(isEmpty(values.email) ? {} : { email: values.email }),
@@ -58,9 +70,9 @@ const getContactValues = (values: Values) => ({
     ...(isEmpty(values.lastName) ? {} : { lastname: values.lastName }),
     ...(isEmpty(values.jobTitle) ? {} : { jobtitle: values.jobTitle }),
     ...(isEmpty(values.phone) ? {} : { phone: values.phone }),
-    ...((values.owner.value === noOwnerOption.value) ? {} : { hubspot_owner_id: values.owner.value }),
     ...(isEmpty(values.lifecycleStage.value) ? {} : { lifecyclestage: values.lifecycleStage.value }),
-    ...(isEmpty(values.leadStatus.value) ? {} : { hs_lead_status: values.leadStatus.value }),
+    ...(isEmpty(values.leadStatus?.value) ? {} : { hs_lead_status: values.leadStatus.value }),
+    hubspot_owner_id: values.owner.value,
 });
 
 export {

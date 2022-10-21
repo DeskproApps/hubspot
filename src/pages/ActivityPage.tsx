@@ -66,6 +66,7 @@ const ActivityPage: FC = () => {
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
         deRegisterElement("menu");
+        deRegisterElement("editButton");
         registerElement("home", { type: "home_button", payload: { type: "changePage", path: `/home` }});
     });
 

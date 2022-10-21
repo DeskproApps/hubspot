@@ -17,7 +17,7 @@ export type AuthTokens = {
     refreshToken: string,
 };
 
-export type ApiRequestMethod = "GET" | "POST";
+export type ApiRequestMethod = "GET" | "POST" | "PATCH";
 
 export type RequestParams = {
     url: string,

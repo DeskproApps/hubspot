@@ -87,11 +87,11 @@ const baseRequest: Request = async (client, {
         }
     }*/
 
-    if (res.status === 400) {
+    if (res.status >= 400 && res.status <= 409 ) {
         return Promise.reject(await res.json());
     }
 
-    if (res.status < 200 || res.status >= 400) {
+    if (res.status < 200 || res.status > 399) {
         throw new DeskproError({
             url,
             method,

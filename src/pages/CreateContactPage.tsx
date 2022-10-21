@@ -2,50 +2,45 @@ import { FC, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
+    Context,
     TwoButtonGroup,
     LoadingSpinner,
+    useDeskproElements,
     useDeskproAppClient,
-    useDeskproLatestAppContext, Context,
+    useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
-import { useQueryWithClient/*, useMutationWithQuery*/ } from "../hooks";
-import { QueryKey } from "../query";
+import { useLoadUpdateContactDeps } from "../hooks";
 import { setEntityContact } from "../services/entityAssociation";
-import {
-    getOwnersService,
-    getPipelineService,
-    createContactService,
-    getLeadStatusesService,
-} from "../services/hubspot";
-import { isValidationError } from "../services/hubspot/utils";
+import { createContactService } from "../services/hubspot";
+import { isValidationError, isConflictError } from "../services/hubspot/utils";
 import { BaseContainer, ErrorBlock } from "../components/common";
 import { ContactForm } from "../components";
 import { getContactValues } from "../components/ContactForm/utils";
-import type { Values } from "../components/ContactForm/types";
+import type { Values, FormErrors } from "../components/ContactForm/types";
 import type { ContextData } from "../types";
 
 const CreateContactPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
+    const {
+        owners,
+        isLoading,
+        leadStatuses,
+        lifecycleStages,
+    } = useLoadUpdateContactDeps();
+
     const [error, setError] = useState<string|null>(null);
+    const [formErrors, setFormErrors] = useState<FormErrors|null>(null);
 
     const deskproUserId = (context as Context<ContextData>)?.data?.user.id;
     const primaryEmail = (context as Context<ContextData>)?.data?.user.primaryEmail;
-
-    const owners = useQueryWithClient(
-        [QueryKey.OWNERS],
-        getOwnersService,
-    );
-
-    const lifecycleStages = useQueryWithClient(
-        [QueryKey.PIPELINES, "contacts"],
-        (client) => getPipelineService(client, "contacts", "contacts-lifecycle-pipeline"),
-    );
-
-    const leadStatuses = useQueryWithClient(
-        [QueryKey.PROPERTIES, "contacts", "hs_lead_status"],
-        getLeadStatusesService,
-    );
+    
+    useDeskproElements(({ deRegisterElement }) => {
+        deRegisterElement("home");
+        deRegisterElement("menu");
+        deRegisterElement("editButton");
+    });
 
     const onLinkContact = useCallback((contactId) => {
         if (!client || !deskproUserId || !contactId) {
@@ -68,6 +63,7 @@ const CreateContactPage: FC = () => {
         }
 
         setError(null);
+        setFormErrors(null);
         const data = getContactValues(values);
 
         // ToDo: replace to useMutation from react-query
@@ -78,6 +74,8 @@ const CreateContactPage: FC = () => {
             .catch((err) => {
                 if (isValidationError(err)) {
                     setError(err.message);
+                } else if (isConflictError(err)) {
+                    setFormErrors((state) => ({ ...state, email: err.message }) as FormErrors);
                 } else {
                     throw new Error(err);
                 }
@@ -104,12 +102,13 @@ const CreateContactPage: FC = () => {
                 twoOnClick={() => {}}
             />
             {error && <ErrorBlock text={error}/>}
-            {(owners.isLoading || lifecycleStages.isLoading || leadStatuses.isLoading)
+            {isLoading
                 ? <LoadingSpinner />
                 : <ContactForm
-                    values={{ email: primaryEmail }}
+                    initValues={{ email: primaryEmail }}
                     onSubmit={onSubmit}
                     onCancel={onCancel}
+                    formErrors={formErrors}
                     owners={owners.data?.results ?? []}
                     lifecycleStages={lifecycleStages.data?.stages ?? []}
                     leadStatuses={leadStatuses.data?.options ?? []}

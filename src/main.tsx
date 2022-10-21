@@ -5,7 +5,7 @@ import { QueryClientProvider } from "react-query";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { DeskproAppProvider } from "@deskpro/app-sdk";
-import { query } from "./query";
+import { queryClient } from "./query";
 import App from "./App";
 
 import "iframe-resizer/js/iframeResizer.contentWindow.js";
@@ -23,7 +23,7 @@ ReactDOM.render(
         <React.StrictMode>
             <DeskproAppProvider>
                 <HashRouter>
-                    <QueryClientProvider client={query}>
+                    <QueryClientProvider client={queryClient}>
                         <App/>
                     </QueryClientProvider>
                 </HashRouter>
