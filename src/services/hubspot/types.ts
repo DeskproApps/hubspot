@@ -30,6 +30,13 @@ export type EntityType =
     | "emails"
     | "calls";
 
+export type HubSpotError = {
+    status: "error",
+    category: "VALIDATION_ERROR",
+    correlationId: string,
+    message: string,
+};
+
 export type Contact = {
     id: string,
     properties: {

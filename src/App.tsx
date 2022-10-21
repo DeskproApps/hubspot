@@ -77,38 +77,41 @@ function App() {
     return (
         <Suspense fallback={<LoadingSpinner/>}>
             <QueryErrorResetBoundary>
-                {({ reset }) => (
-                    <ErrorBoundary
-                        onReset={reset}
-                        fallbackRender={({ resetErrorBoundary, error }) => {
-                            const { code, entity } = error as DeskproError;
-                            const message = match(code)
-                                .with(404, () => `Can't find ${entity ? entity : ""}`)
-                                .otherwise(() => "There was an error!");
+                {({ reset }) => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    return (<ErrorBoundary
+                            onReset={reset}
+                            fallbackRender={({ resetErrorBoundary, error }) => {
+                                const { code, entity } = error as DeskproError;
+                                const message = match(code)
+                                    .with(404, () => `Can't find ${entity ? entity : ""}`)
+                                    .otherwise(() => "There was an error!");
 
-                            return (
-                                <Stack gap={6} vertical style={{ padding: "8px" }}>
-                                    {message}
-                                    <Button text="Reload" icon={faRefresh} intent="secondary" onClick={resetErrorBoundary} />
-                                </Stack>
-                            )
-                        }}
-                    >
-                        <Routes>
-                            <Route path="/">
-                                <Route path="admin">
-                                    <Route path="global-sign-in" element={<GlobalSignIn/>} />
+                                return (
+                                    <Stack gap={6} vertical style={{ padding: "8px" }}>
+                                        {message}
+                                        <Button text="Reload" icon={faRefresh} intent="secondary" onClick={resetErrorBoundary} />
+                                    </Stack>
+                                )
+                            }}
+                        >
+                            <Routes>
+                                <Route path="/">
+                                    <Route path="admin">
+                                        <Route path="global-sign-in" element={<GlobalSignIn/>} />
+                                    </Route>
                                 </Route>
-                            </Route>
-                            <Route path="home" element={<HomePage/>} />
-                            <Route path="link" element={<LinkPage/>} />
-                            <Route path="deal/:dealId" element={<DealPage/>} />
-                            <Route path="contacts/create" element={<CreateContactPage/>} />
-                            <Route path="contacts/activities" element={<ActivityPage/>} />
-                            <Route index element={<Main/>} />
-                        </Routes>
-                    </ErrorBoundary>
-                )}
+                                <Route path="home" element={<HomePage/>} />
+                                <Route path="link" element={<LinkPage/>} />
+                                <Route path="deal/:dealId" element={<DealPage/>} />
+                                <Route path="contacts/create" element={<CreateContactPage/>} />
+                                <Route path="contacts/activities" element={<ActivityPage/>} />
+                                <Route index element={<Main/>} />
+                            </Routes>
+                        </ErrorBoundary>
+                    )
+                }}
             </QueryErrorResetBoundary>
         </Suspense>
     );

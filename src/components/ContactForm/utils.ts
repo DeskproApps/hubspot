@@ -3,7 +3,7 @@ import { Values, Option } from "./types";
 import isEmpty from "lodash/isEmpty";
 
 const validationSchema = yup.object().shape({
-    email: yup.string().email(),
+    email: yup.string().email().required(),
     firstName: yup.string(),
     lastName: yup.string(),
     owner: yup.object().shape({

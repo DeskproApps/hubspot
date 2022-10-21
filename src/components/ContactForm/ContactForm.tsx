@@ -166,11 +166,11 @@ const ContactForm: FC<Props> = ({
                     disabled={isSubmitting}
                     loading={isSubmitting}
                 />
-                <Button
+                {isEditMode && <Button
                     text="Cancel"
                     intent="tertiary"
                     onClick={onCancel}
-                />
+                />}
             </Stack>
         </form>
     );

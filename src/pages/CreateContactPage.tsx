@@ -1,4 +1,4 @@
-import { FC, useCallback } from "react";
+import { FC, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -16,7 +16,8 @@ import {
     createContactService,
     getLeadStatusesService,
 } from "../services/hubspot";
-import { BaseContainer } from "../components/common";
+import { isValidationError } from "../services/hubspot/utils";
+import { BaseContainer, ErrorBlock } from "../components/common";
 import { ContactForm } from "../components";
 import { getContactValues } from "../components/ContactForm/utils";
 import type { Values } from "../components/ContactForm/types";
@@ -26,6 +27,7 @@ const CreateContactPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
+    const [error, setError] = useState<string|null>(null);
 
     const deskproUserId = (context as Context<ContextData>)?.data?.user.id;
 
@@ -43,20 +45,6 @@ const CreateContactPage: FC = () => {
         [QueryKey.PROPERTIES, "contacts", "hs_lead_status"],
         getLeadStatusesService,
     );
-
-    // const { mutateAsync, ...props } = useMutationWithQuery(
-    //     [QueryKey.CONTACT, "create"],
-    //     (client, data) =>  createContactService(client, data),
-    //     {
-    //         onSuccess: (res) => {
-    //             console.log(">>> mutation:then:", res)
-    //         },
-    //         onError: (err) => {
-    //             console.log(">>> mutation:catch:", JSON.parse(err.message));
-    //         },
-    //     }
-    // );
-    // console.log(">>> mutation:", { mutateAsync, ...props });
 
     const onLinkContact = useCallback((contactId) => {
         if (!client || !deskproUserId || !contactId) {
@@ -78,15 +66,21 @@ const CreateContactPage: FC = () => {
             return;
         }
 
+        setError(null);
         const data = getContactValues(values);
 
-        // await mutateAsync(data);
-
+        // ToDo: replace to useMutation from react-query
         return createContactService(client, data)
             .then(({ id }) => {
                 return onLinkContact(id);
             })
-            .catch(() => {})
+            .catch((err) => {
+                if (isValidationError(err)) {
+                    setError(err.message);
+                } else {
+                    throw new Error(err);
+                }
+            })
     };
 
     const onCancel = () => {
@@ -108,6 +102,7 @@ const CreateContactPage: FC = () => {
                 twoIcon={faPlus}
                 twoOnClick={() => {}}
             />
+            {error && <ErrorBlock text={error}/>}
             {(owners.isLoading || lifecycleStages.isLoading || leadStatuses.isLoading)
                 ? <LoadingSpinner />
                 : <ContactForm
