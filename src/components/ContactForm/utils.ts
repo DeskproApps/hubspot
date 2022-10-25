@@ -1,8 +1,8 @@
 import * as yup from "yup";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import { getFullName } from "../../utils";
-import type { Values, Option, InitValues, InitValuesParams } from "./types";
+import { getFullName, getOption } from "../../utils";
+import type { Values, InitValues, InitValuesParams } from "./types";
 
 const validationSchema = yup.object().shape({
     email: yup.string().email().required(),
@@ -28,16 +28,6 @@ const validationSchema = yup.object().shape({
         value: yup.string(),
         type: yup.string().oneOf(["value"]),
     }),
-});
-
-const getOption = <Value, >(
-    value: Value,
-    label: string,
-): Option<Value> => ({
-    label,
-    value,
-    key: value,
-    type: "value",
 });
 
 const noOwnerOption = getOption("", "No owner");

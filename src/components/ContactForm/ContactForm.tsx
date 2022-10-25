@@ -18,7 +18,8 @@ import {
     useLeadStatusOptions,
     useLifecycleStageOptions,
 } from "./hooks";
-import type { Props, Values, Option } from "./types";
+import type { Props, Values } from "./types";
+import type { Option } from "../../types";
 
 const ContactForm: FC<Props> = ({
     owners,

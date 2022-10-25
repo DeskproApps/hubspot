@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { IDeskproClient, Context } from "@deskpro/app-sdk";
 
 /**
@@ -75,3 +76,10 @@ export type UserContext = Context<ContextData>;
 export type EventsPayload =
     | { type: "changePage", path: string }
     | { type: "unlink", userId: string, contactId: string };
+
+export type Option<Value> = {
+    value: Value,
+    key: Value,
+    label: string | ReactElement,
+    type: "value",
+};

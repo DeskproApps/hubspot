@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import get from "lodash/get";
 import capitalize from "lodash/capitalize";
@@ -97,6 +98,8 @@ const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
 };
 
 const Deals: FC<Props> = ({ deals, owners, accountInfo, dealPipelines }) => {
+    const navigate = useNavigate();
+
     return (
         <>
             <BaseContainer>
@@ -106,6 +109,7 @@ const Deals: FC<Props> = ({ deals, owners, accountInfo, dealPipelines }) => {
                         ? `https://app.hubspot.com/contacts/${accountInfo?.portalId}/deals`
                         : ""
                     }
+                    onClick={() => navigate("/deal/create")}
                 />
                 {deals.map((deal) => (
                     <Deal

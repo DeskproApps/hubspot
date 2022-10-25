@@ -16,12 +16,13 @@ import {
 import { deleteEntityContact } from "./services/entityAssociation";
 import { Main } from "./pages/Main";
 import { GlobalSignIn } from "./pages/GlobalSignIn";
-import { HomePage } from "./pages/HomePage";
+import { HomePage } from "./pages/HomePage/HomePage";
 import { LinkPage } from "./pages/LinkPage";
 import { CreateContactPage } from "./pages/CreateContactPage";
 import { DealPage } from "./pages/DealPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import { UpdateContactPage } from "./pages/UpdateContactPage";
+import { CreateDealPage } from "./pages/CreateDealPage";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 import type { DeskproError } from "./services/hubspot/baseRequest";
@@ -105,6 +106,7 @@ function App() {
                                 </Route>
                                 <Route path="home" element={<HomePage/>} />
                                 <Route path="link" element={<LinkPage/>} />
+                                <Route path="deal/create" element={<CreateDealPage/>} />
                                 <Route path="deal/:dealId" element={<DealPage/>} />
                                 <Route path="contacts/create" element={<CreateContactPage/>} />
                                 <Route path="contacts/:contactId" element={<UpdateContactPage/>} />
