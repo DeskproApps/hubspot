@@ -109,9 +109,9 @@ const CreateContactPage: FC = () => {
                     onSubmit={onSubmit}
                     onCancel={onCancel}
                     formErrors={formErrors}
-                    owners={owners.data?.results ?? []}
-                    lifecycleStages={lifecycleStages.data?.stages ?? []}
-                    leadStatuses={leadStatuses.data?.options ?? []}
+                    owners={owners}
+                    lifecycleStages={lifecycleStages}
+                    leadStatuses={leadStatuses}
                 />
             }
         </BaseContainer>
