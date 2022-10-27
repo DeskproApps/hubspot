@@ -72,6 +72,10 @@ export type Company = {
     },
 };
 
+export type Companies = {
+    results: Company[],
+};
+
 export type Owner = {
     archived: boolean,
     createdAt: DateTime,
@@ -188,34 +192,36 @@ export type AccountInto = {
     utcOffsetMilliseconds: number,
 }
 
+export type DealTypeOption = {
+    label: string,
+    value: string,
+    displayOrder: number,
+    hidden: boolean,
+};
+
 export type DealTypes = {
-    "updatedAt": DateTime,
-    "createdAt": DateTime,
-    "name": "dealtype",
-    "label": string,
-    "type": "enumeration",
-    "fieldType": "radio",
-    "description": string,
-    "groupName": string,
-    "options": Array<{
-        "label": string,
-        "value": string,
-        "displayOrder": number,
-        "hidden": boolean,
-    }>,
-    "displayOrder": number,
-    "calculated": boolean,
-    "externalOptions": boolean,
-    "hasUniqueValue": boolean,
-    "hidden": boolean,
-    "hubspotDefined": boolean,
-    "modificationMetadata": {
-        "archivable": boolean,
-        "readOnlyDefinition": boolean,
-        "readOnlyOptions": boolean,
-        "readOnlyValue": boolean,
+    updatedAt: DateTime,
+    createdAt: DateTime,
+    name: "dealtype",
+    label: string,
+    type: "enumeration",
+    fieldType: "radio",
+    description: string,
+    groupName: string,
+    options: DealTypeOption[],
+    displayOrder: number,
+    calculated: boolean,
+    externalOptions: boolean,
+    hasUniqueValue: boolean,
+    hidden: boolean,
+    hubspotDefined: boolean,
+    modificationMetadata: {
+        archivable: boolean,
+        readOnlyDefinition: boolean,
+        readOnlyOptions: boolean,
+        readOnlyValue: boolean,
     },
-    "formField": boolean,
+    formField: boolean,
 };
 
 export type LeadStatusOption = {
@@ -249,4 +255,35 @@ export type LeadStatus = {
         "readOnlyValue": false
     },
     "formField": boolean,
+};
+
+export type DealPriorityOption = {
+    label: string,
+    value: string,
+    displayOrder: number,
+    hidden: boolean,
+};
+
+export type DealPriority = {
+    updatedAt: DateTime,
+    createdAt: DateTime,
+    label: string,
+    name: "hs_priority",
+    type: "enumeration",
+    fieldType: "select",
+    groupName: string,
+    description: string,
+    options: DealPriorityOption[],
+    displayOrder: number,
+    calculated: boolean,
+    externalOptions: boolean,
+    hasUniqueValue: boolean,
+    hidden: boolean,
+    hubspotDefined: boolean,
+    modificationMetadata: {
+        archivable: boolean,
+        readOnlyDefinition: boolean,
+        readOnlyValue: boolean,
+    },
+    formField: boolean,
 };

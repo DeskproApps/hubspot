@@ -1,25 +1,37 @@
 import { FC, useState } from "react";
 import { useFormik } from "formik";
-import get from "lodash/get";
-import {HorizontalDivider, Stack} from "@deskpro/app-sdk";
+import { /*HorizontalDivider,*/ Stack } from "@deskpro/app-sdk";
 import { InputWithDisplay } from "@deskpro/deskpro-ui";
+import { useStageOptions, usePipelineOptions } from "./hooks";
+import { getInitValues, validationSchema } from "./utils";
 import {
     Label,
-    Title,
+    // Title,
     Button,
+    DateField,
     SingleSelect,
     BaseContainer,
 } from "../common";
-import { getInitValues, validationSchema } from "./utils";
+import { AmountField } from "./fields";
+import type { Pipeline, PipelineStage } from "../../services/hubspot/types";
 import type { Props, Values } from "./types";
 import type { Option } from "../../types";
 
 const DealForm: FC<Props> = ({
-    isEditMode,
-    initValues,
     onSubmit,
     onCancel,
+    currency,
+    pipelines,
+    isEditMode,
+    initValues,
+    ownerOptions,
+    // contactOptions,
+    // companyOptions,
+    dealTypeOptions,
+    priorityOptions,
  }) => {
+    const [pipelineOptions, setPipelineOptions] = useState<Array<Option<Pipeline["id"]>>>([]);
+    const [stageOptions, setStageOptions] = useState<Array<Option<PipelineStage["id"]>>>([]);
     const {
         values,
         errors,
@@ -29,12 +41,16 @@ const DealForm: FC<Props> = ({
         setFieldValue,
         getFieldProps,
     } = useFormik<Values>({
-        initialValues: getInitValues(initValues),
+        initialValues: getInitValues(initValues, { pipelines }),
         validationSchema,
         onSubmit: async (values: Values) => {
             await onSubmit(values);
         },
     });
+
+    usePipelineOptions(pipelines, setPipelineOptions);
+    useStageOptions(values.pipeline.value, pipelines, setStageOptions);
+
     return (
         <form onSubmit={handleSubmit}>
             <BaseContainer>
@@ -53,9 +69,9 @@ const DealForm: FC<Props> = ({
                     <SingleSelect
                         id="pipeline"
                         value={values.pipeline}
-                        options={[]}
+                        options={pipelineOptions}
                         error={!!(touched.pipeline && errors.pipeline)}
-                        onChange={(value: Option<string>) => setFieldValue("owner", value)}
+                        onChange={(value: Option<string>) => setFieldValue("pipeline", value)}
                     />
                 </Label>
 
@@ -63,39 +79,30 @@ const DealForm: FC<Props> = ({
                     <SingleSelect
                         id="dealStage"
                         value={values.dealStage}
-                        options={[]}
+                        options={stageOptions}
                         error={!!(touched.dealStage && errors.dealStage)}
                         onChange={(value: Option<string>) => setFieldValue("dealStage", value)}
                     />
                 </Label>
 
-                <Label htmlFor="amount" label="Amount">
-                    <InputWithDisplay
-                        id="amount"
-                        type="text"
-                        inputsize="small"
-                        placeholder="Enter value"
-                        {...getFieldProps("amount")}
-                        error={!!(touched.amount && errors.amount)}
-                    />
-                </Label>
+                <AmountField
+                    currency={currency}
+                    error={!!(touched.amount && errors.amount)}
+                    {...getFieldProps("amount")}
+                />
 
-                <Label htmlFor="closeDate" label="Close date">
-                    <InputWithDisplay
-                        id="closeDate"
-                        type="text"
-                        inputsize="small"
-                        placeholder="DD/MM/YYYY"
-                        {...getFieldProps("closeDate")}
-                        error={!!(touched.closeDate && errors.closeDate)}
-                    />
-                </Label>
+                <DateField
+                    id="closeDate"
+                    label="Close date"
+                    error={!!(touched.closeDate && errors.closeDate)}
+                    onChange={(date: [Date]) => setFieldValue("closeDate", date[0])}
+                />
 
                 <Label htmlFor="dealOwner" label="Deal owner">
                     <SingleSelect
                         id="dealOwner"
                         value={values.dealOwner}
-                        options={[]}
+                        options={ownerOptions}
                         error={!!(touched.dealOwner && errors.dealOwner)}
                         onChange={(value: Option<string>) => setFieldValue("dealOwner", value)}
                     />
@@ -105,7 +112,7 @@ const DealForm: FC<Props> = ({
                     <SingleSelect
                         id="dealType"
                         value={values.dealType}
-                        options={[]}
+                        options={dealTypeOptions}
                         error={!!(touched.dealType && errors.dealType)}
                         onChange={(value: Option<string>) => setFieldValue("dealType", value)}
                     />
@@ -115,16 +122,17 @@ const DealForm: FC<Props> = ({
                     <SingleSelect
                         id="priority"
                         value={values.priority}
-                        options={[]}
+                        options={priorityOptions}
                         error={!!(touched.priority && errors.priority)}
                         onChange={(value: Option<string>) => setFieldValue("priority", value)}
                     />
                 </Label>
             </BaseContainer>
 
-            {!isEditMode && <HorizontalDivider />}
+            {/*{!isEditMode && <HorizontalDivider />}*/}
 
             <BaseContainer>
+                {/*
                 {!isEditMode && <Title title="Associate deal with" />}
 
                 {!isEditMode && (
@@ -132,7 +140,7 @@ const DealForm: FC<Props> = ({
                         <SingleSelect
                             id="contact"
                             value={values.contact}
-                            options={[]}
+                            options={contactOptions}
                             error={!!(touched.contact && errors.contact)}
                             onChange={(value: Option<string>) => setFieldValue("contact", value)}
                         />
@@ -144,12 +152,13 @@ const DealForm: FC<Props> = ({
                         <SingleSelect
                             id="company"
                             value={values.company}
-                            options={[]}
+                            options={companyOptions}
                             error={!!(touched.company && errors.company)}
                             onChange={(value: Option<string>) => setFieldValue("company", value)}
                         />
                     </Label>
                 )}
+                */}
 
                 <Stack justify="space-between">
                     <Button

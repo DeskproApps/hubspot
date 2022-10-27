@@ -1,4 +1,12 @@
-import { Option } from "../../types";
+import type {
+    Owner,
+    Contact,
+    Company,
+    Pipeline,
+    DealTypeOption,
+    DealPriorityOption,
+} from "../../services/hubspot/types";
+import type { Option } from "../../types";
 
 export type Values = {
     name: string,
@@ -13,14 +21,12 @@ export type Values = {
     company: Option<string>,
 };
 
-export type FormErrors = Record<keyof Values, string>;
-
 export type InitValues = {
     //...
 };
 
 export type InitValuesParams = {
-    //...
+    pipelines?: Pipeline[],
 };
 
 export type Props = {
@@ -28,4 +34,11 @@ export type Props = {
     initValues: InitValues,
     onSubmit: (values: Values) => void,
     onCancel: () => void,
+    pipelines: Pipeline[],
+    currency: string,
+    ownerOptions: Array<Option<Owner["id"]>>,
+    dealTypeOptions: Array<Option<DealTypeOption["value"]>>,
+    priorityOptions: Array<Option<DealPriorityOption["value"]>>,
+    contactOptions: Array<Option<Contact["id"]>>,
+    companyOptions: Array<Option<Company["id"]>>,
 };

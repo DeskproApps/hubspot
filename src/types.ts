@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, Dispatch, SetStateAction } from "react";
 import { IDeskproClient, Context } from "@deskpro/app-sdk";
 
 /**
@@ -18,7 +18,7 @@ export type AuthTokens = {
     refreshToken: string,
 };
 
-export type ApiRequestMethod = "GET" | "POST" | "PATCH";
+export type ApiRequestMethod = "GET" | "POST" | "PUT" | "PATCH";
 
 export type RequestParams = {
     url: string,
@@ -83,3 +83,5 @@ export type Option<Value> = {
     label: string | ReactElement,
     type: "value",
 };
+
+export type UseSetStateFn<T> = Dispatch<SetStateAction<T>>;

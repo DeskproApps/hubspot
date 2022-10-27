@@ -1,5 +1,12 @@
 import * as yup from "yup";
-import { getOption } from "../../utils";
+import get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
+import sortBy from "lodash/sortBy";
+import isDate from "date-fns/isDate";
+import cloneDeep from "lodash/cloneDeep";
+import { getOption, noOwnerOption } from "../../utils";
+import { parseDateTime } from "../../utils/date";
+import type { Pipeline } from "../../services/hubspot/types";
 import type { Values, InitValues, InitValuesParams } from "./types";
 
 const validationSchema = yup.object().shape({
@@ -7,16 +14,16 @@ const validationSchema = yup.object().shape({
     pipeline: yup.object().shape({
         key: yup.string(),
         label: yup.string(),
-        value: yup.string(),
+        value: yup.string().required(),
         type: yup.string().oneOf(["value"]),
-    }).required(),
+    }),
     dealStage: yup.object().shape({
         key: yup.string(),
         label: yup.string(),
-        value: yup.string(),
+        value: yup.string().required(),
         type: yup.string().oneOf(["value"]),
-    }).required(),
-    amount: yup.string(),
+    }),
+    amount: yup.number(),
     closeDate: yup.string(),
     dealOwner: yup.object().shape({
         key: yup.string(),
@@ -52,15 +59,24 @@ const validationSchema = yup.object().shape({
 
 const getInitValues = (
     initValues?: InitValues,
-    {}: InitValuesParams = {},
+    {
+        pipelines = [],
+    }: InitValuesParams = {},
 ): Values => {
+    const sortedPipelines = (pipelines.length <= 1)
+        ? cloneDeep<Pipeline[]>(pipelines)
+        : sortBy<Pipeline>(pipelines, ["displayOrder"]);
+
+    const pipeline = get(sortedPipelines, [0]);
+    const stage = get(sortedPipelines, [0, "stages", 0]);
+
     return {
         name: "",
-        pipeline: getOption<string>("", ""),
-        dealStage: getOption<string>("", ""),
+        pipeline: getOption<string>(pipeline.id, pipeline.label),
+        dealStage: getOption<string>(stage.id, stage.label),
         amount: "",
         closeDate: "",
-        dealOwner: getOption<string>("", ""),
+        dealOwner: noOwnerOption,
         dealType: getOption<string>("", ""),
         priority: getOption<string>("", ""),
         contact: getOption<string>("", ""),
@@ -68,4 +84,16 @@ const getInitValues = (
     };
 };
 
-export { getInitValues, validationSchema };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getDealValues = (values: Omit<Values, "contact"|"company">): any => ({
+    ...(isEmpty(values.name) ? {} : { dealname: values.name }),
+    ...(isEmpty(values.pipeline) ? {} : { pipeline: values.pipeline.value }),
+    ...(isEmpty(values.dealStage) ? {} : { dealstage: values.dealStage.value }),
+    ...(isEmpty(values.amount) ? {} : { amount: values.amount }),
+    ...(!isDate(values.closeDate) ? {} : { closedate: parseDateTime(values.closeDate) }),
+    hubspot_owner_id: values.dealOwner.value,
+    ...(isEmpty(values.dealType.value) ? {} : { dealtype: values.dealType.value }),
+    ...(isEmpty(values.priority.value) ? {} : { hs_priority: values.priority.value }),
+});
+
+export { getInitValues, validationSchema, getDealValues };

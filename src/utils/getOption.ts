@@ -10,4 +10,6 @@ const getOption = <Value, >(
     type: "value",
 });
 
-export { getOption };
+const noOwnerOption = getOption("", "No owner");
+
+export { getOption, noOwnerOption };

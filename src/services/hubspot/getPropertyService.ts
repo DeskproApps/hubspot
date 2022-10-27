@@ -3,7 +3,7 @@ import { baseRequest } from "./baseRequest";
 
 const getPropertyService = <T>(
     client: IDeskproClient,
-    type: "contacts",
+    type: "contacts"|"deals",
     propertyName: string,
 ): Promise<T> => {
     return baseRequest(client, {

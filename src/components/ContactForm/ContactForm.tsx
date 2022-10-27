@@ -14,10 +14,10 @@ import {
     validationSchema,
 } from "./utils";
 import {
-    useOwnerOptions,
     useLeadStatusOptions,
     useLifecycleStageOptions,
 } from "./hooks";
+import { useOwnerOptions } from "../../hooks";
 import type { Props, Values } from "./types";
 import type { Option } from "../../types";
 
