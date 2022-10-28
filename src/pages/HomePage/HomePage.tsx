@@ -36,8 +36,11 @@ const HomePage = () => {
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
         deRegisterElement("home");
+        deRegisterElement("menu");
+        deRegisterElement("edit");
+        deRegisterElement("externalLink");
 
-        registerElement("editButton", {
+        registerElement("edit", {
             type: "edit_button",
             payload: { type: "changePage", path: `/contacts/${contactId}` },
         });

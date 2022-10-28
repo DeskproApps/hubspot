@@ -54,8 +54,10 @@ const UpdateContactPage: FC = () => {
     const onCancel = () => navigate("/home");
 
     useDeskproElements(({ deRegisterElement, registerElement }) => {
-        deRegisterElement("editButton");
+        deRegisterElement("home");
         deRegisterElement("menu");
+        deRegisterElement("edit");
+        deRegisterElement("externalLink");
 
         registerElement("home", {
             type: "home_button",

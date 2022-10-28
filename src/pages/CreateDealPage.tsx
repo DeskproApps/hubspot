@@ -37,8 +37,10 @@ const CreateDealPage: FC = () => {
     useSetAppTitle("Create new deal");
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
+        deRegisterElement("home");
         deRegisterElement("menu");
-        deRegisterElement("editButton");
+        deRegisterElement("edit");
+        deRegisterElement("externalLink");
 
         registerElement("home", {
             type: "home_button",

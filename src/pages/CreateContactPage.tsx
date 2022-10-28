@@ -39,7 +39,8 @@ const CreateContactPage: FC = () => {
     useDeskproElements(({ deRegisterElement }) => {
         deRegisterElement("home");
         deRegisterElement("menu");
-        deRegisterElement("editButton");
+        deRegisterElement("edit");
+        deRegisterElement("externalLink");
     });
 
     const onLinkContact = useCallback((contactId) => {

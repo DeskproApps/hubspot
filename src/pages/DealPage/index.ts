@@ -1,0 +1,1 @@
+export { DealPage } from "./DealPage";

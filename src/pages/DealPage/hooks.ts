@@ -1,39 +1,29 @@
-import { FC } from "react";
-import { useParams } from "react-router-dom";
 import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
-import { useDeskproElements } from "@deskpro/app-sdk";
+import { useQueriesWithClient, useQueryWithClient } from "../../hooks";
 import {
     getDealService,
     getOwnerService,
-    getContactService,
     getCompanyService,
+    getContactService,
     getPipelineService,
     getDealTypesService,
-    getAccountInfoService,
     getEntityAssocService,
-} from "../services/hubspot";
-import {
-    useSetAppTitle,
-    useQueryWithClient,
-    useQueriesWithClient,
-} from "../hooks";
-import { filterEntities } from "../utils";
-import { QueryKey } from "../query";
-import { Deal } from "../components/Deal";
-import { Loading, BaseContainer } from "../components/common";
+    getAccountInfoService,
+} from "../../services/hubspot";
+import { QueryKey } from "../../query";
+import { filterEntities } from "../../utils";
 import type {
+    Deal,
     Owner,
     Contact,
     Company,
     Pipeline,
-    Deal as DealType,
-} from "../services/hubspot/types";
+    DealTypes,
+    AccountInto,
+} from "../../services/hubspot/types";
 
-const DealPage: FC = () => {
-    const { dealId } = useParams();
-
-    const deal = useQueryWithClient<DealType>(
+const useLoadDealDeps = (dealId?: Deal["id"]) => {
+    const deal = useQueryWithClient<Deal>(
         [QueryKey.DEALS, dealId],
         (client) => getDealService(client, dealId as string),
         { enabled: !!dealId },
@@ -82,32 +72,24 @@ const DealPage: FC = () => {
         enabled: (companyIds.data?.results.length > 0),
     })) ?? []);
 
-    useSetAppTitle("Deal details");
-
-    useDeskproElements(({ registerElement, deRegisterElement }) => {
-        deRegisterElement("menu");
-        registerElement("home", { type: "home_button", payload: { type: "changePage", path: `/home` }});
-    });
-
-    if (!dealId || !deal.isFetched && !deal.isSuccess || isEmpty(deal.data) || isEmpty(pipeline.data)) {
-        return (
-            <BaseContainer>
-                <Loading/>
-            </BaseContainer>
-        );
-    }
-
-    return (
-        <Deal
-            accountInfo={accountInfo.data}
-            dealTypes={dealTypes.data}
-            deal={deal.data?.properties}
-            pipeline={pipeline.data}
-            owner={owner?.data as Owner}
-            contacts={filterEntities(contacts)}
-            companies={filterEntities(companies)}
-        />
-    );
+    return {
+        isLoading: [
+            deal,
+            owner,
+            pipeline,
+            dealTypes,
+            accountInfo,
+            ...contacts,
+            ...companies,
+        ].every(({ isLoading }) => Boolean(isLoading)),
+        deal: get(deal, ["data", "properties"], {}) as Deal["properties"],
+        owner: get(owner, ["data"], {}) as Owner,
+        pipeline: get(pipeline, ["data"], {}) as Pipeline,
+        contacts: filterEntities(contacts) as Array<Contact["properties"]>,
+        companies: filterEntities(companies) as Array<Company["properties"]>,
+        dealTypes: get(dealTypes, ["data"], {}) as DealTypes,
+        accountInfo: get(accountInfo, ["data"], {}) as AccountInto,
+    };
 };
 
-export { DealPage };
+export { useLoadDealDeps };

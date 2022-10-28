@@ -16,13 +16,14 @@ import {
 import { deleteEntityContact } from "./services/entityAssociation";
 import { Main } from "./pages/Main";
 import { GlobalSignIn } from "./pages/GlobalSignIn";
-import { HomePage } from "./pages/HomePage/HomePage";
+import { HomePage } from "./pages/HomePage";
 import { LinkPage } from "./pages/LinkPage";
 import { CreateContactPage } from "./pages/CreateContactPage";
-import { DealPage } from "./pages/DealPage";
+import { DealPage } from "./pages/DealPage/DealPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import { UpdateContactPage } from "./pages/UpdateContactPage";
 import { CreateDealPage } from "./pages/CreateDealPage";
+import { UpdateDealPage } from "./pages/UpdateDealPage";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 import type { DeskproError } from "./services/hubspot/baseRequest";
@@ -47,7 +48,7 @@ function App() {
     const unlinkContact = unlink(client, () => navigate("/link"));
 
     useDeskproElements(({ registerElement }) => {
-        registerElement("refreshButton", { type: "refresh_button" });
+        registerElement("refresh", { type: "refresh_button" });
     });
 
     useDeskproAppEvents({
@@ -107,6 +108,7 @@ function App() {
                                 <Route path="home" element={<HomePage/>} />
                                 <Route path="link" element={<LinkPage/>} />
                                 <Route path="deal/create" element={<CreateDealPage/>} />
+                                <Route path="deal/update/:dealId" element={<UpdateDealPage/>} />
                                 <Route path="deal/:dealId" element={<DealPage/>} />
                                 <Route path="contacts/create" element={<CreateContactPage/>} />
                                 <Route path="contacts/:contactId" element={<UpdateContactPage/>} />

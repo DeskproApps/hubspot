@@ -43,6 +43,8 @@ const LinkPage: FC = () => {
     useDeskproElements(({ deRegisterElement }) => {
         deRegisterElement("home");
         deRegisterElement("menu");
+        deRegisterElement("edit");
+        deRegisterElement("externalLink");
     });
 
     const onNavigateToCreateContact = useCallback(() => {

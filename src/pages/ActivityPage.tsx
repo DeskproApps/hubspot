@@ -65,8 +65,11 @@ const ActivityPage: FC = () => {
     useSetAppTitle(!type ? "" : `${capitalize(type)} details`);
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
+        deRegisterElement("home");
         deRegisterElement("menu");
-        deRegisterElement("editButton");
+        deRegisterElement("edit");
+        deRegisterElement("externalLink");
+
         registerElement("home", { type: "home_button", payload: { type: "changePage", path: `/home` }});
     });
 
