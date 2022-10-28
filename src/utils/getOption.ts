@@ -1,8 +1,9 @@
+import { ReactElement } from "react";
 import { Option } from "../types";
 
 const getOption = <Value, >(
     value: Value,
-    label: string,
+    label: string|ReactElement,
 ): Option<Value> => ({
     label,
     value,

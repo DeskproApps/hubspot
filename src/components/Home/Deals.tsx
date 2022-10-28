@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import get from "lodash/get";
 import capitalize from "lodash/capitalize";
@@ -14,10 +14,11 @@ import {
     BaseContainer,
 } from "../common";
 import type {
+    Contact,
     Pipeline,
     AccountInto,
     PipelineStage,
-    Deal as DealType,
+    Deal as DealType, Company,
 } from "../../services/hubspot/types";
 
 const DealContainer = styled.div`
@@ -46,6 +47,8 @@ type Props = {
     accountInfo?: AccountInto,
     owners: Record<DealOwner["id"], DealOwner>,
     dealPipelines?: Record<Pipeline["id"], Pipeline>,
+    contact: Contact["properties"],
+    companies: Array<Company["properties"]>,
 };
 
 const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
@@ -97,8 +100,16 @@ const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
     );
 };
 
-const Deals: FC<Props> = ({ deals, owners, accountInfo, dealPipelines }) => {
+const Deals: FC<Props> = ({
+    deals,
+    owners,
+    accountInfo,
+    dealPipelines,
+    contact: { hs_object_id: contactId },
+    companies,
+}) => {
     const navigate = useNavigate();
+    const companyId = get(companies, [0, "hs_object_id"], null);
 
     return (
         <>
@@ -109,7 +120,13 @@ const Deals: FC<Props> = ({ deals, owners, accountInfo, dealPipelines }) => {
                         ? `https://app.hubspot.com/contacts/${accountInfo?.portalId}/deals`
                         : ""
                     }
-                    onClick={() => navigate("/deal/create")}
+                    onClick={() => navigate({
+                        pathname: `/deal/create`,
+                        search: `?${createSearchParams({
+                            contactId,
+                            ...(!companyId ? {} : { companyId }),
+                        })}`
+                    })}
                 />
                 {deals.map((deal) => (
                     <Deal

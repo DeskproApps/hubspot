@@ -287,3 +287,8 @@ export type DealPriority = {
     },
     formField: boolean,
 };
+
+export type AssociationTypes =
+    | "deal_to_contact"
+    | "deal_to_company"
+;

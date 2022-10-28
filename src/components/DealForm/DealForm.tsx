@@ -1,12 +1,12 @@
 import { FC, useState } from "react";
 import { useFormik } from "formik";
-import { /*HorizontalDivider,*/ Stack } from "@deskpro/app-sdk";
+import { HorizontalDivider, Stack } from "@deskpro/app-sdk";
 import { InputWithDisplay } from "@deskpro/deskpro-ui";
 import { useStageOptions, usePipelineOptions } from "./hooks";
 import { getInitValues, validationSchema } from "./utils";
 import {
     Label,
-    // Title,
+    Title,
     Button,
     DateField,
     SingleSelect,
@@ -25,8 +25,8 @@ const DealForm: FC<Props> = ({
     isEditMode,
     initValues,
     ownerOptions,
-    // contactOptions,
-    // companyOptions,
+    contactOptions,
+    companyOptions,
     dealTypeOptions,
     priorityOptions,
  }) => {
@@ -41,7 +41,11 @@ const DealForm: FC<Props> = ({
         setFieldValue,
         getFieldProps,
     } = useFormik<Values>({
-        initialValues: getInitValues(initValues, { pipelines }),
+        initialValues: getInitValues(initValues, {
+            pipelines,
+            contactOptions,
+            companyOptions,
+        }),
         validationSchema,
         onSubmit: async (values: Values) => {
             await onSubmit(values);
@@ -129,10 +133,9 @@ const DealForm: FC<Props> = ({
                 </Label>
             </BaseContainer>
 
-            {/*{!isEditMode && <HorizontalDivider />}*/}
+            {!isEditMode && <HorizontalDivider />}
 
             <BaseContainer>
-                {/*
                 {!isEditMode && <Title title="Associate deal with" />}
 
                 {!isEditMode && (
@@ -158,7 +161,6 @@ const DealForm: FC<Props> = ({
                         />
                     </Label>
                 )}
-                */}
 
                 <Stack justify="space-between">
                     <Button

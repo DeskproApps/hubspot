@@ -1,13 +1,14 @@
 import { FC, useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
     LoadingSpinner,
     useDeskproElements,
     useDeskproAppClient,
 } from "@deskpro/app-sdk";
-import { createDealService/*, setEntityAssocService*/ } from "../services/hubspot";
+import { createDealService, setEntityAssocService } from "../services/hubspot";
 import { isValidationError } from "../services/hubspot/utils";
 import { useSetAppTitle, useLoadUpdateDealDeps } from "../hooks";
+import { queryClient, QueryKey } from "../query";
 import { ErrorBlock } from "../components/common";
 import { DealForm } from "../components";
 import { getDealValues } from "../components/DealForm/utils";
@@ -15,6 +16,7 @@ import type { Values } from "../components/DealForm/types";
 
 const CreateDealPage: FC = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { client } = useDeskproAppClient();
     const {
         ownerOptions,
@@ -28,6 +30,9 @@ const CreateDealPage: FC = () => {
     } = useLoadUpdateDealDeps();
 
     const [error, setError] = useState<string|null>(null);
+
+    const contactId = searchParams.get("contactId") || undefined;
+    const companyId = searchParams.get("companyId") || undefined;
 
     useSetAppTitle("Create new deal");
 
@@ -47,13 +52,15 @@ const CreateDealPage: FC = () => {
         }
 
         setError(null);
+
         return createDealService(client, getDealValues(values))
-            // .then((deal) => {
-            //     return Promise.all([
-            //         setEntityAssocService(client, "deals", deal.id, "contacts", values.contact.value),
-            //         setEntityAssocService(client, "deals", deal.id, "companies", values.company.value),
-            //     ]);
-            // })
+            .then((deal) => {
+                return Promise.all([
+                    setEntityAssocService(client, "deals", deal.id, "contacts", values.contact.value, "deal_to_contact"),
+                    setEntityAssocService(client, "deals", deal.id, "companies", values.company.value, "deal_to_company"),
+                ]);
+            })
+            .then(() => queryClient.refetchQueries([QueryKey.DEALS, "contacts", contactId, "deals"]))
             .then(() => navigate("/home"))
             .catch((err) => {
                 if (isValidationError(err)) {
@@ -78,7 +85,7 @@ const CreateDealPage: FC = () => {
         <>
             {error && <ErrorBlock text={error}/>}
             <DealForm
-                initValues={{}}
+                initValues={{ contactId, companyId }}
                 onSubmit={onSubmit}
                 onCancel={onCancel}
                 pipelines={pipelines}

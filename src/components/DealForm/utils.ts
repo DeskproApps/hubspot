@@ -2,6 +2,7 @@ import * as yup from "yup";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import sortBy from "lodash/sortBy";
+import find from "lodash/find";
 import isDate from "date-fns/isDate";
 import cloneDeep from "lodash/cloneDeep";
 import { getOption, noOwnerOption } from "../../utils";
@@ -61,12 +62,15 @@ const getInitValues = (
     initValues?: InitValues,
     {
         pipelines = [],
+        contactOptions = [],
+        companyOptions = [],
     }: InitValuesParams = {},
 ): Values => {
+    const contact = find(contactOptions, ["value", initValues?.contactId]);
+    const company = find(companyOptions, ["value", initValues?.companyId]);
     const sortedPipelines = (pipelines.length <= 1)
         ? cloneDeep<Pipeline[]>(pipelines)
         : sortBy<Pipeline>(pipelines, ["displayOrder"]);
-
     const pipeline = get(sortedPipelines, [0]);
     const stage = get(sortedPipelines, [0, "stages", 0]);
 
@@ -79,8 +83,8 @@ const getInitValues = (
         dealOwner: noOwnerOption,
         dealType: getOption<string>("", ""),
         priority: getOption<string>("", ""),
-        contact: getOption<string>("", ""),
-        company: getOption<string>("", ""),
+        contact: !contact ? getOption<string>("", "") : getOption(contact.value, contact.label),
+        company: !company ? getOption<string>("", "") : getOption(company.value, company.label),
     };
 };
 

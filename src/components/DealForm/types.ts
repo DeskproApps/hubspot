@@ -22,11 +22,14 @@ export type Values = {
 };
 
 export type InitValues = {
-    //...
+    contactId?: Contact["id"],
+    companyId?: Company["id"],
 };
 
 export type InitValuesParams = {
     pipelines?: Pipeline[],
+    contactOptions?: Array<Option<Contact["id"]>>,
+    companyOptions?: Array<Option<Company["id"]>>,
 };
 
 export type Props = {
