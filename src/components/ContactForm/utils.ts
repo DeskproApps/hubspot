@@ -41,26 +41,26 @@ const getInitValues = (
     const lifecycleStage = lifecycleStages?.find(({ id }) => id === initValues?.lifecycleStage);
 
     return ({
-        email: get(initValues, ["email"], ""),
-        firstName: get(initValues, ["firstName"], ""),
-        lastName: get(initValues, ["lastName"], ""),
+        email: get(initValues, ["email"], "") || "",
+        firstName: get(initValues, ["firstName"], "") || "",
+        lastName: get(initValues, ["lastName"], "") || "",
         owner: !owner ? noOwnerOption : getOption(owner.id, getFullName(owner)),
-        jobTitle: get(initValues, ["jobTitle"], ""),
-        phone: get(initValues, ["phone"], ""),
+        jobTitle: get(initValues, ["jobTitle"], "") || "",
+        phone: get(initValues, ["phone"], "") || "",
         lifecycleStage: !lifecycleStage ? getOption("", "") : getOption(lifecycleStage.id, lifecycleStage.label),
         leadStatus: getOption("", ""),
     });
 };
 
 const getContactValues = (values: Values) => ({
-    ...(isEmpty(values.email) ? {} : { email: values.email }),
-    ...(isEmpty(values.firstName) ? {} : { firstname: values.firstName }),
-    ...(isEmpty(values.lastName) ? {} : { lastname: values.lastName }),
-    ...(isEmpty(values.jobTitle) ? {} : { jobtitle: values.jobTitle }),
-    ...(isEmpty(values.phone) ? {} : { phone: values.phone }),
+    email: values.email,
+    firstname: values.firstName,
+    lastname: values.lastName,
+    jobtitle: values.jobTitle,
+    phone: values.phone,
+    hubspot_owner_id: values.owner.value,
     ...(isEmpty(values.lifecycleStage.value) ? {} : { lifecyclestage: values.lifecycleStage.value }),
     ...(isEmpty(values.leadStatus?.value) ? {} : { hs_lead_status: values.leadStatus.value }),
-    hubspot_owner_id: values.owner.value,
 });
 
 export {

@@ -81,10 +81,10 @@ const getInitValues = (
     const priority = priorityOptions?.find(({ value }) => value === initValues?.priorityId);
 
     return {
-        name: get(initValues, ["name"], ""),
+        name: get(initValues, ["name"], "") || "",
         pipeline: getOption<string>(pipeline.id, pipeline.label),
         dealStage: getOption<string>(stage.id, stage.label),
-        amount: get(initValues, ["amount"], ""),
+        amount: get(initValues, ["amount"], "") || "",
         closeDate: !initValues?.closeDate ? "" : new Date(initValues.closeDate),
         dealOwner: !owner ? noOwnerOption : getOption(owner.value, owner.label),
         dealType: !dealType ? getOption<string>("", "") : getOption(dealType.value, dealType.label),
@@ -96,12 +96,12 @@ const getInitValues = (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getDealValues = (values: Omit<Values, "contact"|"company">): any => ({
-    ...(isEmpty(values.name) ? {} : { dealname: values.name }),
+    dealname: values.name,
+    amount: values.amount,
+    hubspot_owner_id: values.dealOwner.value,
+    closedate: parseDateTime(values.closeDate),
     ...(isEmpty(values.pipeline) ? {} : { pipeline: values.pipeline.value }),
     ...(isEmpty(values.dealStage) ? {} : { dealstage: values.dealStage.value }),
-    ...(isEmpty(values.amount) ? {} : { amount: values.amount }),
-    ...(!isDate(values.closeDate) ? {} : { closedate: parseDateTime(values.closeDate) }),
-    hubspot_owner_id: values.dealOwner.value,
     ...(isEmpty(values.dealType.value) ? {} : { dealtype: values.dealType.value }),
     ...(isEmpty(values.priority.value) ? {} : { hs_priority: values.priority.value }),
 });
