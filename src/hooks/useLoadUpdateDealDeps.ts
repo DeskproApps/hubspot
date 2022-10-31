@@ -1,6 +1,7 @@
 import get from "lodash/get";
 import concat from "lodash/concat";
 import {
+    getDealService,
     getOwnersService,
     getContactsService,
     getPipelinesService,
@@ -27,6 +28,7 @@ type UseLoadUpdateDealDeps = (dealId?: Deal["id"]) => {
     isLoading: boolean,
     currency: string,
     pipelines: Pipeline[],
+    deal: Deal["properties"],
     ownerOptions: Array<Option<Owner["id"]>>,
     dealTypeOptions: Array<Option<DealTypeOption["value"]>>,
     priorityOptions: Array<Option<DealPriorityOption["value"]>>,
@@ -34,7 +36,15 @@ type UseLoadUpdateDealDeps = (dealId?: Deal["id"]) => {
     companyOptions: Array<Option<Company["id"]>>,
 };
 
-const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = () => {
+const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
+    const deal = useQueryWithClient(
+        [QueryKey.DEALS, dealId],
+        (client) => getDealService(client, dealId as Deal["id"]),
+        {
+            enabled: !!dealId,
+        }
+    );
+
     const pipelines = useQueryWithClient(
         [QueryKey.PIPELINES, "deals"],
         (client) => getPipelinesService(client, "deals"),
@@ -119,6 +129,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = () => {
 
     return {
         isLoading: [
+            deal,
             owners,
             contacts,
             companies,
@@ -127,6 +138,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = () => {
             priorities,
             accountInfo,
         ].every(({ isLoading }) => Boolean(isLoading)),
+        deal: get(deal, ["data", "properties"], {}) || {},
         pipelines: get(pipelines, ["data", "results"], []) || [],
         currency: getSymbolFromCurrency(get(accountInfo, ["data", "companyCurrency"], "USD")),
         ownerOptions: owners.data || [],

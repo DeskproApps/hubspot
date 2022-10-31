@@ -25,10 +25,10 @@ const DealForm: FC<Props> = ({
     isEditMode,
     initValues,
     ownerOptions,
-    contactOptions,
-    companyOptions,
     dealTypeOptions,
     priorityOptions,
+    contactOptions = [],
+    companyOptions = [],
  }) => {
     const [pipelineOptions, setPipelineOptions] = useState<Array<Option<Pipeline["id"]>>>([]);
     const [stageOptions, setStageOptions] = useState<Array<Option<PipelineStage["id"]>>>([]);
@@ -43,8 +43,11 @@ const DealForm: FC<Props> = ({
     } = useFormik<Values>({
         initialValues: getInitValues(initValues, {
             pipelines,
+            ownerOptions,
             contactOptions,
             companyOptions,
+            dealTypeOptions,
+            priorityOptions,
         }),
         validationSchema,
         onSubmit: async (values: Values) => {
@@ -99,6 +102,7 @@ const DealForm: FC<Props> = ({
                     id="closeDate"
                     label="Close date"
                     error={!!(touched.closeDate && errors.closeDate)}
+                    {...getFieldProps("closeDate")}
                     onChange={(date: [Date]) => setFieldValue("closeDate", date[0])}
                 />
 
