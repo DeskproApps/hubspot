@@ -58,8 +58,12 @@ const CreateDealPage: FC = () => {
         return createDealService(client, getDealValues(values))
             .then((deal) => {
                 return Promise.all([
-                    setEntityAssocService(client, "deals", deal.id, "contacts", values.contact.value, "deal_to_contact"),
-                    setEntityAssocService(client, "deals", deal.id, "companies", values.company.value, "deal_to_company"),
+                    values.contact.value
+                        ? setEntityAssocService(client, "deals", deal.id, "contacts", values.contact.value, "deal_to_contact")
+                        : Promise.resolve(),
+                    values.company.value
+                        ? setEntityAssocService(client, "deals", deal.id, "companies", values.company.value, "deal_to_company")
+                        : Promise.resolve(),
                 ]);
             })
             .then(() => queryClient.refetchQueries([QueryKey.DEALS, "contacts", contactId, "deals"]))

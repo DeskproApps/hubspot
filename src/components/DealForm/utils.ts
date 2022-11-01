@@ -3,7 +3,6 @@ import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import sortBy from "lodash/sortBy";
 import find from "lodash/find";
-import isDate from "date-fns/isDate";
 import cloneDeep from "lodash/cloneDeep";
 import { getOption, noOwnerOption } from "../../utils";
 import { parseDateTime } from "../../utils/date";

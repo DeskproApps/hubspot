@@ -18,8 +18,8 @@ const AssociatedWith: FC<Pick<Props, "contacts" | "companies">> = ({ contacts, c
     return (
         <BaseContainer>
             <Title title="Associated with" />
-            <TextBlockWithLabel label="Contact" text={contactsFullName?.join(", ") ?? "-"} />
-            <TextBlockWithLabel label="Company" text={companyNames?.join(", ") ?? "-"} />
+            <TextBlockWithLabel label="Contact" text={contactsFullName?.join(", ") || "-"} />
+            <TextBlockWithLabel label="Company" text={companyNames?.join(", ") || "-"} />
         </BaseContainer>
     );
 };

@@ -43,7 +43,10 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
     const owner = useQueryWithClient(
         [QueryKey.OWNERS, get(deal, ["data", "properties", "hubspot_owner_id"], 0)],
         (client) =>  getOwnerService(client, get(deal, ["data", "properties", "hubspot_owner_id"], 0)),
-        { enabled: !!get(deal, ["data", "properties", "hubspot_owner_id"], 0) }
+        {
+            enabled: !!get(deal, ["data", "properties", "hubspot_owner_id"], 0),
+            useErrorBoundary: false,
+        }
     );
 
     const dealTypes = useQueryWithClient([QueryKey.DEALS, "types"], getDealTypesService);
@@ -70,6 +73,7 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
         queryKey: [QueryKey.CONTACT, id],
         queryFn: (client) => getCompanyService(client, id),
         enabled: (companyIds.data?.results.length > 0),
+        useErrorBoundary: false,
     })) ?? []);
 
     return {

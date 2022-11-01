@@ -19,7 +19,7 @@ import { GlobalSignIn } from "./pages/GlobalSignIn";
 import { HomePage } from "./pages/HomePage";
 import { LinkPage } from "./pages/LinkPage";
 import { CreateContactPage } from "./pages/CreateContactPage";
-import { DealPage } from "./pages/DealPage/DealPage";
+import { DealPage } from "./pages/DealPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import { UpdateContactPage } from "./pages/UpdateContactPage";
 import { CreateDealPage } from "./pages/CreateDealPage";
@@ -86,10 +86,13 @@ function App() {
                     return (<ErrorBoundary
                             onReset={reset}
                             fallbackRender={({ resetErrorBoundary, error }) => {
-                                const { code, entity } = error as DeskproError;
+                                const { code, entity, message: nativeErrorMessage } = error as DeskproError;
                                 const message = match(code)
                                     .with(404, () => `Can't find ${entity ? entity : ""}`)
                                     .otherwise(() => "There was an error!");
+
+                                // eslint-disable-next-line no-console
+                                console.error(nativeErrorMessage);
 
                                 return (
                                     <Stack gap={6} vertical style={{ padding: "8px" }}>

@@ -4,7 +4,7 @@ import { Owner } from "./types";
 
 const getOwnerService = (client: IDeskproClient, ownerId: string) => {
     return baseRequest<Owner>(client, {
-        url: `/crm/v3/owners/${ownerId}`
+        url: `/crm/v3/owners/${ownerId}`,
     });
 };
 
