@@ -18,8 +18,12 @@ import { Main } from "./pages/Main";
 import { GlobalSignIn } from "./pages/GlobalSignIn";
 import { HomePage } from "./pages/HomePage";
 import { LinkPage } from "./pages/LinkPage";
+import { CreateContactPage } from "./pages/CreateContactPage";
 import { DealPage } from "./pages/DealPage";
 import { ActivityPage } from "./pages/ActivityPage";
+import { UpdateContactPage } from "./pages/UpdateContactPage";
+import { CreateDealPage } from "./pages/CreateDealPage";
+import { UpdateDealPage } from "./pages/UpdateDealPage";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 import type { DeskproError } from "./services/hubspot/baseRequest";
@@ -44,7 +48,7 @@ function App() {
     const unlinkContact = unlink(client, () => navigate("/link"));
 
     useDeskproElements(({ registerElement }) => {
-        registerElement("refreshButton", { type: "refresh_button" });
+        registerElement("refresh", { type: "refresh_button" });
     });
 
     useDeskproAppEvents({
@@ -76,37 +80,47 @@ function App() {
     return (
         <Suspense fallback={<LoadingSpinner/>}>
             <QueryErrorResetBoundary>
-                {({ reset }) => (
-                    <ErrorBoundary
-                        onReset={reset}
-                        fallbackRender={({ resetErrorBoundary, error }) => {
-                            const { code, entity } = error as DeskproError;
-                            const message = match(code)
-                                .with(404, () => `Can't find ${entity ? entity : ""}`)
-                                .otherwise(() => "There was an error!");
+                {({ reset }) => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    return (<ErrorBoundary
+                            onReset={reset}
+                            fallbackRender={({ resetErrorBoundary, error }) => {
+                                const { code, entity, message: nativeErrorMessage } = error as DeskproError;
+                                const message = match(code)
+                                    .with(404, () => `Can't find ${entity ? entity : ""}`)
+                                    .otherwise(() => "There was an error!");
 
-                            return (
-                                <Stack gap={6} vertical style={{ padding: "8px" }}>
-                                    {message}
-                                    <Button text="Reload" icon={faRefresh} intent="secondary" onClick={resetErrorBoundary} />
-                                </Stack>
-                            )
-                        }}
-                    >
-                        <Routes>
-                            <Route path="/">
-                                <Route path="admin">
-                                    <Route path="global-sign-in" element={<GlobalSignIn/>} />
+                                // eslint-disable-next-line no-console
+                                console.error(nativeErrorMessage);
+
+                                return (
+                                    <Stack gap={6} vertical style={{ padding: "8px" }}>
+                                        {message}
+                                        <Button text="Reload" icon={faRefresh} intent="secondary" onClick={resetErrorBoundary} />
+                                    </Stack>
+                                )
+                            }}
+                        >
+                            <Routes>
+                                <Route path="/">
+                                    <Route path="admin">
+                                        <Route path="global-sign-in" element={<GlobalSignIn/>} />
+                                    </Route>
                                 </Route>
-                            </Route>
-                            <Route path="home" element={<HomePage/>} />
-                            <Route path="link" element={<LinkPage/>} />
-                            <Route path="deal/:dealId" element={<DealPage/>} />
-                            <Route path="contacts/activities" element={<ActivityPage/>} />
-                            <Route index element={<Main/>} />
-                        </Routes>
-                    </ErrorBoundary>
-                )}
+                                <Route path="home" element={<HomePage/>} />
+                                <Route path="link" element={<LinkPage/>} />
+                                <Route path="deal/create" element={<CreateDealPage/>} />
+                                <Route path="deal/update/:dealId" element={<UpdateDealPage/>} />
+                                <Route path="deal/:dealId" element={<DealPage/>} />
+                                <Route path="contacts/create" element={<CreateContactPage/>} />
+                                <Route path="contacts/:contactId" element={<UpdateContactPage/>} />
+                                <Route path="contacts/activities" element={<ActivityPage/>} />
+                                <Route index element={<Main/>} />
+                            </Routes>
+                        </ErrorBoundary>
+                    )
+                }}
             </QueryErrorResetBoundary>
         </Suspense>
     );

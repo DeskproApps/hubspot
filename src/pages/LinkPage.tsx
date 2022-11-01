@@ -2,10 +2,12 @@ import { useState, useCallback } from "react";
 import type { FC, ChangeEvent } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useNavigate } from "react-router-dom";
+import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
     Stack,
     Button,
     Context,
+    TwoButtonGroup,
     HorizontalDivider,
     useDeskproElements,
     useDeskproAppClient,
@@ -41,7 +43,13 @@ const LinkPage: FC = () => {
     useDeskproElements(({ deRegisterElement }) => {
         deRegisterElement("home");
         deRegisterElement("menu");
+        deRegisterElement("edit");
+        deRegisterElement("externalLink");
     });
+
+    const onNavigateToCreateContact = useCallback(() => {
+        navigate("/contacts/create");
+    }, [navigate]);
 
     const searchInHubspot = useDebouncedCallback<(q: string) => void>((q) => {
         if (!client) {
@@ -97,6 +105,15 @@ const LinkPage: FC = () => {
 
     return (
         <BaseContainer>
+            <TwoButtonGroup
+                selected="one"
+                oneLabel="Find contact"
+                oneIcon={faSearch}
+                oneOnClick={() => {}}
+                twoLabel="Create contact"
+                twoIcon={faPlus}
+                twoOnClick={onNavigateToCreateContact}
+            />
             <InputSearch
                 value={searchQuery}
                 onChange={onChangeSearch}

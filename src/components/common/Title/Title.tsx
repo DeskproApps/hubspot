@@ -1,5 +1,5 @@
 import { FC, ComponentType, ReactNode } from "react";
-import styled from "styled-components";
+import styled   from "styled-components";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { H1, Stack, Button } from "@deskpro/app-sdk";
 import { HubSpotLink } from "../HubSpotLink";
@@ -9,7 +9,7 @@ type Props = {
     link?: string,
     onClick?: () => void,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    as?: string | ComponentType<any>,
+    as?: ComponentType<any>|string|any,
     marginBottom?: number,
 };
 

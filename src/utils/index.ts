@@ -3,3 +3,5 @@ export { getFullName } from "./getFullName";
 export { normalize } from "./normalize";
 export { getSymbolFromCurrency } from "./getSymbolFromCurrency";
 export { filterEntities } from "./filterEntities";
+export { getUserEmail } from "./getUserEmail";
+export { getOption, noOwnerOption } from "./getOption";

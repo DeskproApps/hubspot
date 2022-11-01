@@ -30,6 +30,13 @@ export type EntityType =
     | "emails"
     | "calls";
 
+export type HubSpotError = {
+    status: "error",
+    category: "VALIDATION_ERROR",
+    correlationId: string,
+    message: string,
+};
+
 export type Contact = {
     id: string,
     properties: {
@@ -63,6 +70,10 @@ export type Company = {
         hs_object_id: Company["id"],
         name: string,
     },
+};
+
+export type Companies = {
+    results: Company[],
 };
 
 export type Owner = {
@@ -144,7 +155,8 @@ export type CallActivity = {
 };
 
 export type PipelineTypes =
-    | "deals";
+    | "deals"
+    | "contacts";
 
 export type PipelineStage = {
     id: string,
@@ -180,21 +192,56 @@ export type AccountInto = {
     utcOffsetMilliseconds: number,
 }
 
+export type DealTypeOption = {
+    label: string,
+    value: string,
+    displayOrder: number,
+    hidden: boolean,
+};
+
 export type DealTypes = {
+    updatedAt: DateTime,
+    createdAt: DateTime,
+    name: "dealtype",
+    label: string,
+    type: "enumeration",
+    fieldType: "radio",
+    description: string,
+    groupName: string,
+    options: DealTypeOption[],
+    displayOrder: number,
+    calculated: boolean,
+    externalOptions: boolean,
+    hasUniqueValue: boolean,
+    hidden: boolean,
+    hubspotDefined: boolean,
+    modificationMetadata: {
+        archivable: boolean,
+        readOnlyDefinition: boolean,
+        readOnlyOptions: boolean,
+        readOnlyValue: boolean,
+    },
+    formField: boolean,
+};
+
+export type LeadStatusOption = {
+    label: string,
+    value: string,
+    description: string,
+    displayOrder: number,
+    hidden: boolean,
+};
+
+export type LeadStatus = {
+    "label": string,
+    "name": "hs_lead_status",
+    "description": string,
+    "options": LeadStatusOption[],
     "updatedAt": DateTime,
     "createdAt": DateTime,
-    "name": "dealtype",
-    "label": string,
-    "type": "enumeration",
-    "fieldType": "radio",
-    "description": string,
+    "type": string,
+    "fieldType": string,
     "groupName": string,
-    "options": Array<{
-        "label": string,
-        "value": string,
-        "displayOrder": number,
-        "hidden": boolean,
-    }>,
     "displayOrder": number,
     "calculated": boolean,
     "externalOptions": boolean,
@@ -202,10 +249,46 @@ export type DealTypes = {
     "hidden": boolean,
     "hubspotDefined": boolean,
     "modificationMetadata": {
-        "archivable": boolean,
-        "readOnlyDefinition": boolean,
-        "readOnlyOptions": boolean,
-        "readOnlyValue": boolean,
+        "archivable": true,
+        "readOnlyDefinition": true,
+        "readOnlyOptions": false,
+        "readOnlyValue": false
     },
     "formField": boolean,
 };
+
+export type DealPriorityOption = {
+    label: string,
+    value: string,
+    displayOrder: number,
+    hidden: boolean,
+};
+
+export type DealPriority = {
+    updatedAt: DateTime,
+    createdAt: DateTime,
+    label: string,
+    name: "hs_priority",
+    type: "enumeration",
+    fieldType: "select",
+    groupName: string,
+    description: string,
+    options: DealPriorityOption[],
+    displayOrder: number,
+    calculated: boolean,
+    externalOptions: boolean,
+    hasUniqueValue: boolean,
+    hidden: boolean,
+    hubspotDefined: boolean,
+    modificationMetadata: {
+        archivable: boolean,
+        readOnlyDefinition: boolean,
+        readOnlyValue: boolean,
+    },
+    formField: boolean,
+};
+
+export type AssociationTypes =
+    | "deal_to_contact"
+    | "deal_to_company"
+;

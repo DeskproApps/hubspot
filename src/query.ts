@@ -1,6 +1,6 @@
 import { QueryClient } from "react-query";
 
-export const query = new QueryClient({
+export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             suspense: true,
@@ -14,7 +14,9 @@ export enum QueryKey {
     CHECK_AUTH = "checkAuth",
     ENTITY = "entity",
     CONTACT = "contact",
+    CONTACTS = "contacts",
     COMPANY = "company",
+    COMPANIES = "companies",
     OWNERS = "owners",
     DEALS = "deals",
     NOTES = "notes",
@@ -22,4 +24,5 @@ export enum QueryKey {
     CALL_ACTIVITIES = "callActivities",
     PIPELINES = "pipelines",
     ACCOUNT_INFO = "accountInfo",
+    PROPERTIES = "properties"
 }

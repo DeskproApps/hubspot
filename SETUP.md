@@ -5,7 +5,7 @@ To install the HubSpot app you must first create an API token. Head over your Hu
 
 Once you've logged in, click the gear/cog icon at the top right of the screen.
 
-![image](https://user-images.githubusercontent.com/97668246/196406569-604ba8e4-5b9a-469d-b462-4239e3ceef29.png)
+[![](/docs/assets/setup/hubspot-setup-01.png)](/docs/assets/setup/hubspot-setup-01.png)
 
 Navigate to Account Setup > Integrations > Private Apps using the menu on the left.
 
@@ -19,13 +19,26 @@ Give the private app a name - this can be anything, something like "Deskpro App"
 
 [![](/docs/assets/setup/hubspot-setup-04.png)](/docs/assets/setup/hubspot-setup-04.png)
 
-Click on the "Scopes" tab at the top of the screen and expand each section, selecting all the "read" scopes.
+Click on the "Scopes" tab at the top of the screen and expand sections "CRM" and "Standard", selecting scopes (like on screenshots):
 
-![image](https://user-images.githubusercontent.com/97668246/196407630-c60d5cea-40e8-4fb3-8c82-8f18b89f1286.png)
+__CRM:__
+* crm.objects.companies (__read__)
+* crm.objects.contacts (__read__, __write__)
+* crm.objects.deals (__read__, __write__)
+* crm.objects.owners (__read__)
+
+__Standard:__
+* account-info.security.read
+* oauth
+* sales-email-read
+
+[![](/docs/assets/setup/hubspot-setup-05.png)](/docs/assets/setup/hubspot-setup-05.png)
+[![](/docs/assets/setup/hubspot-setup-06.png)](/docs/assets/setup/hubspot-setup-06.png)
+
 
 Click "Create app" at the top right of the page and copy your new access token to your clipboard. **Keep this token private, safe and secure**.
 
-[![](/docs/assets/setup/hubspot-setup-06.png)](/docs/assets/setup/hubspot-setup-06.png)
+[![](/docs/assets/setup/hubspot-setup-07.png)](/docs/assets/setup/hubspot-setup-07.png)
 
 When you install the HubSpot app in Deskpro, enter this API token into the settings tab of the app. 
 

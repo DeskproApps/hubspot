@@ -4,6 +4,7 @@ import {
 } from "@deskpro/app-sdk";
 import { getEntityContactList, setEntityContact } from "../services/entityAssociation";
 import { getContactsByEmailService } from "../services/hubspot";
+import { getUserEmail } from "../utils";
 import type { UserContext } from "../types";
 
 type UseCheckLinkedContact = (
@@ -23,10 +24,15 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
     const { context } = useDeskproLatestAppContext() as { context: UserContext|null };
 
     const userId = context?.data?.user.id;
-    const email = context?.data?.user.emails[0];
+    const userEmail = getUserEmail(context?.data?.user);
 
     useInitialisedDeskproAppClient((client) => {
-        if (!isAuth || !userId || !email) {
+        if (!isAuth || !userId) {
+            return;
+        }
+
+        if (!userEmail) {
+            onNoLinkedItemsFn();
             return;
         }
 
@@ -38,13 +44,12 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
                 return;
             }
 
-            const { results } = await getContactsByEmailService(client, email);
+            const { results } = await getContactsByEmailService(client, userEmail);
 
             if (results.length === 0 || results.length > 1) {
                 onNoLinkedItemsFn();
                 return;
             }
-
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -56,7 +61,7 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
                 onNoLinkedItemsFn();
             }
         })();
-    }, [isAuth, userId, email]);
+    }, [isAuth, userId, userEmail]);
 };
 
 export { useCheckLinkedContact };
