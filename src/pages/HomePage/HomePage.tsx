@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Context,
     LoadingSpinner,
@@ -14,6 +15,7 @@ import type { UserContext, ContextData } from "../../types";
 import type { Contact } from "../../services/hubspot/types";
 
 const HomePage = () => {
+    const navigate = useNavigate();
     const { context } = useDeskproLatestAppContext() as { context: UserContext };
     const [contactId, setContactId] = useState<Contact["id"]|null>(null);
     const userId = (context as Context<ContextData>)?.data?.user.id;
@@ -66,6 +68,10 @@ const HomePage = () => {
             })
     }, [userId]);
 
+    const onCreateNote = () => {
+        navigate("/note/create");
+    };
+
     if (isLoading) {
         return <LoadingSpinner/>
     }
@@ -83,6 +89,7 @@ const HomePage = () => {
             emailActivities={emailActivities}
             callActivities={callActivities}
             accountInfo={accountInfo}
+            onCreateNote={onCreateNote}
         />
     );
 };
