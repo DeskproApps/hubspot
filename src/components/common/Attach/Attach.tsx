@@ -4,17 +4,17 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import omit from "lodash/omit";
 import { AttachmentTag, Button, Stack } from "@deskpro/app-sdk";
 
-export interface AttachmentFile {
-    name: string;
-    size: number;
-    id?: number;
-    file?: File;
-    delete?: boolean;
+export type AttachmentFile = {
+    name: string,
+    size: number,
+    id?: number,
+    file?: File,
+    delete?: boolean,
 }
 
-interface AttachmentsFieldProps {
-    onFiles?: (files: AttachmentFile[]) => void;
-    existing?: AttachmentFile[];
+type AttachmentsFieldProps = {
+    onFiles?: (files: AttachmentFile[]) => void,
+    existing?: AttachmentFile[],
 }
 
 const Attach: FC<AttachmentsFieldProps> = ({ onFiles, existing }: AttachmentsFieldProps) => {

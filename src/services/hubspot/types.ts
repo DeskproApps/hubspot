@@ -291,4 +291,24 @@ export type DealPriority = {
 export type AssociationTypes =
     | "deal_to_contact"
     | "deal_to_company"
+    | "note_to_contact"
 ;
+
+export type UploadFile = {
+    id: string,
+    createdAt: DateTime,
+    updatedAt: DateTime,
+    archived: boolean,
+    name: string,
+    path: string,
+    size: number,
+    height?: number,
+    width?: number,
+    encoding: string,
+    type: "IMG" | "DOCUMENT" | "AUDIO" | "MOVIE" | "OTHER",
+    extension: string,
+    defaultHostingUrl: string,
+    url: string,
+    isUsableInContent: boolean,
+    access: "PUBLIC_INDEXABLE" | "PUBLIC_NOT_INDEXABLE" | "PRIVATE",
+};

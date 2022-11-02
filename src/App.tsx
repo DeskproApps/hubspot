@@ -9,7 +9,6 @@ import {
     Button,
     IDeskproClient,
     LoadingSpinner,
-    useDeskproElements,
     useDeskproAppClient,
     useDeskproAppEvents,
 } from "@deskpro/app-sdk";
@@ -49,10 +48,6 @@ function App() {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const unlinkContact = unlink(client, () => navigate("/link"));
-
-    useDeskproElements(({ registerElement }) => {
-        registerElement("refresh", { type: "refresh_button" });
-    });
 
     useDeskproAppEvents({
         onShow: () => {

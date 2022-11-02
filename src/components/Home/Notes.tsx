@@ -19,6 +19,7 @@ const Author = styled(Stack)`
 
 const NoteBlock = styled(P1)`
   width: calc(100% - 35px);
+  white-space: pre-line;
 
   p {
     white-space: pre-wrap;
