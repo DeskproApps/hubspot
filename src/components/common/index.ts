@@ -13,3 +13,5 @@ export { Link } from "./Link";
 export { Label } from "./Label";
 export { SingleSelect } from "./SingleSelect";
 export { DateField } from "./DateField";
+export { Attach } from "./Attach";
+export { TextArea } from "./TextArea";

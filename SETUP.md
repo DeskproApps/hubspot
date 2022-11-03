@@ -29,6 +29,7 @@ __CRM:__
 
 __Standard:__
 * account-info.security.read
+* files
 * oauth
 * sales-email-read
 

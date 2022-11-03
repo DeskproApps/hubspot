@@ -40,14 +40,19 @@ const baseRequest: Request = async (client, {
     const options: RequestInit = {
         method,
         headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${placeholders.API_TOKEN}`,
             ...customHeaders,
         },
     };
 
-    if (data) {
+    if (data instanceof FormData) {
+        options.body = data;
+    } else if (data) {
         options.body = JSON.stringify(data);
+        options.headers = {
+            ...options.headers,
+            "Content-Type": "application/json",
+        };
     }
 
     const res = await dpFetch(requestUrl, options);

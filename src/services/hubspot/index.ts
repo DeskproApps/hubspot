@@ -28,3 +28,5 @@ export { getDealPrioritiesService } from "./getDealPrioritiesService";
 export { createDealService } from "./createDealService";
 export { setEntityAssocService } from "./setEntityAssocService";
 export { updateDealService } from "./updateDealService";
+export { createNoteService } from "./createNoteService";
+export { uploadFileService } from "./uploadFileService";

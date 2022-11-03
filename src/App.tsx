@@ -9,21 +9,23 @@ import {
     Button,
     IDeskproClient,
     LoadingSpinner,
-    useDeskproElements,
     useDeskproAppClient,
     useDeskproAppEvents,
 } from "@deskpro/app-sdk";
 import { deleteEntityContact } from "./services/entityAssociation";
-import { Main } from "./pages/Main";
-import { GlobalSignIn } from "./pages/GlobalSignIn";
-import { HomePage } from "./pages/HomePage";
-import { LinkPage } from "./pages/LinkPage";
-import { CreateContactPage } from "./pages/CreateContactPage";
-import { DealPage } from "./pages/DealPage";
-import { ActivityPage } from "./pages/ActivityPage";
-import { UpdateContactPage } from "./pages/UpdateContactPage";
-import { CreateDealPage } from "./pages/CreateDealPage";
-import { UpdateDealPage } from "./pages/UpdateDealPage";
+import {
+    Main,
+    LinkPage,
+    HomePage,
+    DealPage,
+    GlobalSignIn,
+    ActivityPage,
+    CreateDealPage,
+    CreateNotePage,
+    UpdateDealPage,
+    UpdateContactPage,
+    CreateContactPage,
+} from "./pages";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 import type { DeskproError } from "./services/hubspot/baseRequest";
@@ -46,10 +48,6 @@ function App() {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const unlinkContact = unlink(client, () => navigate("/link"));
-
-    useDeskproElements(({ registerElement }) => {
-        registerElement("refresh", { type: "refresh_button" });
-    });
 
     useDeskproAppEvents({
         onShow: () => {
@@ -116,6 +114,7 @@ function App() {
                                 <Route path="contacts/create" element={<CreateContactPage/>} />
                                 <Route path="contacts/:contactId" element={<UpdateContactPage/>} />
                                 <Route path="contacts/activities" element={<ActivityPage/>} />
+                                <Route path="note/create" element={<CreateNotePage/>} />
                                 <Route index element={<Main/>} />
                             </Routes>
                         </ErrorBoundary>

@@ -16,17 +16,18 @@ import type {
 } from "../../services/hubspot/types";
 
 type Props = {
-    contact: Contact["properties"];
-    contactOwner?: Owner;
-    dealOwners: Record<Owner["id"], Owner>;
-    companies: Array<Company["properties"]>;
-    deals: Array<Deal["properties"]>;
-    notes: Array<Note["properties"]>;
-    noteOwners: Record<Owner["id"], Owner>;
-    callActivities: Array<CallActivity["properties"]>;
-    emailActivities: Array<EmailActivity["properties"]>;
-    accountInfo?: AccountInto;
-    dealPipelines: Record<Pipeline["id"], Pipeline>;
+    contact: Contact["properties"],
+    contactOwner?: Owner,
+    dealOwners: Record<Owner["id"], Owner>,
+    companies: Array<Company["properties"]>,
+    deals: Array<Deal["properties"]>,
+    notes: Array<Note["properties"]>,
+    noteOwners: Record<Owner["id"], Owner>,
+    callActivities: Array<CallActivity["properties"]>,
+    emailActivities: Array<EmailActivity["properties"]>,
+    accountInfo?: AccountInto,
+    dealPipelines: Record<Pipeline["id"], Pipeline>,
+    onCreateNote: () => void
 }
 
 const Home: FC<Props> = ({
@@ -41,6 +42,7 @@ const Home: FC<Props> = ({
     callActivities,
     emailActivities,
     dealPipelines,
+    onCreateNote,
 }) => {
     return (
         <>
@@ -58,7 +60,7 @@ const Home: FC<Props> = ({
                 contact={contact}
                 companies={companies}
             />
-            <Notes notes={notes} owners={noteOwners} />
+            <Notes notes={notes} owners={noteOwners} onCreateNote={onCreateNote} />
             <Activities calls={callActivities} emails={emailActivities} />
         </>
     );

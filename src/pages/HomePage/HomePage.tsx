@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useNavigate, createSearchParams } from "react-router-dom";
 import {
     Context,
     LoadingSpinner,
@@ -14,9 +15,9 @@ import type { UserContext, ContextData } from "../../types";
 import type { Contact } from "../../services/hubspot/types";
 
 const HomePage = () => {
+    const navigate = useNavigate();
     const { context } = useDeskproLatestAppContext() as { context: UserContext };
     const [contactId, setContactId] = useState<Contact["id"]|null>(null);
-    const userId = (context as Context<ContextData>)?.data?.user.id;
     const {
         isLoading,
         contact,
@@ -32,6 +33,8 @@ const HomePage = () => {
         accountInfo,
     } = useLoadHomeDeps(contactId);
 
+    const userId = (context as Context<ContextData>)?.data?.user.id;
+
     useSetAppTitle("Contact");
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
@@ -40,6 +43,7 @@ const HomePage = () => {
         deRegisterElement("edit");
         deRegisterElement("externalLink");
 
+        registerElement("refresh", { type: "refresh_button" });
         registerElement("edit", {
             type: "edit_button",
             payload: { type: "changePage", path: `/contacts/${contactId}` },
@@ -66,6 +70,15 @@ const HomePage = () => {
             })
     }, [userId]);
 
+    const onCreateNote = useCallback(() => {
+        if (contactId) {
+            navigate({
+                pathname: `/note/create`,
+                search: `?${createSearchParams({ contactId })}`
+            });
+        }
+    }, [navigate, contactId]);
+
     if (isLoading) {
         return <LoadingSpinner/>
     }
@@ -83,6 +96,7 @@ const HomePage = () => {
             emailActivities={emailActivities}
             callActivities={callActivities}
             accountInfo={accountInfo}
+            onCreateNote={onCreateNote}
         />
     );
 };

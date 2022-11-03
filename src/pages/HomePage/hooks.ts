@@ -18,10 +18,11 @@ import { normalize, filterEntities } from "../../utils";
 import type {
     Deal,
     Note,
+    Owner,
     Contact,
     Company,
     CallActivity,
-    EmailActivity, Owner,
+    EmailActivity,
 } from "../../services/hubspot/types";
 
 const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
@@ -89,7 +90,9 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
     const noteOwners = useQueriesWithClient(notes?.map((note) => ({
         queryKey: [QueryKey, get(note, ["data", "properties", "hubspot_owner_id"], 0)],
         queryFn: (client) => getOwnerService(client, get(note, ["data", "properties", "hubspot_owner_id"], 0)),
-        enabled: (notes.length > 0) && notes.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
+        enabled: (notes.length > 0)
+            && notes.every(({ isFetched, isSuccess }) => (isFetched && isSuccess))
+            && !!get(note, ["data", "properties", "hubspot_owner_id"], 0),
         useErrorBoundary: false,
     })) ?? []);
 
@@ -113,7 +116,7 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
     })) ?? []);
 
     const callActivities = useQueriesWithClient(callActivityIds.data?.results?.map(({ id }) => ({
-        queryKey: [QueryKey.EMAIL_ACTIVITIES, id],
+        queryKey: [QueryKey.CALL_ACTIVITIES, id],
         queryFn: (client) => getCallActivityService(client, id),
         enabled: (callActivityIds.data?.results.length > 0),
         useErrorBoundary: false,

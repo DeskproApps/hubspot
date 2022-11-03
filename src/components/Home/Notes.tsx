@@ -19,6 +19,7 @@ const Author = styled(Stack)`
 
 const NoteBlock = styled(P1)`
   width: calc(100% - 35px);
+  white-space: pre-line;
 
   p {
     white-space: pre-wrap;
@@ -52,6 +53,7 @@ type NoteProps = {
 type Props = {
     notes: Array<NoteProps>,
     owners: Record<OwnerProps["id"], OwnerProps>,
+    onCreateNote: () => void,
 };
 
 const sortNotesFn = (
@@ -77,10 +79,10 @@ const Note: FC<NoteProps & { owner?: OwnerProps }> = ({
     </Stack>
 );
 
-const Notes: FC<Props> = ({ notes, owners }) => (
+const Notes: FC<Props> = ({ notes, owners, onCreateNote }) => (
     <>
         <BaseContainer>
-            <Title title={`Notes (${notes.length})`} />
+            <Title title={`Notes (${notes.length})`} onClick={onCreateNote} />
             {notes.sort(sortNotesFn).map((note) => (
                 <Note key={note.hs_object_id} {...note} owner={get(owners, [note?.hubspot_owner_id], undefined)} />
             ))}
