@@ -154,6 +154,43 @@ export type CallActivity = {
     },
 };
 
+export type CallDispositions = {
+    deleted: boolean,
+    id: string,
+    label: string,
+};
+
+export type CallDirectionOption = {
+    label: string,
+    value: string,
+    hidden: boolean,
+    displayOrder: number,
+};
+
+export type CallDirections = {
+    updatedAt: DateTime,
+    createdAt: DateTime,
+    name: "hs_call_direction",
+    label: string,
+    type: "enumeration",
+    fieldType: "select",
+    description: string,
+    groupName: "call",
+    options: CallDirectionOption[],
+    displayOrder: number,
+    calculated: boolean,
+    externalOptions: boolean,
+    hasUniqueValue: boolean,
+    hidden: boolean,
+    hubspotDefined: boolean,
+    modificationMetadata: {
+        archivable: boolean,
+        readOnlyDefinition: boolean,
+        readOnlyValue: boolean,
+    },
+    formField: false,
+};
+
 export type PipelineTypes =
     | "deals"
     | "contacts";

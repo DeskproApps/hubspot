@@ -15,12 +15,11 @@ export type MappedFieldProps = DatePickerProps & {
     label: string,
     error: boolean,
     value?: string,
+    required?: boolean,
     onChange: (date: [Date]) => void,
 }
 
-const LabelDate = styled(Label)`
-    //width: calc(100% - 25px);
-`;
+const LabelDate = styled(Label)``;
 
 const DateInput = styled(Input)`
     :read-only {
@@ -30,9 +29,10 @@ const DateInput = styled(Input)`
 
 export const DateField: FC<MappedFieldProps> = ({
     id,
-    value,
     label,
+    value,
     error,
+    required,
     onChange,
     ...props
 }: MappedFieldProps) => {
@@ -52,6 +52,7 @@ export const DateField: FC<MappedFieldProps> = ({
                 _: any, ref: any
             ) => (
                 <LabelDate
+                    required
                     htmlFor={id}
                     label={label}
                 >
