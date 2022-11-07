@@ -1,6 +1,7 @@
 import { FC, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import capitalize from "lodash/capitalize";
+import has from "lodash/has";
 import {
     LoadingSpinner,
     useDeskproElements,
@@ -53,13 +54,17 @@ const ActivityPage: FC = () => {
     const contacts = useQueriesWithClient(contactIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.CONTACT, id],
         queryFn: (client) => getContactService(client, id),
-        enabled: (contactIds.data?.results.length > 0)
+        enabled: (contactIds.data?.results.length > 0),
+        useErrorBoundary: false,
     })) ?? []);
 
     const owner = useQueryWithClient(
         [QueryKey.OWNERS, data?.properties?.hubspot_owner_id],
         (client) => getOwnerService(client, data?.properties?.hubspot_owner_id as string),
-        { enabled: !!data?.properties?.hubspot_owner_id }
+        {
+            enabled: has(data, ["properties", "hubspot_owner_id"]),
+            useErrorBoundary: false,
+        },
     );
 
     useSetAppTitle(!type ? "" : `${capitalize(type)} details`);
