@@ -27,7 +27,8 @@ type Props = {
     emailActivities: Array<EmailActivity["properties"]>,
     accountInfo?: AccountInto,
     dealPipelines: Record<Pipeline["id"], Pipeline>,
-    onCreateNote: () => void
+    onCreateNote: () => void,
+    onCreateActivity: () => void,
 }
 
 const Home: FC<Props> = ({
@@ -43,6 +44,7 @@ const Home: FC<Props> = ({
     emailActivities,
     dealPipelines,
     onCreateNote,
+    onCreateActivity,
 }) => {
     return (
         <>
@@ -61,7 +63,13 @@ const Home: FC<Props> = ({
                 companies={companies}
             />
             <Notes notes={notes} owners={noteOwners} onCreateNote={onCreateNote} />
-            <Activities calls={callActivities} emails={emailActivities} />
+            <Activities
+                calls={callActivities}
+                emails={emailActivities}
+                accountInfo={accountInfo}
+                contactId={contact?.hs_object_id}
+                onCreateActivity={onCreateActivity}
+            />
         </>
     );
 };

@@ -99,6 +99,7 @@ const DealForm: FC<Props> = ({
                 />
 
                 <DateField
+                    required
                     id="closeDate"
                     label="Close date"
                     error={!!(touched.closeDate && errors.closeDate)}

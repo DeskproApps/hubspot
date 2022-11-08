@@ -9,3 +9,4 @@ export { LinkPage } from "./LinkPage";
 export { Main } from "./Main";
 export { UpdateContactPage } from "./UpdateContactPage";
 export { UpdateDealPage } from "./UpdateDealPage";
+export { CreateActivityPage } from "./CreateActivityPage";

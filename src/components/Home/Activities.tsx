@@ -1,7 +1,7 @@
 import { FC } from "react";
 import concat from "lodash/concat";
 import capitalize from "lodash/capitalize";
-import isAfter from "date-fns/isAfter";
+import isBefore from "date-fns/isBefore";
 import { H3, HorizontalDivider } from "@deskpro/app-sdk";
 import {
     Link,
@@ -12,14 +12,24 @@ import {
 } from "../common";
 import { format } from "../../utils/date";
 import type { DateTime } from "../../types";
-import type { EmailActivity, CallActivity } from "../../services/hubspot/types";
+import type { EmailActivity, CallActivity, AccountInto, Contact } from "../../services/hubspot/types";
+
+type Props = {
+    calls: Array<CallActivity["properties"]>,
+    emails: Array<EmailActivity["properties"]>,
+    onCreateActivity: () => void,
+    accountInfo?: AccountInto,
+    contactId?: Contact["id"],
+};
 
 type ActivityProps = {
     id: string,
     title?: string,
     body?: string,
     date: DateTime,
-    type: "call" | "email";
+    type: "call" | "email",
+    contactId?: Contact["id"],
+    portalId?: AccountInto["portalId"],
 };
 
 const normalizeCallFn = (call: CallActivity["properties"]): ActivityProps => ({
@@ -38,9 +48,11 @@ const normalizeEmailFn = (email: EmailActivity["properties"]): ActivityProps => 
     type: "email",
 });
 
-const sortDateFn = (a: ActivityProps, b: ActivityProps) => isAfter(new Date(a.date), new Date(b.date)) ? 1 : -1;
+const sortDateFn = (a: ActivityProps, b: ActivityProps) => {
+    return isBefore(new Date(a.date), new Date(b.date)) ? 1 : -1;
+}
 
-const Activity: FC<ActivityProps> = ({ id, title, body, date, type }) => (
+const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, contactId }) => (
     <>
         {title && (
             <Title
@@ -51,12 +63,23 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type }) => (
                     >{title}</Link>
                 )}
                 marginBottom={7}
+                {...((!portalId || !contactId) ? {} : {
+                    link: `https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${id}`
+                })}
             />
         )}
         {(!title && body) && (
-            <Link to={`/contacts/activities?type=${type}&activityId=${id}`}>
-                <OverflowText as={H3} style={{ marginBottom: 7 }}>{body}</OverflowText>
-            </Link>
+            <Title
+                as={H3}
+                title={(
+                    <Link to={`/contacts/activities?type=${type}&activityId=${id}`}>
+                        <OverflowText>{body}</OverflowText>
+                    </Link>
+                )}
+                {...((!portalId || !contactId) ? {} : {
+                    link: `https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${id}`
+                })}
+            />
         )}
         <TwoColumn
             leftLabel="Type"
@@ -68,19 +91,21 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type }) => (
     </>
 );
 
-const Activities: FC<{
-    calls: Array<CallActivity["properties"]>,
-    emails: Array<EmailActivity["properties"]>,
-}> = ({ calls, emails }) => {
+const Activities: FC<Props> = ({ calls, emails, accountInfo, contactId, onCreateActivity }) => {
     const normalizeCall = calls.map(normalizeCallFn);
     const normalizeEmail = emails.map(normalizeEmailFn);
     const activities = concat(normalizeCall, normalizeEmail).sort(sortDateFn);
 
     return (
         <BaseContainer style={{ marginBottom: 40 }}>
-            <Title title={`Activities (${activities.length})`}/>
+            <Title title={`Activities (${activities.length})`} onClick={onCreateActivity}/>
             {activities.map((activity) => (
-                <Activity key={activity.id} {...activity} />
+                <Activity
+                    key={activity.id}
+                    {...activity}
+                    portalId={accountInfo?.portalId}
+                    contactId={contactId}
+                />
             ))}
         </BaseContainer>
     );

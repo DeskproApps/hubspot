@@ -79,6 +79,15 @@ const HomePage = () => {
         }
     }, [navigate, contactId]);
 
+    const onCreateActivity = useCallback(() => {
+        if (contactId) {
+            navigate({
+                pathname: `/activity/create`,
+                search: `?${createSearchParams({ contactId })}`
+            });
+        }
+    }, [navigate, contactId]);
+
     if (isLoading) {
         return <LoadingSpinner/>
     }
@@ -97,6 +106,7 @@ const HomePage = () => {
             callActivities={callActivities}
             accountInfo={accountInfo}
             onCreateNote={onCreateNote}
+            onCreateActivity={onCreateActivity}
         />
     );
 };

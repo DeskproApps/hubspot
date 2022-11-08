@@ -23,8 +23,11 @@ export type AccessTokenInfo = {
 }
 
 export type EntityType =
+    | "contact"
     | "contacts"
+    | "company"
     | "companies"
+    | "deal"
     | "deals"
     | "notes"
     | "emails"
@@ -152,6 +155,43 @@ export type CallActivity = {
         hs_call_duration?: number,
         hubspot_owner_id: string,
     },
+};
+
+export type CallDispositions = {
+    deleted: boolean,
+    id: string,
+    label: string,
+};
+
+export type CallDirectionOption = {
+    label: string,
+    value: string,
+    hidden: boolean,
+    displayOrder: number,
+};
+
+export type CallDirections = {
+    updatedAt: DateTime,
+    createdAt: DateTime,
+    name: "hs_call_direction",
+    label: string,
+    type: "enumeration",
+    fieldType: "select",
+    description: string,
+    groupName: "call",
+    options: CallDirectionOption[],
+    displayOrder: number,
+    calculated: boolean,
+    externalOptions: boolean,
+    hasUniqueValue: boolean,
+    hidden: boolean,
+    hubspotDefined: boolean,
+    modificationMetadata: {
+        archivable: boolean,
+        readOnlyDefinition: boolean,
+        readOnlyValue: boolean,
+    },
+    formField: false,
 };
 
 export type PipelineTypes =
@@ -292,6 +332,12 @@ export type AssociationTypes =
     | "deal_to_contact"
     | "deal_to_company"
     | "note_to_contact"
+    | "call_to_contact"
+    | "call_to_company"
+    | "call_to_deal"
+    | "email_to_contact"
+    | "email_to_company"
+    | "email_to_deal"
 ;
 
 export type UploadFile = {

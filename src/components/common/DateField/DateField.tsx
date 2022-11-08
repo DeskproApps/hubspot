@@ -4,6 +4,7 @@ import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import {
     Input,
     DatePicker,
+    DateTimePicker,
     DatePickerProps,
     useDeskproAppTheme,
 } from "@deskpro/app-sdk";
@@ -15,12 +16,12 @@ export type MappedFieldProps = DatePickerProps & {
     label: string,
     error: boolean,
     value?: string,
+    required?: boolean,
+    withTime?: boolean,
     onChange: (date: [Date]) => void,
 }
 
-const LabelDate = styled(Label)`
-    //width: calc(100% - 25px);
-`;
+const LabelDate = styled(Label)``;
 
 const DateInput = styled(Input)`
     :read-only {
@@ -30,20 +31,29 @@ const DateInput = styled(Input)`
 
 export const DateField: FC<MappedFieldProps> = ({
     id,
-    value,
     label,
+    value,
     error,
+    required,
     onChange,
+    withTime,
     ...props
 }: MappedFieldProps) => {
     const { theme } = useDeskproAppTheme();
+    const Picker = withTime ? DateTimePicker : DatePicker;
+    const options = {
+        position: "left",
+        dateFormat: "d/m/Y",
+        ...(!withTime ? {} : {
+            altInput: true,
+            altFormat: "j F Y H:i",
+            timeFormat: "H:i",
+        }),
+    };
 
     return (
-        <DatePicker
-            options={{
-                position: "left",
-                dateFormat: "d/m/Y",
-            }}
+        <Picker
+            options={options}
             value={value}
             onChange={onChange}
             {...props}
@@ -52,6 +62,7 @@ export const DateField: FC<MappedFieldProps> = ({
                 _: any, ref: any
             ) => (
                 <LabelDate
+                    required={required}
                     htmlFor={id}
                     label={label}
                 >
@@ -62,7 +73,6 @@ export const DateField: FC<MappedFieldProps> = ({
                         variant="inline"
                         inputsize="small"
                         placeholder="DD/MM/YYYY"
-                        style={{ backgroundColor: "transparent" }}
                         rightIcon={{
                             icon: faCalendarDays,
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

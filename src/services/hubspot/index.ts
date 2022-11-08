@@ -30,3 +30,7 @@ export { setEntityAssocService } from "./setEntityAssocService";
 export { updateDealService } from "./updateDealService";
 export { createNoteService } from "./createNoteService";
 export { uploadFileService } from "./uploadFileService";
+export { getActivityCallDispositionsServices } from "./getActivityCallDispositionsServices";
+export { getActivityCallDirectionServices } from "./getActivityCallDirectionServices";
+export { createActivityCallService } from "./createActivityCallService";
+export { createActivityEmailService } from "./createActivityEmailService";

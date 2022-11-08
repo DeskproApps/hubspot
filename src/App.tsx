@@ -25,6 +25,7 @@ import {
     UpdateDealPage,
     UpdateContactPage,
     CreateContactPage,
+    CreateActivityPage,
 } from "./pages";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
@@ -115,6 +116,7 @@ function App() {
                                 <Route path="contacts/:contactId" element={<UpdateContactPage/>} />
                                 <Route path="contacts/activities" element={<ActivityPage/>} />
                                 <Route path="note/create" element={<CreateNotePage/>} />
+                                <Route path="activity/create" element={<CreateActivityPage/>} />
                                 <Route index element={<Main/>} />
                             </Routes>
                         </ErrorBoundary>
