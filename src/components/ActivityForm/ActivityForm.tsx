@@ -107,25 +107,29 @@ const ActivityForm: FC<Props> = ({
                     />
                 </Label>
 
-                <Label htmlFor="callDisposition" label="Call outcome">
-                    <SingleSelect
-                        id="callDisposition"
-                        value={values.callDisposition}
-                        options={callDispositionOptions}
-                        error={!!(touched.callDisposition && errors.callDisposition)}
-                        onChange={(value: Option<string>) => setFieldValue("callDisposition", value)}
-                    />
-                </Label>
+                {(values.activityType.value === "call") && (
+                    <Label htmlFor="callDisposition" label="Call outcome">
+                        <SingleSelect
+                            id="callDisposition"
+                            value={values.callDisposition}
+                            options={callDispositionOptions}
+                            error={!!(touched.callDisposition && errors.callDisposition)}
+                            onChange={(value: Option<string>) => setFieldValue("callDisposition", value)}
+                        />
+                    </Label>
+                )}
 
-                <Label htmlFor="callDirection" label="Direction">
-                    <SingleSelect
-                        id="callDirection"
-                        value={values.callDirection}
-                        options={callDirectionOptions}
-                        error={!!(touched.callDirection && errors.callDirection)}
-                        onChange={(value: Option<string>) => setFieldValue("callDirection", value)}
-                    />
-                </Label>
+                {(values.activityType.value === "call") && (
+                    <Label htmlFor="callDirection" label="Direction">
+                        <SingleSelect
+                            id="callDirection"
+                            value={values.callDirection}
+                            options={callDirectionOptions}
+                            error={!!(touched.callDirection && errors.callDirection)}
+                            onChange={(value: Option<string>) => setFieldValue("callDirection", value)}
+                        />
+                    </Label>
+                )}
             </BaseContainer>
 
             <HorizontalDivider/>

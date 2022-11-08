@@ -12,9 +12,14 @@ import { useLoadActivityDeps } from "./hooks";
 import {
     setEntityAssocService,
     createActivityCallService,
+    createActivityEmailService,
 } from "../../services/hubspot";
 import { isValidationError } from "../../services/hubspot/utils";
-import { ActivityForm, getActivityValues } from "../../components/ActivityForm";
+import {
+    ActivityForm,
+    getCallActivityValues,
+    getEmailActivityValues,
+} from "../../components/ActivityForm";
 import { ErrorBlock, BaseContainer } from "../../components/common";
 import type { Values } from "../../components/ActivityForm/types";
 
@@ -55,28 +60,33 @@ const CreateActivityPage: FC = () => {
 
         setError(null);
 
-        return createActivityCallService(client, getActivityValues(values))
-            .then(({ id: callId }) => {
+        const type = values.activityType.value as "call"|"email";
+        const activityType = (type === "call") ? "calls" : "emails";
+        const getActivityValues = (type === "call") ? getCallActivityValues : getEmailActivityValues;
+        const createActivityService = (type === "call") ? createActivityCallService : createActivityEmailService;
+
+        return createActivityService(client, getActivityValues(values))
+            .then(({ id: activityId }) => {
                 return Promise.all([
                     ...(isEmpty(values.associateContact)
-                        ? Promise.resolve()
+                        ? [Promise.resolve()]
                         : values.associateContact.map(
-                            (contactId) => setEntityAssocService(client, "calls", callId, "contact", contactId, "call_to_contact")
+                            (contactId) => setEntityAssocService(client, activityType, activityId, "contact", contactId, `${type}_to_contact`)
                         )),
                     ...(isEmpty(values.associateCompany)
-                        ? Promise.resolve()
+                        ? [Promise.resolve()]
                         : values.associateCompany.map(
-                            (companyId) => setEntityAssocService(client, "calls", callId, "company", companyId, "call_to_company")
+                            (companyId) => setEntityAssocService(client, activityType, activityId, "company", companyId, `${type}_to_company`)
                         )),
                     ...(isEmpty(values.associateDeal)
-                        ? Promise.resolve()
+                        ? [Promise.resolve()]
                         : values.associateDeal.map(
-                            (dealId) => setEntityAssocService(client, "calls", callId, "deal", dealId, "call_to_deal")
+                            (dealId) => setEntityAssocService(client, activityType, activityId, "deal", dealId, `${type}_to_deal`)
                         )),
                 ]);
             })
             .then(() => queryClient.refetchQueries(
-                [QueryKey.CALL_ACTIVITIES, "contacts", contactId, "calls"]
+                [QueryKey.CALL_ACTIVITIES, "contacts", contactId, activityType]
             ))
             .then(() => navigate("/home"))
             .catch((err) => {

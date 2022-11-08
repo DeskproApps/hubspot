@@ -42,7 +42,12 @@ const getInitValues = (
     };
 };
 
-const getActivityValues = (values: Values): any => {
+const getCallActivityValues = (values: Values): {
+    hs_call_body?: string,
+    hs_timestamp?: string,
+    hs_call_disposition?: string,
+    hs_call_direction?: string,
+} => {
     const timestamp = parseDateTime(values.timestamp);
 
     return {
@@ -53,4 +58,19 @@ const getActivityValues = (values: Values): any => {
     };
 };
 
-export { validationSchema, getInitValues, getActivityValues };
+
+const getEmailActivityValues = (values: Values): {
+    hs_email_text?: string,
+    hs_timestamp?: string,
+    hs_email_direction: string,
+} => {
+    const timestamp = parseDateTime(values.timestamp);
+
+    return {
+        ...(!values.description ? {} : { hs_email_text: values.description }),
+        ...(!timestamp ? {} : { hs_timestamp: timestamp }),
+        hs_email_direction: "EMAIL",
+    };
+};
+
+export { validationSchema, getInitValues, getCallActivityValues, getEmailActivityValues };

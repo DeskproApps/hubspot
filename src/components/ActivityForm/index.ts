@@ -1,2 +1,2 @@
 export { ActivityForm } from "./ActivityForm";
-export { getActivityValues } from "./utils";
+export { getCallActivityValues, getEmailActivityValues } from "./utils";

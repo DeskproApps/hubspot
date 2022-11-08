@@ -1,7 +1,6 @@
 import { FC } from "react";
 import concat from "lodash/concat";
 import capitalize from "lodash/capitalize";
-import isAfter from "date-fns/isAfter";
 import isBefore from "date-fns/isBefore";
 import { H3, HorizontalDivider } from "@deskpro/app-sdk";
 import {

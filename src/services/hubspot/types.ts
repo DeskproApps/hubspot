@@ -335,6 +335,9 @@ export type AssociationTypes =
     | "call_to_contact"
     | "call_to_company"
     | "call_to_deal"
+    | "email_to_contact"
+    | "email_to_company"
+    | "email_to_deal"
 ;
 
 export type UploadFile = {

@@ -11,7 +11,7 @@ import {
 import { getFullName, getOption } from "../../utils";
 import type { Contact, CallDispositions, CallDirectionOption } from "../../services/hubspot/types";
 import type { Option } from "../../types";
-import {Company, Deal} from "../../services/hubspot/types";
+import type { Company, Deal } from "../../services/hubspot/types";
 
 type UseLoadActivityDeps = (contactId?: Contact["id"]) => {
     isLoading: boolean,
@@ -22,6 +22,8 @@ type UseLoadActivityDeps = (contactId?: Contact["id"]) => {
     callDirectionOptions: Array<Option<CallDirectionOption["value"]>>,
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
     const contact = useQueryWithClient(
         [QueryKey.CONTACT, contactId],
@@ -70,6 +72,8 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         { enabled: !!contactId },
     );
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const companies = useQueriesWithClient(companyIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.COMPANY, id],
         queryFn: (client) => getCompanyService(client, id),
@@ -78,7 +82,7 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         select: (data) => {
             return (has(data, ["id"]) && has(data, ["properties", "name"]))
                 ? {
-                    ...getOption(data.id, data.properties.name),
+                    ...getOption(get(data, ["id"]), get(data, ["properties", "name"])),
                     selected: true,
                 }
                 : undefined;
@@ -91,6 +95,8 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         { enabled: !!contactId },
     );
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const deals = useQueriesWithClient(dealIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.DEALS, id],
         queryFn: (client) => getDealService(client, id),
@@ -98,7 +104,7 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         useErrorBoundary: false,
         select: (data) => {
             return (has(data, ["id"]) && has(data, ["properties", "dealname"]))
-                ? getOption(data.id, data.properties.dealname)
+                ? getOption(get(data, ["id"]), get(data, ["properties", "dealname"]))
                 : undefined;
         },
     })) ?? []);
