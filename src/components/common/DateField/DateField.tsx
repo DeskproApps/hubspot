@@ -4,6 +4,7 @@ import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import {
     Input,
     DatePicker,
+    DateTimePicker,
     DatePickerProps,
     useDeskproAppTheme,
 } from "@deskpro/app-sdk";
@@ -16,6 +17,7 @@ export type MappedFieldProps = DatePickerProps & {
     error: boolean,
     value?: string,
     required?: boolean,
+    withTime?: boolean,
     onChange: (date: [Date]) => void,
 }
 
@@ -34,16 +36,24 @@ export const DateField: FC<MappedFieldProps> = ({
     error,
     required,
     onChange,
+    withTime,
     ...props
 }: MappedFieldProps) => {
     const { theme } = useDeskproAppTheme();
+    const Picker = withTime ? DateTimePicker : DatePicker;
+    const options = {
+        position: "left",
+        dateFormat: "d/m/Y",
+        ...(!withTime ? {} : {
+            altInput: true,
+            altFormat: "j F Y H:i",
+            timeFormat: "H:i",
+        }),
+    };
 
     return (
-        <DatePicker
-            options={{
-                position: "left",
-                dateFormat: "d/m/Y",
-            }}
+        <Picker
+            options={options}
             value={value}
             onChange={onChange}
             {...props}
@@ -52,7 +62,7 @@ export const DateField: FC<MappedFieldProps> = ({
                 _: any, ref: any
             ) => (
                 <LabelDate
-                    required
+                    required={required}
                     htmlFor={id}
                     label={label}
                 >
@@ -63,7 +73,6 @@ export const DateField: FC<MappedFieldProps> = ({
                         variant="inline"
                         inputsize="small"
                         placeholder="DD/MM/YYYY"
-                        style={{ backgroundColor: "transparent" }}
                         rightIcon={{
                             icon: faCalendarDays,
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

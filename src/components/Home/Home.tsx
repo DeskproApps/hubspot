@@ -54,15 +54,15 @@ const Home: FC<Props> = ({
                 owner={contactOwner}
                 accountInfo={accountInfo}
             />
-            {/*<Deals
+            <Deals
                 deals={deals}
                 owners={dealOwners}
                 accountInfo={accountInfo}
                 dealPipelines={dealPipelines}
                 contact={contact}
                 companies={companies}
-            />*/}
-            {/*<Notes notes={notes} owners={noteOwners} onCreateNote={onCreateNote} />*/}
+            />
+            <Notes notes={notes} owners={noteOwners} onCreateNote={onCreateNote} />
             <Activities
                 calls={callActivities}
                 emails={emailActivities}

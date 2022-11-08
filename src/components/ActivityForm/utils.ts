@@ -1,5 +1,7 @@
 import * as yup from "yup";
+import isEmpty from "lodash/isEmpty";
 import { getOption } from "../../utils";
+import { parseDateTime } from "../../utils/date";
 import type { Contact } from "../../services/hubspot/types";
 import type { Values, InitValues, InitValuesParams } from "./types";
 import find from "lodash/find";
@@ -18,6 +20,8 @@ const validationSchema = yup.object().shape({
 const getInitValues = (
     initValues?: InitValues,
     {
+        dealOptions = [],
+        companyOptions = [],
         contactOptions = [],
     }: InitValuesParams = {},
 ): Values => {
@@ -32,16 +36,21 @@ const getInitValues = (
             : getOption<Contact["id"]>(contact.value, contact.label),
         callDisposition: getOption("", ""),
         callDirection: getOption("", ""),
-        associateContact: !contact
-            ? getOption("", "")
-            : getOption<Contact["id"]>(contact.value, contact.label),
-        associateCompany: getOption("", ""),
-        associateDeal: getOption("", ""),
+        associateContact: !contact ? [] : [contact.value],
+        associateCompany: companyOptions?.map(({ value }) => value) || [],
+        associateDeal: dealOptions?.map(({ value }) => value) || [],
     };
 };
 
 const getActivityValues = (values: Values): any => {
+    const timestamp = parseDateTime(values.timestamp);
 
+    return {
+        ...(!values.description ? {} : { hs_call_body: values.description }),
+        ...(!timestamp ? {} : { hs_timestamp: timestamp }),
+        ...(isEmpty(values.callDisposition.value) ? {} : { hs_call_disposition: values.callDisposition.value}),
+        ...(isEmpty(values.callDirection.value) ? {} : { hs_call_direction: values.callDirection.value }),
+    };
 };
 
 export { validationSchema, getInitValues, getActivityValues };

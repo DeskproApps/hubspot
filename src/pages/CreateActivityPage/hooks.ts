@@ -29,10 +29,13 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         {
             enabled: !!contactId,
             select: (data) => {
-                return [getOption(data.id, getFullName({
-                    firstName: get(data, ["properties", "firstname"]),
-                    lastName: get(data, ["properties", "lastname"]),
-                }))];
+                return [{
+                    ...getOption(data.id, getFullName({
+                        firstName: get(data, ["properties", "firstname"]),
+                        lastName: get(data, ["properties", "lastname"]),
+                    })),
+                    selected: true,
+                }];
             }
         }
     );
@@ -74,7 +77,10 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         useErrorBoundary: false,
         select: (data) => {
             return (has(data, ["id"]) && has(data, ["properties", "name"]))
-                ? getOption(data.id, data.properties.name)
+                ? {
+                    ...getOption(data.id, data.properties.name),
+                    selected: true,
+                }
                 : undefined;
         },
     })) ?? []);

@@ -1,21 +1,28 @@
 import { FC, useState, useCallback } from "react";
+import isEmpty from "lodash/isEmpty";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
     LoadingSpinner,
     useDeskproElements,
+    useDeskproAppClient,
 } from "@deskpro/app-sdk";
+import { queryClient, QueryKey } from "../../query";
 import { useSetAppTitle } from "../../hooks";
 import { useLoadActivityDeps } from "./hooks";
-import { ActivityForm } from "../../components/ActivityForm";
 import {
-    ErrorBlock,
-} from "../../components/common";
+    setEntityAssocService,
+    createActivityCallService,
+} from "../../services/hubspot";
+import { isValidationError } from "../../services/hubspot/utils";
+import { ActivityForm, getActivityValues } from "../../components/ActivityForm";
+import { ErrorBlock, BaseContainer } from "../../components/common";
 import type { Values } from "../../components/ActivityForm/types";
 
 const CreateActivityPage: FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const contactId = searchParams.get("contactId") || undefined;
+    const { client } = useDeskproAppClient();
     const {
         isLoading,
         dealOptions,
@@ -42,13 +49,43 @@ const CreateActivityPage: FC = () => {
     });
 
     const onSubmit = (values: Values) => {
-        console.log(">>> activity:submit:", values);
+        if (!client || !contactId) {
+            return;
+        }
 
         setError(null);
 
-        return new Promise((resolve) => {
-            setTimeout(resolve, 1500);
-        });
+        return createActivityCallService(client, getActivityValues(values))
+            .then(({ id: callId }) => {
+                return Promise.all([
+                    ...(isEmpty(values.associateContact)
+                        ? Promise.resolve()
+                        : values.associateContact.map(
+                            (contactId) => setEntityAssocService(client, "calls", callId, "contact", contactId, "call_to_contact")
+                        )),
+                    ...(isEmpty(values.associateCompany)
+                        ? Promise.resolve()
+                        : values.associateCompany.map(
+                            (companyId) => setEntityAssocService(client, "calls", callId, "company", companyId, "call_to_company")
+                        )),
+                    ...(isEmpty(values.associateDeal)
+                        ? Promise.resolve()
+                        : values.associateDeal.map(
+                            (dealId) => setEntityAssocService(client, "calls", callId, "deal", dealId, "call_to_deal")
+                        )),
+                ]);
+            })
+            .then(() => queryClient.refetchQueries(
+                [QueryKey.CALL_ACTIVITIES, "contacts", contactId, "calls"]
+            ))
+            .then(() => navigate("/home"))
+            .catch((err) => {
+                if (isValidationError(err)) {
+                    setError(err.message);
+                } else {
+                    throw new Error(err);
+                }
+            });
     };
 
     const onCancel = useCallback(() => {
@@ -63,7 +100,11 @@ const CreateActivityPage: FC = () => {
 
     return (
         <>
-            {error && <ErrorBlock text={error}/>}
+            {error && (
+                <BaseContainer>
+                    <ErrorBlock text={error}/>
+                </BaseContainer>
+            )}
             <ActivityForm
                 initValues={{ contactId } as { contactId: string }}
                 dealOptions={dealOptions}

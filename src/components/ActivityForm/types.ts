@@ -14,9 +14,9 @@ export type Values = {
     contacted: Option<Contact["id"]>,
     callDisposition: Option<CallDispositions["id"]>,
     callDirection: Option<CallDirectionOption["value"]>,
-    associateContact: Option<Contact["id"]>,
-    associateCompany: Option<Company["id"]>,
-    associateDeal: Option<Deal["id"]>,
+    associateContact: Array<Contact["id"]>,
+    associateCompany: Array<Company["id"]>,
+    associateDeal: Array<Deal["id"]>,
 };
 
 export type InitValues = {
@@ -25,6 +25,8 @@ export type InitValues = {
 
 export type InitValuesParams = {
     contactOptions?: Array<Option<Contact["id"]>>,
+    companyOptions?: Array<Option<Company["id"]>>,
+    dealOptions?: Array<Option<Deal["id"]>>,
 };
 
 export type Props = {

@@ -1,8 +1,17 @@
 import { FC } from "react";
+import { faCheck, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import { useFormik } from "formik";
 import {
+    TSpan,
+    DivAsInputWithDisplay,
+} from "@deskpro/deskpro-ui";
+import {
     Stack,
+    Dropdown,
+    DropdownValueType,
     HorizontalDivider,
+    useDeskproAppTheme,
+    DropdownTargetProps,
 } from "@deskpro/app-sdk";
 import {
     Label,
@@ -12,6 +21,7 @@ import {
     DateField,
     SingleSelect,
     BaseContainer,
+    TextBlockWithLabel,
 } from "../common";
 import {
     getInitValues,
@@ -20,6 +30,7 @@ import {
 import { useActivityTypeOptions } from "./hooks";
 import type { Values, Props } from "./types";
 import type { Option } from "../../types";
+import type {Company, Contact} from "../../services/hubspot/types";
 
 const ActivityForm: FC<Props> = ({
     onCancel,
@@ -31,6 +42,7 @@ const ActivityForm: FC<Props> = ({
     callDirectionOptions,
     callDispositionOptions,
 }) => {
+    const { theme } = useDeskproAppTheme();
     const { activityTypeOptions } = useActivityTypeOptions();
     const {
         values,
@@ -42,7 +54,9 @@ const ActivityForm: FC<Props> = ({
         getFieldProps,
     } = useFormik<Values>({
         initialValues: getInitValues(initValues, {
-            contactOptions
+            dealOptions,
+            contactOptions,
+            companyOptions,
         }),
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -74,9 +88,11 @@ const ActivityForm: FC<Props> = ({
                 </Label>
 
                 <DateField
+                    withTime
+                    required
                     id="timestamp"
                     label="Date/time"
-                    error={!!(touched.timestamp && errors.timestamp)}
+                    error={Boolean(errors.timestamp)}
                     {...getFieldProps("timestamp")}
                     onChange={(date: [Date]) => setFieldValue("timestamp", date[0])}
                 />
@@ -117,35 +133,152 @@ const ActivityForm: FC<Props> = ({
             <BaseContainer>
                 <Title title="Associate activity with"/>
 
-                <Label htmlFor="associateContact" label="Contact">
-                    <SingleSelect
-                        id="associateContact"
-                        value={values.associateContact}
-                        options={contactOptions}
-                        error={!!(touched.associateContact && errors.associateContact)}
-                        onChange={(value: Option<string>) => setFieldValue("associateContact", value)}
-                    />
-                </Label>
+                <Dropdown
+                    fetchMoreText="Fetch more"
+                    autoscrollText="Autoscroll"
+                    selectedIcon={faCheck}
+                    externalLinkIcon={faExternalLinkAlt}
+                    placement="bottom-start"
+                    searchPlaceholder="Select value"
+                    options={contactOptions}
+                    onSelectOption={(option: DropdownValueType<Contact["id"]>) => {
+                        if (option.value) {
+                            const newValue = values.associateContact.includes(option.value)
+                                ? values.associateContact.filter((contactId) => contactId !== option.value)
+                                : [...values.associateContact, option.value]
 
-                <Label htmlFor="associateCompany" label="Company">
-                    <SingleSelect
-                        id="associateCompany"
-                        value={values.associateCompany}
-                        options={companyOptions}
-                        error={!!(touched.associateCompany && errors.associateCompany)}
-                        onChange={(value: Option<string>) => setFieldValue("associateCompany", value)}
-                    />
-                </Label>
+                            setFieldValue("associateContact", newValue);
+                        }
+                    }}
+                    closeOnSelect={false}
+                >
+                    {({targetProps, targetRef}: DropdownTargetProps<HTMLDivElement>) => (
+                        <TextBlockWithLabel
+                            label="Contact"
+                            text={(
+                                <DivAsInputWithDisplay
+                                    ref={targetRef}
+                                    {...targetProps}
+                                    value={!values.associateContact.length
+                                        ? (
+                                            <TSpan overflow="ellipsis" type="p1" style={{color: theme.colors.grey40}}>
+                                                Select value
+                                            </TSpan>
+                                        )
+                                        : (
+                                            <Stack gap={6} wrap="wrap">
+                                                {contactOptions
+                                                    .filter(({ value }) => values.associateContact.includes(value))
+                                                    .map(({ label }) => label)
+                                                    .join(", ")
+                                                }
+                                            </Stack>
+                                        )}
+                                    placeholder="Select value"
+                                    variant="inline"
+                                />
+                            )}
+                        />
+                    )}
+                </Dropdown>
 
-                <Label htmlFor="associateDeal" label="Deal">
-                    <SingleSelect
-                        id="associateDeal"
-                        value={values.associateDeal}
-                        options={dealOptions}
-                        error={!!(touched.associateDeal && errors.associateDeal)}
-                        onChange={(value: Option<string>) => setFieldValue("associateDeal", value)}
-                    />
-                </Label>
+                <Dropdown
+                    fetchMoreText="Fetch more"
+                    autoscrollText="Autoscroll"
+                    selectedIcon={faCheck}
+                    externalLinkIcon={faExternalLinkAlt}
+                    placement="bottom-start"
+                    searchPlaceholder="Select value"
+                    options={companyOptions}
+                    onSelectOption={(option: DropdownValueType<Company["id"]>) => {
+                        if (option.value) {
+                            const newValue = values.associateCompany.includes(option.value)
+                                ? values.associateCompany.filter((id) => id !== option.value)
+                                : [...values.associateCompany, option.value]
+
+                            setFieldValue("associateCompany", newValue);
+                        }
+                    }}
+                    closeOnSelect={false}
+                >
+                    {({targetProps, targetRef}: DropdownTargetProps<HTMLDivElement>) => (
+                        <TextBlockWithLabel
+                            label="Company"
+                            text={(
+                                <DivAsInputWithDisplay
+                                    ref={targetRef}
+                                    {...targetProps}
+                                    value={!values.associateCompany.length
+                                        ? (
+                                            <TSpan overflow="ellipsis" type="p1" style={{color: theme.colors.grey40}}>
+                                                Select value
+                                            </TSpan>
+                                        )
+                                        : (
+                                            <Stack gap={6} wrap="wrap">
+                                                {companyOptions
+                                                    .filter(({ value }) => values.associateCompany.includes(value))
+                                                    .map(({ label }) => label)
+                                                    .join(", ")
+                                                }
+                                            </Stack>
+                                        )}
+                                    placeholder="Select value"
+                                    variant="inline"
+                                />
+                            )}
+                        />
+                    )}
+                </Dropdown>
+
+                <Dropdown
+                    fetchMoreText="Fetch more"
+                    autoscrollText="Autoscroll"
+                    selectedIcon={faCheck}
+                    externalLinkIcon={faExternalLinkAlt}
+                    placement="bottom-start"
+                    searchPlaceholder="Select value"
+                    options={dealOptions}
+                    onSelectOption={(option: DropdownValueType<Company["id"]>) => {
+                        if (option.value) {
+                            const newValue = values.associateDeal.includes(option.value)
+                                ? values.associateDeal.filter((id) => id !== option.value)
+                                : [...values.associateDeal, option.value]
+
+                            setFieldValue("associateDeal", newValue);
+                        }
+                    }}
+                    closeOnSelect={false}
+                >
+                    {({targetProps, targetRef}: DropdownTargetProps<HTMLDivElement>) => (
+                        <TextBlockWithLabel
+                            label="Deals"
+                            text={(
+                                <DivAsInputWithDisplay
+                                    ref={targetRef}
+                                    {...targetProps}
+                                    value={!values.associateDeal.length
+                                        ? (
+                                            <TSpan overflow="ellipsis" type="p1" style={{color: theme.colors.grey40}}>
+                                                Select value
+                                            </TSpan>
+                                        )
+                                        : (
+                                            <Stack gap={6} wrap="wrap">
+                                                {dealOptions
+                                                    .filter(({ value }) => values.associateDeal.includes(value))
+                                                    .map(({ label }) => label)
+                                                    .join(", ")
+                                                }
+                                            </Stack>
+                                        )}
+                                    placeholder="Select value"
+                                    variant="inline"
+                                />
+                            )}
+                        />
+                    )}
+                </Dropdown>
             </BaseContainer>
 
             <BaseContainer>

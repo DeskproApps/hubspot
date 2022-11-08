@@ -23,8 +23,11 @@ export type AccessTokenInfo = {
 }
 
 export type EntityType =
+    | "contact"
     | "contacts"
+    | "company"
     | "companies"
+    | "deal"
     | "deals"
     | "notes"
     | "emails"
@@ -329,6 +332,9 @@ export type AssociationTypes =
     | "deal_to_contact"
     | "deal_to_company"
     | "note_to_contact"
+    | "call_to_contact"
+    | "call_to_company"
+    | "call_to_deal"
 ;
 
 export type UploadFile = {
