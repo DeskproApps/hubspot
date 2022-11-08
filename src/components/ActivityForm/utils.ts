@@ -1,10 +1,11 @@
 import * as yup from "yup";
 import isEmpty from "lodash/isEmpty";
+import find from "lodash/find";
 import { getOption } from "../../utils";
 import { parseDateTime } from "../../utils/date";
 import type { Contact } from "../../services/hubspot/types";
 import type { Values, InitValues, InitValuesParams } from "./types";
-import find from "lodash/find";
+import type { Option } from "../../types";
 
 const validationSchema = yup.object().shape({
     activityType: yup.object().shape({
@@ -42,24 +43,26 @@ const getInitValues = (
     };
 };
 
-const getCallActivityValues = (values: Values): {
+const getCallActivityValues = ({ contact }: { contact?: Option<string> }) => (values: Values): {
     hs_call_body?: string,
     hs_timestamp?: string,
     hs_call_disposition?: string,
     hs_call_direction?: string,
+    hs_call_title?: string,
 } => {
     const timestamp = parseDateTime(values.timestamp);
 
     return {
         ...(!values.description ? {} : { hs_call_body: values.description }),
         ...(!timestamp ? {} : { hs_timestamp: timestamp }),
+        ...(!contact?.label ? {} : { hs_call_title: `Call with ${contact.label}` }),
         ...(isEmpty(values.callDisposition.value) ? {} : { hs_call_disposition: values.callDisposition.value}),
         ...(isEmpty(values.callDirection.value) ? {} : { hs_call_direction: values.callDirection.value }),
     };
 };
 
 
-const getEmailActivityValues = (values: Values): {
+const getEmailActivityValues = () => (values: Values): {
     hs_email_text?: string,
     hs_timestamp?: string,
     hs_email_direction: string,

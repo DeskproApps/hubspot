@@ -62,29 +62,29 @@ const CreateActivityPage: FC = () => {
 
         const type = values.activityType.value as "call"|"email";
         const activityType = (type === "call") ? "calls" : "emails";
-        const getActivityValues = (type === "call") ? getCallActivityValues : getEmailActivityValues;
+        const getActivityValues = (type === "call")
+            ? getCallActivityValues({ contact: contactOptions[0] })
+            : getEmailActivityValues();
         const createActivityService = (type === "call") ? createActivityCallService : createActivityEmailService;
 
         return createActivityService(client, getActivityValues(values))
-            .then(({ id: activityId }) => {
-                return Promise.all([
-                    ...(isEmpty(values.associateContact)
-                        ? [Promise.resolve()]
-                        : values.associateContact.map(
-                            (contactId) => setEntityAssocService(client, activityType, activityId, "contact", contactId, `${type}_to_contact`)
-                        )),
-                    ...(isEmpty(values.associateCompany)
-                        ? [Promise.resolve()]
-                        : values.associateCompany.map(
-                            (companyId) => setEntityAssocService(client, activityType, activityId, "company", companyId, `${type}_to_company`)
-                        )),
-                    ...(isEmpty(values.associateDeal)
-                        ? [Promise.resolve()]
-                        : values.associateDeal.map(
-                            (dealId) => setEntityAssocService(client, activityType, activityId, "deal", dealId, `${type}_to_deal`)
-                        )),
-                ]);
-            })
+            .then(({ id: activityId }) => Promise.all([
+                ...(isEmpty(values.associateContact)
+                    ? [Promise.resolve()]
+                    : values.associateContact.map(
+                        (contactId) => setEntityAssocService(client, activityType, activityId, "contact", contactId, `${type}_to_contact`)
+                    )),
+                ...(isEmpty(values.associateCompany)
+                    ? [Promise.resolve()]
+                    : values.associateCompany.map(
+                        (companyId) => setEntityAssocService(client, activityType, activityId, "company", companyId, `${type}_to_company`)
+                    )),
+                ...(isEmpty(values.associateDeal)
+                    ? [Promise.resolve()]
+                    : values.associateDeal.map(
+                        (dealId) => setEntityAssocService(client, activityType, activityId, "deal", dealId, `${type}_to_deal`)
+                    )),
+            ]))
             .then(() => queryClient.refetchQueries(
                 [QueryKey.CALL_ACTIVITIES, "contacts", contactId, activityType]
             ))

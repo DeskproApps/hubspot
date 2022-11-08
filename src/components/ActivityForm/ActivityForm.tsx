@@ -144,7 +144,10 @@ const ActivityForm: FC<Props> = ({
                     externalLinkIcon={faExternalLinkAlt}
                     placement="bottom-start"
                     searchPlaceholder="Select value"
-                    options={contactOptions}
+                    options={contactOptions.map((option) => ({
+                        ...option,
+                        selected: values.associateContact.includes(option.value)
+                    }))}
                     onSelectOption={(option: DropdownValueType<Contact["id"]>) => {
                         if (option.value) {
                             const newValue = values.associateContact.includes(option.value)
@@ -193,7 +196,10 @@ const ActivityForm: FC<Props> = ({
                     externalLinkIcon={faExternalLinkAlt}
                     placement="bottom-start"
                     searchPlaceholder="Select value"
-                    options={companyOptions}
+                    options={companyOptions.map((option) => ({
+                        ...option,
+                        selected: values.associateCompany.includes(option.value)
+                    }))}
                     onSelectOption={(option: DropdownValueType<Company["id"]>) => {
                         if (option.value) {
                             const newValue = values.associateCompany.includes(option.value)
@@ -242,7 +248,10 @@ const ActivityForm: FC<Props> = ({
                     externalLinkIcon={faExternalLinkAlt}
                     placement="bottom-start"
                     searchPlaceholder="Select value"
-                    options={dealOptions}
+                    options={dealOptions.map((option) => ({
+                        ...option,
+                        selected: values.associateDeal.includes(option.value)
+                    }))}
                     onSelectOption={(option: DropdownValueType<Company["id"]>) => {
                         if (option.value) {
                             const newValue = values.associateDeal.includes(option.value)
