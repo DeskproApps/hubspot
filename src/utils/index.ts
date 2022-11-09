@@ -5,4 +5,3 @@ export { getSymbolFromCurrency } from "./getSymbolFromCurrency";
 export { filterEntities } from "./filterEntities";
 export { getUserEmail } from "./getUserEmail";
 export { getOption, noOwnerOption } from "./getOption";
-export { getLinkedMessage, getUnlinkedMessage } from "./getLinkedMessage";

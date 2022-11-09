@@ -25,6 +25,14 @@
       "isRequired": true,
       "isBackendOnly": true,
       "order": 10
+    },
+    "default_dont_add_note_when_linking_contact": {
+      "title": "Don't leave a note on the contact profile in HubSpot when it is linked to a user in Deskpro",
+      "description": "",
+      "type": "boolean",
+      "isRequired": false,
+      "isBackendOnly": false,
+      "order": 20
     }
   },
   "proxy": {

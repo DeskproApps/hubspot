@@ -1,6 +1,5 @@
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import { match } from "ts-pattern";
-import get from "lodash/get";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { QueryErrorResetBoundary } from "react-query";
 import { ErrorBoundary } from "react-error-boundary";
@@ -12,13 +11,9 @@ import {
     LoadingSpinner,
     useDeskproAppClient,
     useDeskproAppEvents,
-    useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
-import { QueryKey, queryClient } from "./query";
 import { deleteEntityContact } from "./services/entityAssociation";
-import { createNoteService, setEntityAssocService } from "./services/hubspot";
-import { getUnlinkedMessage } from "./utils";
-import { parseDateTime } from "./utils/date";
+import { useLinkUnlinkNote } from "./hooks";
 import {
     Main,
     LinkPage,
@@ -39,47 +34,34 @@ import type { DeskproError } from "./services/hubspot/baseRequest";
 
 const unlink = (
     client: IDeskproClient|null,
-    deskproUser: DeskproUser,
-    setIsLoading: (v: boolean) => void,
-    successFn: () => void,
+    successFn: (contactId: Contact["id"]) => void,
 ) => (
+    userId: DeskproUser["id"],
     contactId: Contact["id"],
 ) => {
-    if (client && deskproUser.id && deskproUser.name && contactId) {
-        setIsLoading(true);
-        return deleteEntityContact(client, deskproUser.id, contactId)
+    if (client && userId && contactId) {
+        deleteEntityContact(client, userId, contactId)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            .then((isSuccess: boolean) => isSuccess
-                ? createNoteService(client, {
-                    hs_note_body: getUnlinkedMessage(deskproUser.id, deskproUser.name),
-                    hs_timestamp: parseDateTime(new Date()) as string,
-                })
-                : Promise.reject()
-            )
-            .then(({ id }) => setEntityAssocService(client, "notes", id, "contacts", contactId, "note_to_contact"))
-            .then(() => queryClient.refetchQueries(
-                [QueryKey.NOTES, "contacts", contactId, "notes"],
-            ))
-            .then(successFn)
-            .catch(() => {})
-            .finally(() => setIsLoading(false));
+            .then((isSuccess: boolean) => {
+                if (isSuccess) {
+                    successFn(contactId);
+                } else {
+                    return Promise.resolve();
+                }
+            })
+            .catch(() => {});
     }
 };
 
 function App() {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
-    const { context } = useDeskproLatestAppContext();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { isLoading, unlinkContactFn } = useLinkUnlinkNote();
 
-    const deskproUser = get(context, ["data", "user"], {});
-    const unlinkContact = unlink(
-        client,
-        deskproUser,
-        setIsLoading,
-        () => navigate("/link"),
-    );
+    const unlinkContact = unlink(client, (contactId) => {
+        unlinkContactFn(contactId).then(() => navigate("/link"))
+    });
 
     useDeskproAppEvents({
         onShow: () => {
@@ -97,11 +79,11 @@ function App() {
                 .with("unlink", () => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    unlinkContact(payload?.contactId);
+                    unlinkContact(payload?.userId, payload?.contactId);
                 })
                 .otherwise(() => {});
         },
-    }, [client, deskproUser]);
+    }, [client, unlinkContactFn]);
 
     if (!client || isLoading) {
         return (<LoadingSpinner/>);

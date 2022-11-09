@@ -14,15 +14,8 @@ import {
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
 import { setEntityContact } from "../services/entityAssociation";
-import {
-    createNoteService,
-    setEntityAssocService,
-    searchContactsByService,
-} from "../services/hubspot";
-import { useSetAppTitle } from "../hooks";
-import { getLinkedMessage } from "../utils";
-import { parseDateTime } from "../utils/date";
-import { queryClient, QueryKey } from "../query";
+import { searchContactsByService } from "../services/hubspot";
+import { useSetAppTitle, useLinkUnlinkNote } from "../hooks";
 import {
     NoFound,
     Loading,
@@ -37,6 +30,7 @@ const LinkPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
+    const { isLoading, linkContactFn } = useLinkUnlinkNote();
 
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [contacts, setContacts] = useState<Contact[]>([]);
@@ -99,21 +93,15 @@ const LinkPage: FC = () => {
             return;
         }
 
+        setLoading(true);
         setEntityContact(client, deskproUser.id, selectedContactId)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            .then((isSuccess: boolean) => isSuccess
-                ? createNoteService(client, {
-                    hs_note_body: getLinkedMessage(deskproUser.id, deskproUser.name),
-                    hs_timestamp: parseDateTime(new Date()) as string,
-                })
-                : Promise.reject()
-            )
-            .then(({ id }) => setEntityAssocService(client, "notes", id, "contacts", selectedContactId, "note_to_contact"))
-            .then(() => queryClient.refetchQueries(
-                [QueryKey.NOTES, "contacts", selectedContactId, "notes"],
-            ))
-            .then(() => navigate("/home"))
+            .then((isSuccess: boolean) => {
+                if (isSuccess) {
+                    linkContactFn(selectedContactId).then(() => navigate("/home"));
+                }
+            })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [client, deskproUser, selectedContactId]);
 
@@ -154,6 +142,7 @@ const LinkPage: FC = () => {
             }
             <Stack justify="space-between" style={{ margin: "14px 0 8px" }}>
                 <Button
+                    disabled={loading || isLoading}
                     text="Link Contact"
                     onClick={onLinkContact}
                 />

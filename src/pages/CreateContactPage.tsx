@@ -9,16 +9,11 @@ import {
     useDeskproAppClient,
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
-import { useLoadUpdateContactDeps } from "../hooks";
-import { getLinkedMessage } from "../utils";
-import { parseDateTime } from "../utils/date";
+import { useLoadUpdateContactDeps, useLinkUnlinkNote } from "../hooks";
 import { setEntityContact } from "../services/entityAssociation";
 import {
-    createNoteService,
     createContactService,
-    setEntityAssocService,
 } from "../services/hubspot";
-import { queryClient, QueryKey } from "../query";
 import { isValidationError, isConflictError } from "../services/hubspot/utils";
 import { BaseContainer, ErrorBlock } from "../components/common";
 import { ContactForm } from "../components";
@@ -30,6 +25,7 @@ const CreateContactPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
+    const { linkContactFn } = useLinkUnlinkNote();
     const {
         owners,
         isLoading,
@@ -55,22 +51,15 @@ const CreateContactPage: FC = () => {
             return;
         }
 
-        setEntityContact(client, deskproUser.id, contactId)
+        return setEntityContact(client, deskproUser.id, contactId)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            .then((isSuccess: boolean) => isSuccess
-                ? createNoteService(client, {
-                    hs_note_body: getLinkedMessage(deskproUser.id, deskproUser.name),
-                    hs_timestamp: parseDateTime(new Date()) as string,
-                })
-                : Promise.reject()
-            )
-            .then(({ id }) => setEntityAssocService(client, "notes", id, "contacts", contactId, "note_to_contact"))
-            .then(() => queryClient.refetchQueries(
-                [QueryKey.NOTES, "contacts", contactId, "notes"],
-            ))
-            .then(() => navigate("/home"))
-    }, [client, deskproUser, navigate]);
+            .then((isSuccess: boolean) => {
+                if (isSuccess) {
+                    return linkContactFn(contactId).then(() => navigate("/home"));
+                }
+            })
+    }, [client, deskproUser, navigate, linkContactFn]);
 
     const onSubmit = async (values: Values) => {
         if (!client) {

@@ -3,14 +3,9 @@ import {
     useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
 import { getEntityContactList, setEntityContact } from "../services/entityAssociation";
-import {
-    createNoteService,
-    setEntityAssocService,
-    getContactsByEmailService,
-} from "../services/hubspot";
-import { getUserEmail, getLinkedMessage } from "../utils";
-import { parseDateTime } from "../utils/date";
-import { queryClient, QueryKey } from "../query";
+import { getContactsByEmailService } from "../services/hubspot";
+import { useLinkUnlinkNote } from "./useLinkUnlinkNote";
+import { getUserEmail } from "../utils";
 import type { UserContext } from "../types";
 
 type UseCheckLinkedContact = (
@@ -28,6 +23,7 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
     onNoLinkedItemsFn,
 ) => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext|null };
+    const { linkContactFn } = useLinkUnlinkNote();
 
     const deskproUser = context?.data?.user;
     const userEmail = getUserEmail(context?.data?.user);
@@ -65,17 +61,7 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
             if (!isSuccess) {
                 onNoLinkedItemsFn();
             } else {
-                await createNoteService(client, {
-                    hs_note_body: getLinkedMessage(deskproUser.id, deskproUser.name),
-                    hs_timestamp: parseDateTime(new Date()) as string,
-                })
-                    .then(({ id }) => setEntityAssocService(client, "notes", id, "contacts", contactId, "note_to_contact"))
-                    .then(() => queryClient.refetchQueries(
-                        [QueryKey.NOTES, "contacts", contactId, "notes"],
-                    ))
-                    .catch(() => {});
-
-                onExistLinkedItemsFn();
+                linkContactFn(contactId).then(() => onExistLinkedItemsFn());
             }
         })();
     }, [isAuth, deskproUser, userEmail]);
