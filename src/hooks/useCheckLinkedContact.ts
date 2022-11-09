@@ -3,8 +3,14 @@ import {
     useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
 import { getEntityContactList, setEntityContact } from "../services/entityAssociation";
-import { getContactsByEmailService } from "../services/hubspot";
-import { getUserEmail } from "../utils";
+import {
+    createNoteService,
+    setEntityAssocService,
+    getContactsByEmailService,
+} from "../services/hubspot";
+import { getUserEmail, getLinkedMessage } from "../utils";
+import { parseDateTime } from "../utils/date";
+import { queryClient, QueryKey } from "../query";
 import type { UserContext } from "../types";
 
 type UseCheckLinkedContact = (
@@ -23,11 +29,11 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
 ) => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext|null };
 
-    const userId = context?.data?.user.id;
+    const deskproUser = context?.data?.user;
     const userEmail = getUserEmail(context?.data?.user);
 
     useInitialisedDeskproAppClient((client) => {
-        if (!isAuth || !userId) {
+        if (!isAuth || !deskproUser?.id) {
             return;
         }
 
@@ -37,7 +43,7 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
         }
 
         (async () => {
-            const contactIds = await getEntityContactList(client, userId);
+            const contactIds = await getEntityContactList(client, deskproUser.id);
 
             if (contactIds.length === 1) {
                 onExistLinkedItemsFn();
@@ -51,17 +57,28 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
                 return;
             }
 
+            const contactId = results[0].id;
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            const isSuccess: boolean = await setEntityContact(client, userId, results[0].id);
+            const isSuccess: boolean = await setEntityContact(client, deskproUser.id, contactId);
 
-            if (isSuccess) {
-                onExistLinkedItemsFn();
-            } else {
+            if (!isSuccess) {
                 onNoLinkedItemsFn();
+            } else {
+                await createNoteService(client, {
+                    hs_note_body: getLinkedMessage(deskproUser.id, deskproUser.name),
+                    hs_timestamp: parseDateTime(new Date()) as string,
+                })
+                    .then(({ id }) => setEntityAssocService(client, "notes", id, "contacts", contactId, "note_to_contact"))
+                    .then(() => queryClient.refetchQueries(
+                        [QueryKey.NOTES, "contacts", contactId, "notes"],
+                    ))
+                    .catch(() => {});
+
+                onExistLinkedItemsFn();
             }
         })();
-    }, [isAuth, userId, userEmail]);
+    }, [isAuth, deskproUser, userEmail]);
 };
 
 export { useCheckLinkedContact };

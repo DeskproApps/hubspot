@@ -10,8 +10,15 @@ import {
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
 import { useLoadUpdateContactDeps } from "../hooks";
+import { getLinkedMessage } from "../utils";
+import { parseDateTime } from "../utils/date";
 import { setEntityContact } from "../services/entityAssociation";
-import { createContactService } from "../services/hubspot";
+import {
+    createNoteService,
+    createContactService,
+    setEntityAssocService,
+} from "../services/hubspot";
+import { queryClient, QueryKey } from "../query";
 import { isValidationError, isConflictError } from "../services/hubspot/utils";
 import { BaseContainer, ErrorBlock } from "../components/common";
 import { ContactForm } from "../components";
@@ -33,7 +40,7 @@ const CreateContactPage: FC = () => {
     const [error, setError] = useState<string|null>(null);
     const [formErrors, setFormErrors] = useState<FormErrors|null>(null);
 
-    const deskproUserId = (context as Context<ContextData>)?.data?.user.id;
+    const deskproUser = (context as Context<ContextData>)?.data?.user;
     const primaryEmail = (context as Context<ContextData>)?.data?.user.primaryEmail;
     
     useDeskproElements(({ deRegisterElement }) => {
@@ -44,19 +51,26 @@ const CreateContactPage: FC = () => {
     });
 
     const onLinkContact = useCallback((contactId) => {
-        if (!client || !deskproUserId || !contactId) {
+        if (!client || !deskproUser?.id || !contactId) {
             return;
         }
 
-        setEntityContact(client, deskproUserId, contactId)
+        setEntityContact(client, deskproUser.id, contactId)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            .then((isSuccess: boolean) => {
-                if (isSuccess) {
-                    navigate("/home");
-                }
-            })
-    }, [client, deskproUserId, navigate]);
+            .then((isSuccess: boolean) => isSuccess
+                ? createNoteService(client, {
+                    hs_note_body: getLinkedMessage(deskproUser.id, deskproUser.name),
+                    hs_timestamp: parseDateTime(new Date()) as string,
+                })
+                : Promise.reject()
+            )
+            .then(({ id }) => setEntityAssocService(client, "notes", id, "contacts", contactId, "note_to_contact"))
+            .then(() => queryClient.refetchQueries(
+                [QueryKey.NOTES, "contacts", contactId, "notes"],
+            ))
+            .then(() => navigate("/home"))
+    }, [client, deskproUser, navigate]);
 
     const onSubmit = async (values: Values) => {
         if (!client) {
