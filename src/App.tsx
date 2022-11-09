@@ -13,6 +13,7 @@ import {
     useDeskproAppEvents,
 } from "@deskpro/app-sdk";
 import { deleteEntityContact } from "./services/entityAssociation";
+import { useLinkUnlinkNote } from "./hooks";
 import {
     Main,
     LinkPage,
@@ -31,14 +32,22 @@ import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
 import type { DeskproError } from "./services/hubspot/baseRequest";
 
-const unlink = (client: IDeskproClient|null, successFn: () => void) => (userId: DeskproUser["id"], contactId: Contact["id"]) => {
+const unlink = (
+    client: IDeskproClient|null,
+    successFn: (contactId: Contact["id"]) => void,
+) => (
+    userId: DeskproUser["id"],
+    contactId: Contact["id"],
+) => {
     if (client && userId && contactId) {
         deleteEntityContact(client, userId, contactId)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             .then((isSuccess: boolean) => {
                 if (isSuccess) {
-                    successFn();
+                    successFn(contactId);
+                } else {
+                    return Promise.resolve();
                 }
             })
             .catch(() => {});
@@ -48,7 +57,11 @@ const unlink = (client: IDeskproClient|null, successFn: () => void) => (userId: 
 function App() {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
-    const unlinkContact = unlink(client, () => navigate("/link"));
+    const { isLoading, unlinkContactFn } = useLinkUnlinkNote();
+
+    const unlinkContact = unlink(client, (contactId) => {
+        unlinkContactFn(contactId).then(() => navigate("/link"))
+    });
 
     useDeskproAppEvents({
         onShow: () => {
@@ -70,9 +83,9 @@ function App() {
                 })
                 .otherwise(() => {});
         },
-    }, [client]);
+    }, [client, unlinkContactFn]);
 
-    if (!client) {
+    if (!client || isLoading) {
         return (<LoadingSpinner/>);
     }
 

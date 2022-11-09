@@ -4,6 +4,7 @@ import {
 } from "@deskpro/app-sdk";
 import { getEntityContactList, setEntityContact } from "../services/entityAssociation";
 import { getContactsByEmailService } from "../services/hubspot";
+import { useLinkUnlinkNote } from "./useLinkUnlinkNote";
 import { getUserEmail } from "../utils";
 import type { UserContext } from "../types";
 
@@ -22,12 +23,13 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
     onNoLinkedItemsFn,
 ) => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext|null };
+    const { linkContactFn } = useLinkUnlinkNote();
 
-    const userId = context?.data?.user.id;
+    const deskproUser = context?.data?.user;
     const userEmail = getUserEmail(context?.data?.user);
 
     useInitialisedDeskproAppClient((client) => {
-        if (!isAuth || !userId) {
+        if (!isAuth || !deskproUser?.id) {
             return;
         }
 
@@ -37,7 +39,7 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
         }
 
         (async () => {
-            const contactIds = await getEntityContactList(client, userId);
+            const contactIds = await getEntityContactList(client, deskproUser.id);
 
             if (contactIds.length === 1) {
                 onExistLinkedItemsFn();
@@ -51,17 +53,18 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
                 return;
             }
 
+            const contactId = results[0].id;
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            const isSuccess: boolean = await setEntityContact(client, userId, results[0].id);
+            const isSuccess: boolean = await setEntityContact(client, deskproUser.id, contactId);
 
-            if (isSuccess) {
-                onExistLinkedItemsFn();
-            } else {
+            if (!isSuccess) {
                 onNoLinkedItemsFn();
+            } else {
+                linkContactFn(contactId).then(() => onExistLinkedItemsFn());
             }
         })();
-    }, [isAuth, userId, userEmail]);
+    }, [isAuth, deskproUser, userEmail]);
 };
 
 export { useCheckLinkedContact };

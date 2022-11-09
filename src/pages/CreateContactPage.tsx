@@ -9,9 +9,11 @@ import {
     useDeskproAppClient,
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
-import { useLoadUpdateContactDeps } from "../hooks";
+import { useLoadUpdateContactDeps, useLinkUnlinkNote } from "../hooks";
 import { setEntityContact } from "../services/entityAssociation";
-import { createContactService } from "../services/hubspot";
+import {
+    createContactService,
+} from "../services/hubspot";
 import { isValidationError, isConflictError } from "../services/hubspot/utils";
 import { BaseContainer, ErrorBlock } from "../components/common";
 import { ContactForm } from "../components";
@@ -23,6 +25,7 @@ const CreateContactPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
+    const { linkContactFn } = useLinkUnlinkNote();
     const {
         owners,
         isLoading,
@@ -33,7 +36,7 @@ const CreateContactPage: FC = () => {
     const [error, setError] = useState<string|null>(null);
     const [formErrors, setFormErrors] = useState<FormErrors|null>(null);
 
-    const deskproUserId = (context as Context<ContextData>)?.data?.user.id;
+    const deskproUser = (context as Context<ContextData>)?.data?.user;
     const primaryEmail = (context as Context<ContextData>)?.data?.user.primaryEmail;
     
     useDeskproElements(({ deRegisterElement }) => {
@@ -44,19 +47,19 @@ const CreateContactPage: FC = () => {
     });
 
     const onLinkContact = useCallback((contactId) => {
-        if (!client || !deskproUserId || !contactId) {
+        if (!client || !deskproUser?.id || !contactId) {
             return;
         }
 
-        setEntityContact(client, deskproUserId, contactId)
+        return setEntityContact(client, deskproUser.id, contactId)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             .then((isSuccess: boolean) => {
                 if (isSuccess) {
-                    navigate("/home");
+                    return linkContactFn(contactId).then(() => navigate("/home"));
                 }
             })
-    }, [client, deskproUserId, navigate]);
+    }, [client, deskproUser, navigate, linkContactFn]);
 
     const onSubmit = async (values: Values) => {
         if (!client) {

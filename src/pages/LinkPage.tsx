@@ -15,7 +15,7 @@ import {
 } from "@deskpro/app-sdk";
 import { setEntityContact } from "../services/entityAssociation";
 import { searchContactsByService } from "../services/hubspot";
-import { useSetAppTitle } from "../hooks";
+import { useSetAppTitle, useLinkUnlinkNote } from "../hooks";
 import {
     NoFound,
     Loading,
@@ -30,13 +30,14 @@ const LinkPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
+    const { isLoading, linkContactFn } = useLinkUnlinkNote();
 
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [contacts, setContacts] = useState<Contact[]>([]);
     const [selectedContactId, setSelectedContactId] = useState<Contact['id']>('');
     const [loading, setLoading] = useState<boolean>(false);
 
-    const deskproUserId = (context as Context<ContextData>)?.data?.user.id;
+    const deskproUser = (context as Context<ContextData>)?.data?.user;
 
     useSetAppTitle("Add contact");
 
@@ -88,20 +89,21 @@ const LinkPage: FC = () => {
     }
 
     const onLinkContact = useCallback(() => {
-        if (!client || !deskproUserId || !selectedContactId) {
+        if (!client || !deskproUser?.id || !selectedContactId) {
             return;
         }
 
-        setEntityContact(client, deskproUserId, selectedContactId)
+        setLoading(true);
+        setEntityContact(client, deskproUser.id, selectedContactId)
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             .then((isSuccess: boolean) => {
                 if (isSuccess) {
-                    navigate("/home");
+                    linkContactFn(selectedContactId).then(() => navigate("/home"));
                 }
             })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [client, deskproUserId, selectedContactId]);
+    }, [client, deskproUser, selectedContactId]);
 
     return (
         <BaseContainer>
@@ -140,6 +142,7 @@ const LinkPage: FC = () => {
             }
             <Stack justify="space-between" style={{ margin: "14px 0 8px" }}>
                 <Button
+                    disabled={loading || isLoading}
                     text="Link Contact"
                     onClick={onLinkContact}
                 />

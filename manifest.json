@@ -2,7 +2,7 @@
   "name": "@deskpro-apps/hubspot",
   "title": "HubSpot",
   "description": "Connect with HubSpot and view and update information from your CRM while in Deskpro tickets",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,
@@ -25,6 +25,14 @@
       "isRequired": true,
       "isBackendOnly": true,
       "order": 10
+    },
+    "default_dont_add_note_when_linking_contact": {
+      "title": "Don't leave a note on the contact profile in HubSpot when it is linked to a user in Deskpro",
+      "description": "",
+      "type": "boolean",
+      "isRequired": false,
+      "isBackendOnly": false,
+      "order": 20
     }
   },
   "proxy": {
