@@ -26,8 +26,9 @@ const Main = () => {
         return (
             <BaseContainer>
                 <ErrorBlock
-                    text="Go back to the admin settings form for the app and re-auth from there"
+                    text="Access token invalid, please fix in admin settings"
                 />
+                <br/><br/><br/><br/><br/>
             </BaseContainer>
         );
     }

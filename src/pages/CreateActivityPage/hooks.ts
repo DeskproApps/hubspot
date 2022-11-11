@@ -78,7 +78,6 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         queryKey: [QueryKey.COMPANY, id],
         queryFn: (client) => getCompanyService(client, id),
         enabled: (companyIds.data?.results.length > 0),
-        useErrorBoundary: false,
         select: (data) => {
             return (has(data, ["id"]) && has(data, ["properties", "name"]))
                 ? {
@@ -101,7 +100,6 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         queryKey: [QueryKey.DEALS, id],
         queryFn: (client) => getDealService(client, id),
         enabled: (dealIds.data?.results.length > 0),
-        useErrorBoundary: false,
         select: (data) => {
             return (has(data, ["id"]) && has(data, ["properties", "dealname"]))
                 ? getOption(get(data, ["id"]), get(data, ["properties", "dealname"]))

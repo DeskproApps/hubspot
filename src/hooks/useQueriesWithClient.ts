@@ -1,19 +1,21 @@
-import { useQueries } from "react-query";
+import { useQueries } from "@tanstack/react-query";
 import { IDeskproClient, useDeskproAppClient } from "@deskpro/app-sdk";
-import { UseQueryOptions, UseQueryResult } from "react-query/types/react/types";
+import type { UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
 
 const useQueriesWithClient = <TQueryFnData = null>(
     queries: Array<{
         queryFn: (client: IDeskproClient) => Promise<TQueryFnData>,
-    } & Omit<UseQueryOptions<TQueryFnData, unknown, TQueryFnData, string | readonly unknown[]>, "queryFn">>,
+    } & Omit<UseQueryOptions<TQueryFnData, unknown, TQueryFnData, readonly unknown[]>, "queryFn">>,
 ): Array<UseQueryResult<TQueryFnData>> => {
     const { client } = useDeskproAppClient();
 
-    return useQueries(queries?.map(({ queryFn, ...options }) => ({
-        queryFn: () => (client && queryFn(client)),
-        ...(options ?? {}),
-        enabled: options?.enabled === undefined ? !! client : (client && options?.enabled),
-    }) as UseQueryOptions<TQueryFnData, unknown, TQueryFnData, string | readonly unknown[]>) ?? []);
+    return useQueries({
+        queries: queries?.map(({ queryFn, ...options }) => ({
+            queryFn: () => (client && queryFn(client)),
+            ...(options ?? {}),
+            enabled: options?.enabled === undefined ? !! client : (client && options?.enabled),
+        }) as UseQueryOptions<TQueryFnData, unknown, TQueryFnData, readonly unknown[]>) ?? []
+    });
 };
 
 export { useQueriesWithClient };

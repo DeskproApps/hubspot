@@ -51,7 +51,6 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         queryKey: [QueryKey.COMPANY, id],
         queryFn: (client) => getCompanyService(client, id),
         enabled: (companyIds.data?.results.length > 0),
-        useErrorBoundary: false,
     })) ?? []);
 
     const dealIds = useQueryWithClient(
@@ -64,7 +63,6 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         queryKey: [QueryKey.DEALS, id],
         queryFn: (client) => getDealService(client, id),
         enabled: (dealIds.data?.results.length > 0),
-        useErrorBoundary: false,
     })) ?? []);
 
     const dealOwners = useQueriesWithClient(deals?.map((deal) => ({
@@ -84,7 +82,6 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         queryKey: [QueryKey.NOTES, id],
         queryFn: (client) => getNoteService(client, id),
         enabled: (noteIds.data?.results.length > 0),
-        useErrorBoundary: false,
     })) ?? []);
 
     const noteOwners = useQueriesWithClient(notes?.map((note) => ({
@@ -112,14 +109,12 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         queryKey: [QueryKey.EMAIL_ACTIVITIES, id],
         queryFn: (client) => getEmailActivityService(client, id),
         enabled: (emailActivityIds.data?.results.length > 0),
-        useErrorBoundary: false,
     })) ?? []);
 
     const callActivities = useQueriesWithClient(callActivityIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.CALL_ACTIVITIES, id],
         queryFn: (client) => getCallActivityService(client, id),
         enabled: (callActivityIds.data?.results.length > 0),
-        useErrorBoundary: false,
     })) ?? []);
 
     const accountInfo = useQueryWithClient(
@@ -131,7 +126,6 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         queryKey: [QueryKey.PIPELINES, deal.data?.properties.pipeline],
         queryFn: (client) => getPipelineService(client, "deals", deal.data?.properties.pipeline as string),
         enabled: (deals.length > 0) && deals.every(({ isFetched, isSuccess }) => (isFetched && isSuccess)),
-        useErrorBoundary: false,
     })) ?? []);
 
     const dealPipelinesData = useMemo(() => {
