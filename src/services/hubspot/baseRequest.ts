@@ -1,26 +1,32 @@
+import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { proxyFetch } from "@deskpro/app-sdk";
-import { Request, ApiRequestMethod } from "../../types";
 import { BASE_URL, placeholders } from "./constants";
 // import { refreshTokenService } from "./refreshTokenService";
 import { getQueryParams } from "../../utils";
+import type { HubSpotError } from "./types";
+import type { Request, ApiRequestMethod } from "../../types";
 
 type ErrorData = {
     url: string,
-    code: number,
-    text: string,
-    entity: string|undefined,
     method: ApiRequestMethod,
+    code: number,
+    json: HubSpotError,
+    entity?: string,
 };
 
 export class DeskproError extends Error {
     code: number;
+    status: string;
+    category: string;
     entity?: string;
 
-    constructor({ url, method, text, code, entity }: ErrorData) {
-        super(`${method} ${url}: Response Status [${text}]`);
+    constructor({ url, method, json, code, entity }: ErrorData) {
+        super(get(json, ["message"], `${method} ${url}: Response Status [${JSON.stringify(json)}]`));
         this.code = code;
         this.entity = entity;
+        this.status = json.status;
+        this.category = json.category;
     }
 }
 
@@ -57,20 +63,6 @@ const baseRequest: Request = async (client, {
 
     const res = await dpFetch(requestUrl, options);
 
-    /** ToDo: handle missing scopes
-    category:"MISSING_SCOPES"
-    correlationId:"77eb4d5a-c125-4eb3-b30d-3442855d35d7"
-    errors: [{
-        message: "One or more of the following scopes are required.",
-        context: {requiredScopes: ["contacts"]}
-    }]
-    context: { requiredScopes: ["contacts"] }
-    message: "One or more of the following scopes are required."
-    links: { scopes: "https://developers.hubspot.com/scopes" }
-    message: "This app hasn't been granted all required scopes to make this call. Read more about required scopes here: https://developers.hubspot.com/scopes."
-    status: "error"
-     */
-
     /** ToDo: Uncomment when we'll back to the OAuth2
     if ([401].includes(res.status)) {
         options.headers = {
@@ -92,17 +84,13 @@ const baseRequest: Request = async (client, {
         }
     }*/
 
-    if (res.status >= 400 && res.status <= 409 ) {
-        return Promise.reject(await res.json());
-    }
-
     if (res.status < 200 || res.status > 399) {
         throw new DeskproError({
             url,
             method,
             entity,
             code: res.status,
-            text: await res.text(),
+            json: await res.json(),
         });
     }
 

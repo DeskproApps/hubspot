@@ -34,3 +34,4 @@ export { getActivityCallDispositionsServices } from "./getActivityCallDispositio
 export { getActivityCallDirectionServices } from "./getActivityCallDirectionServices";
 export { createActivityCallService } from "./createActivityCallService";
 export { createActivityEmailService } from "./createActivityEmailService";
+export { DeskproError } from "./baseRequest";

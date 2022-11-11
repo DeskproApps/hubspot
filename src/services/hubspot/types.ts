@@ -35,9 +35,10 @@ export type EntityType =
 
 export type HubSpotError = {
     status: "error",
-    category: "VALIDATION_ERROR",
+    category: "VALIDATION_ERROR"|"CONFLICT"|"MISSING_SCOPES",
     correlationId: string,
     message: string,
+    errors?: Array<{ message: string }>,
 };
 
 export type Contact = {

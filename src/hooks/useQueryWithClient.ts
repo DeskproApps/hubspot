@@ -1,12 +1,9 @@
-import { useQuery } from "react-query";
-import {
-    UseQueryResult,
-    UseQueryOptions,
-} from "react-query/types/react/types";
+import { useQuery } from "@tanstack/react-query";
 import {
     IDeskproClient,
     useDeskproAppClient,
 } from "@deskpro/app-sdk";
+import type { UseQueryResult, UseQueryOptions } from "@tanstack/react-query";
 
 /**
  * Decorate react useQuery hook such that we can inject the Deskpro apps client into query functions and make sure that
@@ -15,7 +12,7 @@ import {
 const useQueryWithClient = <TQueryFnData = unknown, TError = unknown, TData = TQueryFnData>(
     queryKey: string | readonly unknown[],
     queryFn: (client: IDeskproClient) => Promise<TQueryFnData>,
-    options?: Omit<UseQueryOptions<TQueryFnData, unknown, TData, string | readonly unknown[]>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<TQueryFnData, unknown, TData, readonly unknown[]>, 'queryKey' | 'queryFn'>
 ): UseQueryResult<TData> => {
     const { client } = useDeskproAppClient();
 
@@ -27,7 +24,7 @@ const useQueryWithClient = <TQueryFnData = unknown, TError = unknown, TData = TQ
         {
             ...(options ?? {}),
             enabled: options?.enabled === undefined ? !! client : (client && options?.enabled),
-        } as Omit<UseQueryOptions<TQueryFnData, TError, TData, string | readonly unknown[]>, 'queryKey' | 'queryFn'>
+        } as Omit<UseQueryOptions<TQueryFnData, TError, TData, readonly unknown[]>, 'queryKey' | 'queryFn'>
     );
 }
 

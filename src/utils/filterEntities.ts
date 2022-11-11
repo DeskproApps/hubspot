@@ -1,5 +1,5 @@
 import get from "lodash/get";
-import { UseQueryResult } from "react-query/types/react/types";
+import { UseQueryResult } from "@tanstack/react-query";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const filterEntities = (entities: UseQueryResult[], path: string[] = ["data", "properties"]): any[] => {

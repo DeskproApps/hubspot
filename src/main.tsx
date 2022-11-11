@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { HashRouter } from "react-router-dom";
-import { QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { DeskproAppProvider } from "@deskpro/app-sdk";

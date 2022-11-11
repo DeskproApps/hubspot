@@ -1,12 +1,9 @@
 import { Suspense } from "react";
 import { match } from "ts-pattern";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { QueryErrorResetBoundary } from "react-query";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import {
-    Stack,
-    Button,
     IDeskproClient,
     LoadingSpinner,
     useDeskproAppClient,
@@ -28,9 +25,9 @@ import {
     CreateContactPage,
     CreateActivityPage,
 } from "./pages";
+import { errorFallbackRender } from "./components/common";
 import type { EventsPayload, DeskproUser } from "./types";
 import type { Contact } from "./services/hubspot/types";
-import type { DeskproError } from "./services/hubspot/baseRequest";
 
 const unlink = (
     client: IDeskproClient|null,
@@ -95,25 +92,7 @@ function App() {
                 {({ reset }) => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    return (<ErrorBoundary
-                            onReset={reset}
-                            fallbackRender={({ resetErrorBoundary, error }) => {
-                                const { code, entity, message: nativeErrorMessage } = error as DeskproError;
-                                const message = match(code)
-                                    .with(404, () => `Can't find ${entity ? entity : ""}`)
-                                    .otherwise(() => "There was an error!");
-
-                                // eslint-disable-next-line no-console
-                                console.error(nativeErrorMessage);
-
-                                return (
-                                    <Stack gap={6} vertical style={{ padding: "8px" }}>
-                                        {message}
-                                        <Button text="Reload" icon={faRefresh} intent="secondary" onClick={resetErrorBoundary} />
-                                    </Stack>
-                                )
-                            }}
-                        >
+                    return (<ErrorBoundary onReset={reset} fallbackRender={errorFallbackRender}>
                             <Routes>
                                 <Route path="/">
                                     <Route path="admin">
