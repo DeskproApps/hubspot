@@ -80,11 +80,11 @@ const LinkPage: FC = () => {
         searchInHubspot(q);
     };
 
-    const onChangeSelectedCustomer = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-        if (selectedContactId === value) {
+    const onChangeSelectedCustomer = (contactId: Contact["id"]) => {
+        if (selectedContactId === contactId) {
             setSelectedContactId('');
         } else {
-            setSelectedContactId(value);
+            setSelectedContactId(contactId);
         }
     }
 
@@ -142,7 +142,7 @@ const LinkPage: FC = () => {
             }
             <Stack justify="space-between" style={{ margin: "14px 0 8px" }}>
                 <Button
-                    disabled={loading || isLoading}
+                    disabled={loading || isLoading || !selectedContactId}
                     text="Link Contact"
                     onClick={onLinkContact}
                 />
