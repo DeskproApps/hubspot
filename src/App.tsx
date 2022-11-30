@@ -111,6 +111,7 @@ function App() {
                                 <Route path="activity/create" element={<CreateActivityPage/>} />
                                 <Route index element={<Main/>} />
                             </Routes>
+                            <br/><br/><br/>
                         </ErrorBoundary>
                     )
                 }}

@@ -132,7 +132,7 @@ const Deals: FC<Props> = ({
                     <Deal
                         key={deal.hs_object_id}
                         {...deal}
-                        owner={owners[deal?.hubspot_owner_id] || {}}
+                        owner={get(owners, [deal?.hubspot_owner_id])}
                         accountInfo={accountInfo}
                         dealPipelines={dealPipelines}
                     />

@@ -17,12 +17,10 @@ import type {
 
 type Props = {
     contact: Contact["properties"],
-    contactOwner?: Owner,
-    dealOwners: Record<Owner["id"], Owner>,
+    owners: Record<Owner["id"], Owner>,
     companies: Array<Company["properties"]>,
     deals: Array<Deal["properties"]>,
     notes: Array<Note["properties"]>,
-    noteOwners: Record<Owner["id"], Owner>,
     callActivities: Array<CallActivity["properties"]>,
     emailActivities: Array<EmailActivity["properties"]>,
     accountInfo?: AccountInto,
@@ -34,12 +32,10 @@ type Props = {
 const Home: FC<Props> = ({
     deals,
     notes,
+    owners,
     contact,
     companies,
-    dealOwners,
-    noteOwners,
     accountInfo,
-    contactOwner,
     callActivities,
     emailActivities,
     dealPipelines,
@@ -51,18 +47,18 @@ const Home: FC<Props> = ({
             <ContactInfo
                 contact={contact}
                 companies={companies}
-                owner={contactOwner}
+                owners={owners}
                 accountInfo={accountInfo}
             />
             <Deals
                 deals={deals}
-                owners={dealOwners}
+                owners={owners}
                 accountInfo={accountInfo}
                 dealPipelines={dealPipelines}
                 contact={contact}
                 companies={companies}
             />
-            <Notes notes={notes} owners={noteOwners} onCreateNote={onCreateNote} />
+            <Notes notes={notes} owners={owners} onCreateNote={onCreateNote} />
             <Activities
                 calls={callActivities}
                 emails={emailActivities}

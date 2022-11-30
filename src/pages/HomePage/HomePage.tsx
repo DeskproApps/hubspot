@@ -21,16 +21,14 @@ const HomePage = () => {
     const {
         isLoading,
         contact,
-        contactOwner,
         companies,
         deals,
-        dealOwners,
         dealPipelines,
         notes,
-        noteOwners,
         emailActivities,
         callActivities,
         accountInfo,
+        owners,
     } = useLoadHomeDeps(contactId);
 
     const userId = (context as Context<ContextData>)?.data?.user.id;
@@ -94,14 +92,12 @@ const HomePage = () => {
 
     return (
         <Home
+            owners={owners}
             contact={contact}
-            contactOwner={contactOwner}
             companies={companies}
             deals={deals}
-            dealOwners={dealOwners}
             dealPipelines={dealPipelines}
             notes={notes}
-            noteOwners={noteOwners}
             emailActivities={emailActivities}
             callActivities={callActivities}
             accountInfo={accountInfo}

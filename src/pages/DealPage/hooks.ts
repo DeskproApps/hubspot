@@ -51,6 +51,7 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
 
     const dealTypes = useQueryWithClient([QueryKey.DEALS, "types"], getDealTypesService);
 
+    // ToDo: rewrite to search api (getAssocEntitiesByContactId)
     const contactIds = useQueryWithClient(
         [QueryKey.ENTITY, "deals", dealId, "contacts"],
         (client) => getEntityAssocService<Contact["id"], "deal_to_contact">(client, "deals", dealId as string, "contacts"),
@@ -63,6 +64,7 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
         enabled: (contactIds.data?.results.length > 0),
     })) ?? []);
 
+    // ToDo: rewrite to search api (getAssocEntitiesByContactId)
     const companyIds = useQueryWithClient(
         [QueryKey.ENTITY, "deals", dealId, "companies"],
         (client) => getEntityAssocService<Company["id"], "deal_to_company">(client, "deals", dealId as string, "companies"),
