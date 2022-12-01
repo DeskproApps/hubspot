@@ -34,4 +34,10 @@ export { getActivityCallDispositionsServices } from "./getActivityCallDispositio
 export { getActivityCallDirectionServices } from "./getActivityCallDirectionServices";
 export { createActivityCallService } from "./createActivityCallService";
 export { createActivityEmailService } from "./createActivityEmailService";
+export {
+    getCallsByContactId,
+    getDealsByContactId,
+    getNotesByContactId,
+    getEmailsByContactId,
+} from "./getAssocEntitiesByContactId";
 export { DeskproError } from "./baseRequest";

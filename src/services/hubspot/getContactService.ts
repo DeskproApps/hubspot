@@ -1,16 +1,7 @@
 import { IDeskproClient } from "@deskpro/app-sdk";
 import { baseRequest } from "./baseRequest";
+import { PROPERTIES } from "./constants";
 import type { Contact } from "./types";
-
-const properties = [
-    "hubspot_owner_id",
-    "email",
-    "phone",
-    "jobtitle",
-    "lastname",
-    "firstname",
-    "lifecyclestage",
-];
 
 const getContactService = (
     client: IDeskproClient,
@@ -20,7 +11,7 @@ const getContactService = (
         url: `/crm/v3/objects/contacts/${contactId}`,
         entity: "contact",
         queryParams: {
-            properties: properties.join(","),
+            properties: PROPERTIES.contacts.join(","),
         }
     });
 };

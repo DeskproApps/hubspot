@@ -25,5 +25,9 @@ export enum QueryKey {
     CALL_ACTIVITIES = "callActivities",
     PIPELINES = "pipelines",
     ACCOUNT_INFO = "accountInfo",
-    PROPERTIES = "properties"
+    PROPERTIES = "properties",
+    DEALS_BY_CONTACT_ID = "dealsByContactId",
+    NOTES_BY_CONTACT_ID = "notesByContactId",
+    CALLS_BY_CONTACT_ID = "callsByContactId",
+    EMAILS_BY_CONTACT_ID = "emailsByContactId",
 }

@@ -97,7 +97,7 @@ const Activities: FC<Props> = ({ calls, emails, accountInfo, contactId, onCreate
     const activities = concat(normalizeCall, normalizeEmail).sort(sortDateFn);
 
     return (
-        <BaseContainer style={{ marginBottom: 40 }}>
+        <BaseContainer>
             <Title title={`Activities (${activities.length})`} onClick={onCreateActivity}/>
             {activities.map((activity) => (
                 <Activity

@@ -65,7 +65,7 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
     );
 
     /// Associate entities
-
+    // ToDo: rewrite to search api (getAssocEntitiesByContactId)
     const companyIds = useQueryWithClient(
         [QueryKey.ENTITY, "contacts", contactId, "companies"],
         (client) => getEntityAssocService<Company["id"], "contact_to_company">(client, "contacts", contactId as string, "companies"),
@@ -88,6 +88,7 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         },
     })) ?? []);
 
+    // ToDo: rewrite to search api (getAssocEntitiesByContactId)
     const dealIds = useQueryWithClient(
         [QueryKey.DEALS, "contacts", contactId, "deals"],
         (client) => getEntityAssocService<Deal["id"], "contact_to_deal">(client, "contacts", contactId as string, "deals"),

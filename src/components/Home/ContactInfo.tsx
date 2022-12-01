@@ -8,17 +8,14 @@ import {
     BaseContainer,
     TextBlockWithLabel,
 } from "../common";
-import type { AccountInto, Contact } from "../../services/hubspot/types";
+import type { AccountInto, Contact, Owner } from "../../services/hubspot/types";
 
 type Props = {
     contact: Contact["properties"],
     companies: Array<{
         name: string,
     }>,
-    owner?: {
-        firstName: string,
-        lastName: string,
-    },
+    owners: Record<Owner["id"], Owner>,
     accountInfo?: AccountInto,
 };
 
@@ -28,11 +25,12 @@ const ContactInfo: FC<Props> = ({
         phone,
         jobtitle,
         lifecyclestage,
+        hubspot_owner_id,
         lastname: lastName,
         firstname: firstName,
         hs_object_id: contactId,
     } = {},
-    owner,
+    owners,
     companies,
     accountInfo: { portalId } = {},
 }) => {
@@ -49,7 +47,7 @@ const ContactInfo: FC<Props> = ({
                 <TextBlockWithLabel label="Email" text={email || "-"} />
                 <TextBlockWithLabel label="Phone" text={phone || "-"} />
                 <TextBlockWithLabel label="Job title" text={jobtitle || "-"} />
-                <TextBlockWithLabel label="Owner" text={getFullName(owner) || "-"} />
+                <TextBlockWithLabel label="Owner" text={getFullName(owners[hubspot_owner_id as string]) || "-"} />
                 <TextBlockWithLabel
                     label="Lifecycle stage"
                     text={!isEmpty(lifecyclestage) ? capitalize(lifecyclestage) : "-"}
