@@ -86,7 +86,7 @@ const CreateActivityPage: FC = () => {
                     )),
             ]))
             .then(() => queryClient.refetchQueries(
-                [QueryKey.CALL_ACTIVITIES, "contacts", contactId, activityType]
+                [type === "call" ? QueryKey.CALLS_BY_CONTACT_ID : QueryKey.EMAILS_BY_CONTACT_ID, contactId]
             ))
             .then(() => navigate("/home"))
             .catch((err) => {

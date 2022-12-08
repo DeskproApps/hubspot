@@ -1,12 +1,14 @@
-import { FC, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import isEmpty from "lodash/isEmpty";
 import { useDeskproElements, useDeskproAppClient } from "@deskpro/app-sdk";
 import { useSetAppTitle } from "../hooks";
-import { createNoteService, setEntityAssocService } from "../services/hubspot";
+import { createNoteService, setEntityAssocService, uploadFileService } from "../services/hubspot";
 import { isValidationError } from "../services/hubspot/utils";
 import { queryClient, QueryKey } from "../query";
-import { NoteForm, getNoteValues, isEmptyForm } from "../components/NoteForm";
+import { NoteForm, getNoteValues, isEmptyForm, getFileData } from "../components/NoteForm";
 import { BaseContainer, ErrorBlock } from "../components/common";
+import type { FC } from "react";
 import type { Values } from "../components/NoteForm/types";
 
 const CreateNotePage: FC = () => {
@@ -37,13 +39,22 @@ const CreateNotePage: FC = () => {
             return;
         }
 
-        const data = getNoteValues(values);
-
         setError(null);
 
-        return createNoteService(client, data)
+        return Promise.all(
+            values.files
+                .map((file) => getFileData(file))
+                .filter((file) => Boolean(file))
+                .map((file) => uploadFileService(client, file as FormData))
+        )
+            .then((files) => {
+                const data = getNoteValues(values, files);
+                return (isEmpty(data))
+                    ? Promise.reject("Empty form")
+                    : createNoteService(client, data)
+            })
             .then(({ id }) => setEntityAssocService(client, "notes", id, "contacts", contactId, "note_to_contact"))
-            .then(() => queryClient.refetchQueries([QueryKey.NOTES, "contacts", contactId, "notes"]))
+            .then(() => queryClient.refetchQueries([QueryKey.NOTES_BY_CONTACT_ID, contactId]))
             .then(() => navigate("/home"))
             .catch((err) => {
                 if (isValidationError(err)) {
@@ -51,7 +62,7 @@ const CreateNotePage: FC = () => {
                 } else {
                     throw new Error(err);
                 }
-            });
+            })
     };
 
     const onCancel = useCallback(() => {

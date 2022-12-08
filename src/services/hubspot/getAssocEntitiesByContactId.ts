@@ -17,6 +17,11 @@ const getAssocEntitiesByContactId = (
                 value: contactId,
             }],
             properties: PROPERTIES[entity],
+            sorts: [{
+                propertyName: "hs_lastmodifieddate",
+                direction: "DESCENDING"
+            }],
+            limit: 100,
         },
     });
 };

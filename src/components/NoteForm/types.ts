@@ -1,8 +1,8 @@
-// import { AttachmentFile } from "../common/Attach";
+import { AttachmentFile } from "../common/Attach";
 
 export type Values = {
     note: string,
-    // files: AttachmentFile[],
+    files: AttachmentFile[],
 };
 
 export type Props = {

@@ -66,7 +66,7 @@ const CreateDealPage: FC = () => {
                         : Promise.resolve(),
                 ]);
             })
-            .then(() => queryClient.refetchQueries([QueryKey.DEALS, "contacts", contactId, "deals"]))
+            .then(() => queryClient.refetchQueries([QueryKey.DEALS_BY_CONTACT_ID, contactId]))
             .then(() => navigate("/home"))
             .catch((err) => {
                 if (isValidationError(err)) {
