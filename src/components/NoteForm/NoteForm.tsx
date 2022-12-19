@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useFormik } from "formik";
 import { Stack } from "@deskpro/app-sdk";
 import { validationSchema, getInitValues } from "./utils";
-import { Label, Button, TextArea } from "../common";
+import { Attach, Label, Button, TextArea } from "../common";
 import type { Props, Values } from "./types";
 
 const NoteForm: FC<Props> = ({ onSubmit, onCancel }) => {
@@ -11,6 +11,7 @@ const NoteForm: FC<Props> = ({ onSubmit, onCancel }) => {
         touched,
         handleSubmit,
         isSubmitting,
+        setFieldValue,
         getFieldProps,
     } = useFormik<Values>({
         validationSchema,
@@ -32,14 +33,13 @@ const NoteForm: FC<Props> = ({ onSubmit, onCancel }) => {
                 />
             </Label>
 
-            {/* ToDo: https://app.shortcut.com/deskpro/story/92067/apps-proxy-must-allow-all-multipart-fields
             <Label label="Attachments">
                 <Attach
                     onFiles={(files) => {
                         setFieldValue("files", files);
                     }}
                 />
-            </Label>*/}
+            </Label>
 
             <Stack justify="space-between">
                 <Button

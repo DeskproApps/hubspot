@@ -1,2 +1,2 @@
 export { NoteForm } from "./NoteForm";
-export { getNoteValues, isEmptyForm } from "./utils";
+export { getNoteValues, isEmptyForm, getFileData } from "./utils";

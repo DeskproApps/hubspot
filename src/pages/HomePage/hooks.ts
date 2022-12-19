@@ -51,6 +51,7 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         (client) => getDealsByContactId(client, contactId as Contact["id"]),
         {
             enabled: !!contactId,
+            cacheTime: 0,
             select: (data) => get(data, ["results"], []).map(({ properties }: Deal) => properties),
         },
     );
@@ -69,6 +70,7 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         (client) => getEmailsByContactId(client, contactId as Contact["id"]),
         {
             enabled: !!contactId,
+            cacheTime: 0,
             select: (data) => get(data, ["results"], []).map(({ properties }: EmailActivity) => properties),
         }
     );
@@ -78,6 +80,7 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         (client) => getCallsByContactId(client, contactId as Contact["id"]),
         {
             enabled: !!contactId,
+            cacheTime: 0,
             select: (data) => get(data, ["results"], []).map(({ properties }: CallActivity) => properties),
         },
     );
