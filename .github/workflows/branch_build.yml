@@ -44,15 +44,45 @@ jobs:
       - name: Type check
         run: yarn tsc --noemit
 
-      #- name: Run tests
-      #  run: yarn test:coverage
+#      - name: Run tests
+#        run: yarn test:coverage
 
       - name: Build
         run: yarn build
 
-      - name: Upload package
-        uses: actions/upload-artifact@v2
+      - name: Package app zip
+        working-directory: dist
+        run: |
+          zip -rq ../app.zip *
+          mv ../app.zip .
+
+      - name: Read manifest
+        id: read_manifest
+        run: |
+          content=`cat ./manifest.json`
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=manifest::$content"
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: app-package
-          path: dist
-          retention-days: 1
+          tag_name: ${{ fromJson(steps.read_manifest.outputs.manifest).version }}
+          release_name: ${{ fromJson(steps.read_manifest.outputs.manifest).version }}
+          draft: false
+          prerelease: false
+
+      - name: Upload release asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/app.zip
+          asset_name: app.zip
+          asset_content_type: application/zip
