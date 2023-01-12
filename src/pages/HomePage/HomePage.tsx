@@ -41,7 +41,6 @@ const HomePage = () => {
         deRegisterElement("edit");
         deRegisterElement("externalLink");
 
-        registerElement("refresh", { type: "refresh_button" });
         registerElement("edit", {
             type: "edit_button",
             payload: { type: "changePage", path: `/contacts/${contactId}` },

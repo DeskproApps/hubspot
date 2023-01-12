@@ -30,4 +30,5 @@ export enum QueryKey {
     NOTES_BY_CONTACT_ID = "notesByContactId",
     CALLS_BY_CONTACT_ID = "callsByContactId",
     EMAILS_BY_CONTACT_ID = "emailsByContactId",
+    COMPANIES_BY_CONTACT_ID = "companiesByContactId",
 }

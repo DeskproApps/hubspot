@@ -5,7 +5,8 @@ import {
 import { getEntityContactList, setEntityContact } from "../services/entityAssociation";
 import { getContactsByEmailService } from "../services/hubspot";
 import { useLinkUnlinkNote } from "./useLinkUnlinkNote";
-import { getUserEmail } from "../utils";
+import { getUserEmail, getEntityMetadata } from "../utils";
+import { useLinkContact } from "../hooks";
 import type { UserContext } from "../types";
 
 type UseCheckLinkedContact = (
@@ -24,6 +25,7 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
 ) => {
     const { context } = useDeskproLatestAppContext() as { context: UserContext|null };
     const { linkContactFn } = useLinkUnlinkNote();
+    const { getContactInfo } = useLinkContact();
 
     const deskproUser = context?.data?.user;
     const userEmail = getUserEmail(context?.data?.user);
@@ -54,9 +56,15 @@ const useCheckLinkedContact: UseCheckLinkedContact = (
             }
 
             const contactId = results[0].id;
+            const data = await getContactInfo(contactId);
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            const isSuccess: boolean = await setEntityContact(client, deskproUser.id, contactId);
+            const isSuccess: boolean = await setEntityContact(
+                client,
+                deskproUser.id,
+                contactId,
+                getEntityMetadata(data),
+            );
 
             if (!isSuccess) {
                 onNoLinkedItemsFn();

@@ -9,12 +9,15 @@ import {
     useDeskproAppClient,
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
-import { useLoadUpdateContactDeps, useLinkUnlinkNote } from "../hooks";
-import { setEntityContact } from "../services/entityAssociation";
 import {
-    createContactService,
-} from "../services/hubspot";
+    useLinkContact,
+    useLinkUnlinkNote,
+    useLoadUpdateContactDeps,
+} from "../hooks";
+import { setEntityContact } from "../services/entityAssociation";
+import { createContactService } from "../services/hubspot";
 import { isValidationError, isConflictError } from "../services/hubspot/utils";
+import { getEntityMetadata } from "../utils";
 import { BaseContainer, ErrorBlock } from "../components/common";
 import { ContactForm } from "../components";
 import { getContactValues } from "../components/ContactForm/utils";
@@ -26,6 +29,7 @@ const CreateContactPage: FC = () => {
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
     const { linkContactFn } = useLinkUnlinkNote();
+    const { getContactInfo } = useLinkContact();
     const {
         owners,
         isLoading,
@@ -51,7 +55,10 @@ const CreateContactPage: FC = () => {
             return;
         }
 
-        return setEntityContact(client, deskproUser.id, contactId)
+        return getContactInfo(contactId)
+            .then((data) => {
+                return setEntityContact(client, deskproUser.id, contactId, getEntityMetadata(data))
+            })
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             .then((isSuccess: boolean) => {
@@ -59,7 +66,7 @@ const CreateContactPage: FC = () => {
                     return linkContactFn(contactId).then(() => navigate("/home"));
                 }
             })
-    }, [client, deskproUser, navigate, linkContactFn]);
+    }, [client, deskproUser, navigate, linkContactFn, getContactInfo]);
 
     const onSubmit = async (values: Values) => {
         if (!client) {

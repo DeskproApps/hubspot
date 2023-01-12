@@ -359,3 +359,18 @@ export type UploadFile = {
     isUsableInContent: boolean,
     access: "PUBLIC_INDEXABLE" | "PUBLIC_NOT_INDEXABLE" | "PRIVATE",
 };
+
+export type EntityMetadata = {
+    id: Contact["id"],
+    fullName: string,
+    phone: Contact["properties"]["phone"],
+    email: Contact["properties"]["email"],
+    companies: Array<{
+        id: Company["id"],
+        name: Company["properties"]["name"],
+    }>,
+    deals: Array<{
+        id: Deal["id"],
+        name: Deal["properties"]["dealname"],
+    }>,
+};
