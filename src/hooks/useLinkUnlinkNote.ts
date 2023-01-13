@@ -3,6 +3,7 @@ import { useDeskproAppClient, useDeskproLatestAppContext } from "@deskpro/app-sd
 import { queryClient, QueryKey } from "../query";
 import { createNoteService, setEntityAssocService } from "../services/hubspot";
 import { parseDateTime } from "../utils/date";
+import type { Contact } from "../services/hubspot/types";
 
 const getLinkedMessage = (userId: string, fullName: string, link?: string): string => {
     return `Linked to Deskpro user ${userId} ${fullName} ${!link ? "" : link}`;
@@ -19,7 +20,7 @@ const useLinkUnlinkNote = () => {
     const deskproUser = context?.data?.user;
     const isDisable = Boolean(context?.settings?.default_dont_add_note_when_linking_contact);
 
-    const linkContactFn = useCallback((contactId) => {
+    const linkContactFn = useCallback((contactId: Contact["id"]) => {
         if (isDisable) {
             return Promise.resolve();
         }
@@ -39,7 +40,7 @@ const useLinkUnlinkNote = () => {
             .finally(() => setIsLoading(false))
     }, [client, deskproUser, isDisable]);
 
-    const unlinkContactFn = useCallback((contactId) => {
+    const unlinkContactFn = useCallback((contactId: Contact["id"]) => {
         if (isDisable) {
             return Promise.resolve();
         }

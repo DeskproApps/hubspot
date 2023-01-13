@@ -21,6 +21,7 @@ import { getEntityMetadata } from "../utils";
 import { BaseContainer, ErrorBlock } from "../components/common";
 import { ContactForm } from "../components";
 import { getContactValues } from "../components/ContactForm/utils";
+import type { Contact } from "../services/hubspot/types";
 import type { Values, FormErrors } from "../components/ContactForm/types";
 import type { ContextData } from "../types";
 
@@ -50,7 +51,7 @@ const CreateContactPage: FC = () => {
         deRegisterElement("externalLink");
     });
 
-    const onLinkContact = useCallback((contactId) => {
+    const onLinkContact = useCallback((contactId: Contact["id"]) => {
         if (!client || !deskproUser?.id || !contactId) {
             return;
         }

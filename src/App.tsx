@@ -63,32 +63,29 @@ function App() {
     return (
         <Suspense fallback={<LoadingSpinner/>}>
             <QueryErrorResetBoundary>
-                {({ reset }) => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    return (<ErrorBoundary onReset={reset} fallbackRender={errorFallbackRender}>
-                            <Routes>
-                                <Route path="/">
-                                    <Route path="admin">
-                                        <Route path="global-sign-in" element={<GlobalSignIn/>} />
-                                    </Route>
+                {({ reset }) => (
+                    <ErrorBoundary onReset={reset} fallbackRender={errorFallbackRender}>
+                        <Routes>
+                            <Route path="/">
+                                <Route path="admin">
+                                    <Route path="global-sign-in" element={<GlobalSignIn/>} />
                                 </Route>
-                                <Route path="home" element={<HomePage/>} />
-                                <Route path="link" element={<LinkPage/>} />
-                                <Route path="deal/create" element={<CreateDealPage/>} />
-                                <Route path="deal/update/:dealId" element={<UpdateDealPage/>} />
-                                <Route path="deal/:dealId" element={<DealPage/>} />
-                                <Route path="contacts/create" element={<CreateContactPage/>} />
-                                <Route path="contacts/:contactId" element={<UpdateContactPage/>} />
-                                <Route path="contacts/activities" element={<ActivityPage/>} />
-                                <Route path="note/create" element={<CreateNotePage/>} />
-                                <Route path="activity/create" element={<CreateActivityPage/>} />
-                                <Route index element={<Main/>} />
-                            </Routes>
-                            <br/><br/><br/>
-                        </ErrorBoundary>
-                    )
-                }}
+                            </Route>
+                            <Route path="home" element={<HomePage/>} />
+                            <Route path="link" element={<LinkPage/>} />
+                            <Route path="deal/create" element={<CreateDealPage/>} />
+                            <Route path="deal/update/:dealId" element={<UpdateDealPage/>} />
+                            <Route path="deal/:dealId" element={<DealPage/>} />
+                            <Route path="contacts/create" element={<CreateContactPage/>} />
+                            <Route path="contacts/:contactId" element={<UpdateContactPage/>} />
+                            <Route path="contacts/activities" element={<ActivityPage/>} />
+                            <Route path="note/create" element={<CreateNotePage/>} />
+                            <Route path="activity/create" element={<CreateActivityPage/>} />
+                            <Route index element={<Main/>} />
+                        </Routes>
+                        <br/><br/><br/>
+                    </ErrorBoundary>
+                )}
             </QueryErrorResetBoundary>
         </Suspense>
     );
