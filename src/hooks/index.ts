@@ -7,3 +7,4 @@ export { useLoadUpdateDealDeps } from "./useLoadUpdateDealDeps";
 export { useOwnerOptions } from "./useOwnerOptions";
 export { useLinkUnlinkNote } from "./useLinkUnlinkNote";
 export { useLinkContact } from "./useLinkContact";
+export { useUnlinkContact } from "./useUnlinkContact";

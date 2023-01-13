@@ -4,13 +4,11 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import {
-    IDeskproClient,
     LoadingSpinner,
     useDeskproAppClient,
     useDeskproAppEvents,
 } from "@deskpro/app-sdk";
-import { deleteEntityContact } from "./services/entityAssociation";
-import { useLinkUnlinkNote } from "./hooks";
+import { useLinkUnlinkNote, useUnlinkContact } from "./hooks";
 import {
     Main,
     LinkPage,
@@ -26,39 +24,13 @@ import {
     CreateActivityPage,
 } from "./pages";
 import { errorFallbackRender } from "./components/common";
-import type { EventsPayload, DeskproUser } from "./types";
-import type { Contact } from "./services/hubspot/types";
-
-const unlink = (
-    client: IDeskproClient|null,
-    successFn: (contactId: Contact["id"]) => void,
-) => (
-    userId: DeskproUser["id"],
-    contactId: Contact["id"],
-) => {
-    if (client && userId && contactId) {
-        deleteEntityContact(client, userId, contactId)
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            .then((isSuccess: boolean) => {
-                if (isSuccess) {
-                    successFn(contactId);
-                } else {
-                    return Promise.resolve();
-                }
-            })
-            .catch(() => {});
-    }
-};
+import type { EventsPayload } from "./types";
 
 function App() {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
     const { isLoading, unlinkContactFn } = useLinkUnlinkNote();
-
-    const unlinkContact = unlink(client, (contactId) => {
-        unlinkContactFn(contactId).then(() => navigate("/link"))
-    });
+    const { unlinkContact } = useUnlinkContact();
 
     useDeskproAppEvents({
         onShow: () => {
@@ -76,7 +48,9 @@ function App() {
                 .with("unlink", () => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    unlinkContact(payload?.userId, payload?.contactId);
+                    unlinkContact(payload?.contactId, (contactId) => {
+                        unlinkContactFn(contactId).then(() => navigate("/link"))
+                    });
                 })
                 .otherwise(() => {});
         },

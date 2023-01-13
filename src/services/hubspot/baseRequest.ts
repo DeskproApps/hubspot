@@ -11,7 +11,7 @@ type ErrorData = {
     url: string,
     method: ApiRequestMethod,
     code: number,
-    json: HubSpotError,
+    json?: HubSpotError,
     entity?: string,
 };
 
@@ -25,8 +25,8 @@ export class DeskproError extends Error {
         super(get(json, ["message"], `${method} ${url}: Response Status [${JSON.stringify(json)}]`));
         this.code = code;
         this.entity = entity;
-        this.status = json.status;
-        this.category = json.category;
+        this.status = json?.status || "";
+        this.category = json?.category || "";
     }
 }
 
@@ -90,7 +90,7 @@ const baseRequest: Request = async (client, {
             method,
             entity,
             code: res.status,
-            json: await res.json(),
+            json: (res.status === 404) ? null : await res.json(),
         });
     }
 
