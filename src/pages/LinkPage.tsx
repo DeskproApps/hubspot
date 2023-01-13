@@ -23,6 +23,8 @@ import {
     BaseContainer,
 } from "../components/common";
 import { ContactItem } from "../components/Link";
+import { useLinkContact } from "../hooks";
+import { getEntityMetadata } from "../utils";
 import type { Contact } from "../services/hubspot/types";
 import type { ContextData } from "../types";
 
@@ -31,6 +33,7 @@ const LinkPage: FC = () => {
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
     const { isLoading, linkContactFn } = useLinkUnlinkNote();
+    const { getContactInfo } = useLinkContact();
 
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [contacts, setContacts] = useState<Contact[]>([]);
@@ -94,7 +97,10 @@ const LinkPage: FC = () => {
         }
 
         setLoading(true);
-        setEntityContact(client, deskproUser.id, selectedContactId)
+        getContactInfo(selectedContactId)
+            .then((data) => {
+                return setEntityContact(client, deskproUser.id, selectedContactId, getEntityMetadata(data));
+            })
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             .then((isSuccess: boolean) => {

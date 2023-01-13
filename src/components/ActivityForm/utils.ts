@@ -31,7 +31,7 @@ const getInitValues = (
     return {
         activityType: getOption<string>("call", "Call"),
         description: "",
-        timestamp: "",
+        timestamp: new Date(),
         contacted: !contact
             ? getOption("", "")
             : getOption<Contact["id"]>(contact.value, contact.label),

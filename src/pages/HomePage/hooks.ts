@@ -1,8 +1,14 @@
 import { useMemo } from "react";
 import get from "lodash/get";
 import has from "lodash/has";
+import { useNavigate } from "react-router-dom";
 import { QueryKey } from "../../query";
-import { useQueriesWithClient, useQueryWithClient } from "../../hooks";
+import { DeskproError } from "../../services/hubspot";
+import {
+    useUnlinkContact,
+    useQueryWithClient,
+    useQueriesWithClient,
+} from "../../hooks";
 import {
     getOwnersService,
     getCompanyService,
@@ -28,10 +34,24 @@ import type {
 } from "../../services/hubspot/types";
 
 const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
+    const navigate = useNavigate();
+    const { unlinkContact } = useUnlinkContact();
+
     const contact = useQueryWithClient(
         [QueryKey.CONTACT, contactId],
         (client) => getContactService(client, contactId as string),
-        { enabled: !!contactId },
+        {
+            enabled: !!contactId,
+            useErrorBoundary: false,
+            onError: (err) => {
+                if (err instanceof DeskproError && err.code === 404) {
+                    unlinkContact(
+                        contactId as Contact["id"],
+                        () => navigate("/link"),
+                    );
+                }
+            },
+        },
     );
 
     const companyIds = useQueryWithClient(

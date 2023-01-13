@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     LoadingSpinner,
+    useDeskproElements,
     useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
 import { checkAuthService } from "../services/hubspot";
@@ -11,6 +12,10 @@ import { useCheckLinkedContact } from "../hooks";
 const Main = () => {
     const navigate = useNavigate();
     const [isAuth, setIsAuth] = useState<boolean|null>(null);
+
+    useDeskproElements(({ registerElement }) => {
+        registerElement("refresh", { type: "refresh_button" });
+    });
 
     useCheckLinkedContact(
         isAuth,

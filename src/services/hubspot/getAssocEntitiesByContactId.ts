@@ -54,4 +54,17 @@ const getEmailsByContactId = (
     return getAssocEntitiesByContactId(client, "emails", contactId);
 };
 
-export { getDealsByContactId, getNotesByContactId, getCallsByContactId, getEmailsByContactId };
+const getCompaniesByContactId = (
+    client: IDeskproClient,
+    contactId: string,
+) => {
+    return getAssocEntitiesByContactId(client, "companies", contactId);
+};
+
+export {
+    getDealsByContactId,
+    getNotesByContactId,
+    getCallsByContactId,
+    getEmailsByContactId,
+    getCompaniesByContactId,
+};

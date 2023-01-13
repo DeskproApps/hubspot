@@ -1,13 +1,17 @@
 import { FC, useState } from "react";
+import get from "lodash/get";
 import { useNavigate, useParams } from "react-router-dom";
 import {
     LoadingSpinner,
     useDeskproElements,
     useDeskproAppClient,
+    useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
 import { queryClient, QueryKey } from "../query";
+import { setEntityContact } from "../services/entityAssociation";
 import { isConflictError, isValidationError } from "../services/hubspot/utils";
-import { useLoadUpdateContactDeps } from "../hooks";
+import { useLoadUpdateContactDeps, useLinkContact } from "../hooks";
+import { getEntityMetadata } from "../utils";
 import { ContactForm } from "../components";
 import { BaseContainer, ErrorBlock } from "../components/common";
 import { getContactValues } from "../components/ContactForm/utils";
@@ -18,6 +22,8 @@ const UpdateContactPage: FC = () => {
     const navigate = useNavigate();
     const { contactId } = useParams();
     const { client } = useDeskproAppClient();
+    const { context } = useDeskproLatestAppContext();
+    const { getContactInfo } = useLinkContact();
     const {
         owners,
         contact,
@@ -29,6 +35,8 @@ const UpdateContactPage: FC = () => {
     const [error, setError] = useState<string|null>(null);
     const [formErrors, setFormErrors] = useState<FormErrors|null>(null);
 
+    const deskproUserId = get(context, ["data", "user", "id"]);
+
     const onSubmit = (values: Values) => {
         if (!client || !contactId) {
             return;
@@ -38,6 +46,8 @@ const UpdateContactPage: FC = () => {
 
         setFormErrors(null);
         return updateContactService(client, contactId, data)
+            .then(() => getContactInfo(contactId))
+            .then((data) => setEntityContact(client, deskproUserId, contactId, getEntityMetadata(data)))
             .then(() => queryClient.refetchQueries([QueryKey.CONTACT, contactId]))
             .then(() => navigate("/home"))
             .catch((err) => {

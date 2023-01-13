@@ -39,5 +39,6 @@ export {
     getDealsByContactId,
     getNotesByContactId,
     getEmailsByContactId,
+    getCompaniesByContactId,
 } from "./getAssocEntitiesByContactId";
 export { DeskproError } from "./baseRequest";

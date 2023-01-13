@@ -61,4 +61,5 @@ export const PROPERTIES = {
         "firstname",
         "lifecyclestage",
     ],
+    companies: ["name"],
 };
