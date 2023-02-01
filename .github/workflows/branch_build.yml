@@ -23,32 +23,41 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Restore Yarn cache
-        uses: actions/cache@v2
+      - uses: pnpm/action-setup@v2.2.4
+        name: Install pnpm
+        id: pnpm-install
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
       - name: Lint
-        run: yarn lint
+        run: pnpm run lint
 
       - name: Type check
-        run: yarn tsc --noemit
+        run: pnpm tsc --noemit
 
-#      - name: Run tests
-#        run: yarn test:coverage
+      - name: Run tests
+        run: pnpm test:coverage
 
       - name: Build
-        run: yarn build
+        run: pnpm run build
 
       - name: Package app zip
         working-directory: dist
@@ -76,8 +85,8 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload release asset
-        id: upload_release_asset
+      - name: Add app asset to release
+        id: add_app_asset_to_release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -86,3 +95,14 @@ jobs:
           asset_path: ./dist/app.zip
           asset_name: app.zip
           asset_content_type: application/zip
+
+      - name: Add app manifest to release
+        id: add_app_manifest_to_release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/manifest.json
+          asset_name: manifest.json
+          asset_content_type: application/json
