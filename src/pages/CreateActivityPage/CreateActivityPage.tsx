@@ -85,7 +85,7 @@ const CreateActivityPage: FC = () => {
                         (dealId) => setEntityAssocService(client, activityType, activityId, "deal", dealId, `${type}_to_deal`)
                     )),
             ]))
-            .then(() => queryClient.refetchQueries(
+            .then(() => queryClient.removeQueries(
                 [type === "call" ? QueryKey.CALLS_BY_CONTACT_ID : QueryKey.EMAILS_BY_CONTACT_ID, contactId]
             ))
             .then(() => navigate("/home"))
