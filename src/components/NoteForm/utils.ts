@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import isEmpty from "lodash/isEmpty";
+import { mdToHtml } from "../../utils";
 import { parseDateTime } from "../../utils/date";
 import type { AttachmentFile } from "../common/Attach";
 import type { Values } from "./types";
@@ -47,7 +48,7 @@ const getNoteValues = (values: Values, files: UploadFile[]): {
         ? {}
         : {
             hs_timestamp: parseDateTime(new Date()) as string,
-            ...(isEmpty(note) ? {} : { hs_note_body: note }),
+            ...(isEmpty(note) ? {} : { hs_note_body: mdToHtml(note) }),
             ...(isEmpty(uploadFiles) ? {} : { hs_attachment_ids: uploadFiles }),
         };
 }

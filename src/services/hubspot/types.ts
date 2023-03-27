@@ -139,6 +139,7 @@ export type EmailActivity = {
         hs_email_from_lastname?: string,
         hs_email_to_firstname?: string,
         hs_email_to_lastname?: string,
+        hs_body_preview?: string,
         hubspot_owner_id: string,
     },
 };

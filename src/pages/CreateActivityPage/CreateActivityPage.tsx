@@ -1,5 +1,6 @@
 import { FC, useState, useCallback } from "react";
 import isEmpty from "lodash/isEmpty";
+import delay from "lodash/delay";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
     LoadingSpinner,
@@ -85,10 +86,12 @@ const CreateActivityPage: FC = () => {
                         (dealId) => setEntityAssocService(client, activityType, activityId, "deal", dealId, `${type}_to_deal`)
                     )),
             ]))
-            .then(() => queryClient.removeQueries(
-                [type === "call" ? QueryKey.CALLS_BY_CONTACT_ID : QueryKey.EMAILS_BY_CONTACT_ID, contactId]
-            ))
-            .then(() => navigate("/home"))
+            .then(() => queryClient.removeQueries({
+                queryKey: [type === "call" ? QueryKey.CALLS_BY_CONTACT_ID : QueryKey.EMAILS_BY_CONTACT_ID, contactId]
+            }))
+            .then(() => {
+                delay(() => navigate("/home"), 1000)
+            })
             .catch((err) => {
                 if (isValidationError(err)) {
                     setError(err.message);
