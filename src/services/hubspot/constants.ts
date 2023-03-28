@@ -51,6 +51,7 @@ export const PROPERTIES = {
         "hs_email_to_firstname",
         "hs_email_to_lastname",
         "hubspot_owner_id",
+        "hs_body_preview",
     ],
     contacts: [
         "hubspot_owner_id",

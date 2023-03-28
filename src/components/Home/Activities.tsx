@@ -2,6 +2,7 @@ import { FC } from "react";
 import concat from "lodash/concat";
 import capitalize from "lodash/capitalize";
 import isBefore from "date-fns/isBefore";
+import styled from "styled-components";
 import { H3, HorizontalDivider } from "@deskpro/app-sdk";
 import {
     Link,
@@ -32,6 +33,12 @@ type ActivityProps = {
     portalId?: AccountInto["portalId"],
 };
 
+const TitleLink = styled(Link)`
+    p {
+      margin: 0;
+    }
+`;
+
 const normalizeCallFn = (call: CallActivity["properties"]): ActivityProps => ({
     id: call.hs_object_id,
     title: call.hs_call_title,
@@ -42,8 +49,8 @@ const normalizeCallFn = (call: CallActivity["properties"]): ActivityProps => ({
 
 const normalizeEmailFn = (email: EmailActivity["properties"]): ActivityProps => ({
     id: email.hs_object_id,
-    title: email.hs_email_subject,
-    body: email.hs_email_text,
+    title: email.hs_body_preview || email.hs_email_subject,
+    body: email.hs_email_html,
     date: email.hs_timestamp,
     type: "email",
 });
@@ -72,9 +79,9 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
             <Title
                 as={H3}
                 title={(
-                    <Link to={`/contacts/activities?type=${type}&activityId=${id}`}>
-                        <OverflowText>{body}</OverflowText>
-                    </Link>
+                    <TitleLink to={`/contacts/activities?type=${type}&activityId=${id}`}>
+                        <OverflowText dangerouslySetInnerHTML={{ __html: body }}/>
+                    </TitleLink>
                 )}
                 {...((!portalId || !contactId) ? {} : {
                     link: `https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${id}`
