@@ -2,7 +2,7 @@ import { ChangeEvent, FC, useRef, useState } from "react";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import omit from "lodash/omit";
-import { AttachmentTag, Button, Stack } from "@deskpro/app-sdk";
+import { AnyIcon, AttachmentTag, Button, Stack } from "@deskpro/app-sdk";
 
 export type AttachmentFile = {
     name: string,
@@ -85,7 +85,7 @@ const Attach: FC<AttachmentsFieldProps> = ({ onFiles, existing }: AttachmentsFie
                         key={idx}
                         filename={files[name].name}
                         fileSize={files[name].size}
-                        icon={faFile}
+                        icon={faFile as AnyIcon}
                         maxWidth="244px"
                         withClose
                         onClose={(e) => {

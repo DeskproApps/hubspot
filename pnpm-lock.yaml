@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@deskpro/app-sdk': ^1.2.0
   '@deskpro/deskpro-ui': ^4.2.0
+  '@fortawesome/free-regular-svg-icons': ^6.4.0
   '@fortawesome/free-solid-svg-icons': 6.1.1
   '@heroicons/react': 1.0.6
   '@tanstack/react-query': ^4.14.5
@@ -25,6 +26,7 @@ specifiers:
   eslint: 8.4.1
   eslint-config-prettier: 8.3.0
   eslint-plugin-react-hooks: 4.3.0
+  flatpickr: ^4.6.13
   formik: ^2.2.9
   iframe-resizer: ^4.3.2
   javascript-time-ago: ^2.5.7
@@ -40,8 +42,10 @@ specifiers:
   react-time-ago: ^7.2.1
   rimraf: ^3.0.2
   rollup-plugin-copy: 3.4.0
+  simplebar: ^6.2.5
   slugify: ^1.6.5
   styled-components: ^5.3.6
+  tippy.js: ^6.3.7
   ts-jest: ^27.1.2
   ts-pattern: ^4.0.5
   typescript: ^4.4.4
@@ -53,10 +57,12 @@ specifiers:
 dependencies:
   '@deskpro/app-sdk': 1.2.0_8a175086744fe7e5b34b8ed276bc8ade
   '@deskpro/deskpro-ui': 4.2.0_3d826919b492f57c2860f7bea213bc0a
+  '@fortawesome/free-regular-svg-icons': 6.4.0
   '@fortawesome/free-solid-svg-icons': 6.1.1
   '@heroicons/react': 1.0.6_react@17.0.2
   '@tanstack/react-query': 4.14.5_react-dom@17.0.2+react@17.0.2
   date-fns: 2.29.3
+  flatpickr: 4.6.13
   formik: 2.2.9_react@17.0.2
   iframe-resizer: 4.3.2
   javascript-time-ago: 2.5.7
@@ -68,7 +74,9 @@ dependencies:
   react-error-boundary: 3.1.4_react@17.0.2
   react-router-dom: 6.4.2_react-dom@17.0.2+react@17.0.2
   react-time-ago: 7.2.1_03f3f6b68a3abdb41101168afaf406f4
+  simplebar: 6.2.5
   styled-components: 5.3.6_react-dom@17.0.2+react@17.0.2
+  tippy.js: 6.3.7
   ts-pattern: 4.0.5
   use-debounce: 8.0.4_react@17.0.2
   uuid: 9.0.0
@@ -517,7 +525,7 @@ packages:
       '@deskpro/deskpro-ui': 4.2.0_3d826919b492f57c2860f7bea213bc0a
       '@fortawesome/fontawesome-svg-core': 6.2.0
       '@fortawesome/free-brands-svg-icons': 6.2.0
-      '@fortawesome/free-regular-svg-icons': 6.2.0
+      '@fortawesome/free-regular-svg-icons': 6.4.0
       '@fortawesome/react-fontawesome': 0.1.19_58a67974697d705f2fd6e36cdc6b05e7
       handlebars: 4.7.7
       modern-normalize: 1.1.0
@@ -706,6 +714,12 @@ packages:
     requiresBuild: true
     dev: false
 
+  /@fortawesome/fontawesome-common-types/6.4.0:
+    resolution: {integrity: sha512-HNii132xfomg5QVZw0HwXXpN22s7VBHQBv9CeOu9tfJnhsWQNd2lmTNi8CSrnw5B+5YOmzu1UoPAyxaXsJ6RgQ==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dev: false
+
   /@fortawesome/fontawesome-svg-core/6.2.0:
     resolution: {integrity: sha512-Cf2mAAeMWFMzpLC7Y9H1I4o3wEU+XovVJhTiNG8ZNgSQj53yl7OCJaS80K4YjrABWZzbAHVaoHE1dVJ27AAYXw==}
     engines: {node: '>=6'}
@@ -722,12 +736,12 @@ packages:
       '@fortawesome/fontawesome-common-types': 6.2.0
     dev: false
 
-  /@fortawesome/free-regular-svg-icons/6.2.0:
-    resolution: {integrity: sha512-M1dG+PAmkYMTL9BSUHFXY5oaHwBYfHCPhbJ8qj8JELsc9XCrUJ6eEHWip4q0tE+h9C0DVyFkwIM9t7QYyCpprQ==}
+  /@fortawesome/free-regular-svg-icons/6.4.0:
+    resolution: {integrity: sha512-ZfycI7D0KWPZtf7wtMFnQxs8qjBXArRzczABuMQqecA/nXohquJ5J/RCR77PmY5qGWkxAZDxpnUFVXKwtY/jPw==}
     engines: {node: '>=6'}
     requiresBuild: true
     dependencies:
-      '@fortawesome/fontawesome-common-types': 6.2.0
+      '@fortawesome/fontawesome-common-types': 6.4.0
     dev: false
 
   /@fortawesome/free-solid-svg-icons/6.1.1:
@@ -1323,6 +1337,12 @@ packages:
   /@types/json-schema/7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
     dev: true
+
+  /@types/lodash-es/4.17.7:
+    resolution: {integrity: sha512-z0ptr6UI10VlU6l5MYhGwS4mC8DZyYer2mCoyysZtSF7p26zOX8UpbrV0YpNYLGS8K4PUFIyEr62IMFFjveSiQ==}
+    dependencies:
+      '@types/lodash': 4.14.186
+    dev: false
 
   /@types/lodash/4.14.186:
     resolution: {integrity: sha512-eHcVlLXP0c2FlMPm56ITode2AgLMSa6aJ05JTTbYbI+7EMkCEE5qk2E41d5g2lCVTqRe0GnnRFurmlCsDODrPw==}
@@ -4418,6 +4438,15 @@ packages:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
     dev: true
 
+  /simplebar-core/1.2.4:
+    resolution: {integrity: sha512-P+Sqshef4fq3++gQ82TgNYcgl3qZFSCP5jS2/8NMmw18oagXOijMzs1G+vm6RUY3oMvpwH3wGoqh9u6SyDjHfQ==}
+    dependencies:
+      '@types/lodash-es': 4.17.7
+      can-use-dom: 0.1.0
+      lodash: 4.17.21
+      lodash-es: 4.17.21
+    dev: false
+
   /simplebar-react/2.4.3_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-Ep8gqAUZAS5IC2lT5RE4t1ZFUIVACqbrSRQvFV9a6NbVUzXzOMnc4P82Hl8Ak77AnPQvmgUwZS7aUKLyBoMAcg==}
     peerDependencies:
@@ -4439,6 +4468,13 @@ packages:
       lodash.debounce: 4.0.8
       lodash.memoize: 4.1.2
       lodash.throttle: 4.1.1
+    dev: false
+
+  /simplebar/6.2.5:
+    resolution: {integrity: sha512-vfxKR6KNBsPx7+sZnqO7T8VuCvi4px6OlycrrkNgyjvoHhRW7LIyVkHhUfXxbz33Gw99Wb9UMMsnEZv35wtLSw==}
+    dependencies:
+      can-use-dom: 0.1.0
+      simplebar-core: 1.2.4
     dev: false
 
   /sisteransi/1.0.5:
