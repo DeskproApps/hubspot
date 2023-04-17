@@ -3,14 +3,11 @@
   "title": "HubSpot",
   "description": "Connect with HubSpot and view and update information from your CRM while in Deskpro tickets",
   "appStoreUrl": "https://www.deskpro.com/product-embed/apps/hubspot",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,
-  "targets": [{
-    "target": "user_sidebar",
-    "entrypoint": "index.html"
-  }],
+  "targets": [{ "target": "user_sidebar", "entrypoint": "index.html" }],
   "entityAssociations": {
     "linkedHubspotContacts": {
       "title": "Linked HubSpot Contact",
@@ -37,10 +34,12 @@
     }
   },
   "proxy": {
-    "whitelist": [{
-      "url": "https://api.hubapi.com/.*",
-      "methods": ["GET", "POST", "PUT", "PATCH"],
-      "timeout": 30
-    }]
+    "whitelist": [
+      {
+        "url": "https://api.hubapi.com/.*",
+        "methods": ["GET", "POST", "PUT", "PATCH"],
+        "timeout": 30
+      }
+    ]
   }
 }
