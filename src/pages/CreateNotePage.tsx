@@ -24,7 +24,6 @@ const CreateNotePage: FC = () => {
     useDeskproElements(({ deRegisterElement, registerElement }) => {
         deRegisterElement("home");
         deRegisterElement("menu");
-        deRegisterElement("refresh");
         deRegisterElement("externalLink");
         deRegisterElement("edit");
 
@@ -54,7 +53,9 @@ const CreateNotePage: FC = () => {
                     : createNoteService(client, data)
             })
             .then(({ id }) => setEntityAssocService(client, "notes", id, "contacts", contactId, "note_to_contact"))
-            .then(() => queryClient.refetchQueries([QueryKey.NOTES_BY_CONTACT_ID, contactId]))
+            .then(() => queryClient.removeQueries({
+                queryKey: [QueryKey.NOTES_BY_CONTACT_ID, contactId],
+            }))
             .then(() => navigate("/home"))
             .catch((err) => {
                 if (isValidationError(err)) {

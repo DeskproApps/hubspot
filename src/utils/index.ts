@@ -6,3 +6,4 @@ export { filterEntities } from "./filterEntities";
 export { getUserEmail } from "./getUserEmail";
 export { getOption, noOwnerOption } from "./getOption";
 export { getEntityMetadata } from "./getEntityMetadata";
+export { mdToHtml } from "./mdToHtml";

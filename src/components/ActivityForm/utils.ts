@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import isEmpty from "lodash/isEmpty";
 import find from "lodash/find";
-import { getOption } from "../../utils";
+import { getOption, mdToHtml } from "../../utils";
 import { parseDateTime } from "../../utils/date";
 import type { Contact } from "../../services/hubspot/types";
 import type { Values, InitValues, InitValuesParams } from "./types";
@@ -53,7 +53,7 @@ const getCallActivityValues = ({ contact }: { contact?: Option<string> }) => (va
     const timestamp = parseDateTime(values.timestamp);
 
     return {
-        ...(!values.description ? {} : { hs_call_body: values.description }),
+        ...(!values.description ? {} : { hs_call_body: mdToHtml(values.description) }),
         ...(!timestamp ? {} : { hs_timestamp: timestamp }),
         ...(!contact?.label ? {} : { hs_call_title: `Call with ${contact.label}` }),
         ...(isEmpty(values.callDisposition.value) ? {} : { hs_call_disposition: values.callDisposition.value}),
@@ -70,7 +70,7 @@ const getEmailActivityValues = () => (values: Values): {
     const timestamp = parseDateTime(values.timestamp);
 
     return {
-        ...(!values.description ? {} : { hs_email_text: values.description }),
+        ...(!values.description ? {} : { hs_email_html: mdToHtml(values.description) }),
         ...(!timestamp ? {} : { hs_timestamp: timestamp }),
         hs_email_direction: "EMAIL",
     };
