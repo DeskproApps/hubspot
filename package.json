@@ -5,7 +5,7 @@
   "scripts": {
     "start": "vite",
     "build": "rimraf ./dist/* && tsc && vite build",
-    "build:package": "yarn build && yarn package",
+    "build:package": "pnpm build && pnpm package",
     "package": "rimraf ./build/* && node ./bin/package.js",
     "serve": "vite preview",
     "lint": "eslint --max-warnings 0 --ext ts,tsx ./src",
