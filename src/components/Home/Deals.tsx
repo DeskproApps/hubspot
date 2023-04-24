@@ -31,19 +31,8 @@ type DealOwner = {
     lastName: string,
 };
 
-type DealProps = {
-    hs_object_id: string,
-    dealname: string,
-    dealstage: string,
-    amount: string,
-    closedate: string,
-    hubspot_owner_id: DealOwner["id"],
-    pipeline: DealType["properties"]["pipeline"],
-    dealPipelines?: Record<Pipeline["id"], Pipeline>,
-};
-
 type Props = {
-    deals: DealProps[],
+    deals: Array<DealType["properties"]>,
     accountInfo?: AccountInto,
     owners: Record<DealOwner["id"], DealOwner>,
     dealPipelines?: Record<Pipeline["id"], Pipeline>,
@@ -51,17 +40,14 @@ type Props = {
     companies: Array<Company["properties"]>,
 };
 
-const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
-    owner,
-    amount,
-    dealname,
-    pipeline,
-    dealstage,
-    closedate,
-    dealPipelines,
-    hs_object_id: dealId,
-    accountInfo: { portalId, companyCurrency } = {},
-}) => {
+const Deal: FC<{
+    deal: DealType["properties"],
+    owner: DealOwner,
+    dealPipelines: Props["dealPipelines"],
+    accountInfo?: AccountInto,
+}> = ({ deal, dealPipelines, owner, accountInfo }) => {
+    const { amount, dealname, pipeline, dealstage, closedate, hs_object_id: dealId } = deal;
+    const portalId = get(accountInfo, ["portalId"]);
     const pipelineData: Pipeline|null = get(dealPipelines, [pipeline], null);
     const pipeLineStage: PipelineStage|null = pipelineData
         ? pipelineData.stages.find(({ id }) => id === dealstage) || null
@@ -88,7 +74,7 @@ const Deal: FC<DealProps & { owner: DealOwner, accountInfo?: AccountInto }> = ({
                     </OverflowText>
                 )}
                 rightLabel="Amount"
-                rightText={amount ? `${getSymbolFromCurrency(companyCurrency)} ${amount}` : "-"}
+                rightText={amount ? `${getSymbolFromCurrency(deal, accountInfo)} ${amount}` : "-"}
             />
             <TwoColumn
                 leftLabel="Owner"
@@ -131,7 +117,7 @@ const Deals: FC<Props> = ({
                 {deals.map((deal) => (
                     <Deal
                         key={deal.hs_object_id}
-                        {...deal}
+                        deal={deal}
                         owner={get(owners, [deal?.hubspot_owner_id])}
                         accountInfo={accountInfo}
                         dealPipelines={dealPipelines}

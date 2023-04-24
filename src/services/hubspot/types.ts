@@ -108,6 +108,7 @@ export type Deal = {
         pipeline: string,
         hubspot_owner_id: Owner["id"],
         hs_priority: string,
+        deal_currency_code: string,
     },
 };
 
