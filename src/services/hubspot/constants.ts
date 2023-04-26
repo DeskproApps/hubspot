@@ -25,6 +25,7 @@ export const PROPERTIES = {
         "closedate",
         "dealtype",
         "hs_priority",
+        "deal_currency_code",
     ],
     notes: [
         "hs_object_id",

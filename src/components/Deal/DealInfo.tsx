@@ -13,7 +13,7 @@ import { Props } from "./types";
 const DealInfo: FC<Props> = ({ deal, pipeline, accountInfo, owner, dealTypes }) => {
     const stage = pipeline.stages.find(({ id }) => id === deal.dealstage) || {};
     const dealType = dealTypes?.options.find(({ value }) => value === deal.dealtype);
-    const amount = deal.amount ? `${getSymbolFromCurrency(accountInfo?.companyCurrency)} ${deal.amount}` : "-";
+    const amount = deal.amount ? `${getSymbolFromCurrency(deal, accountInfo)} ${deal.amount}` : "-";
 
     return (
         <BaseContainer>
