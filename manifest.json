@@ -3,11 +3,12 @@
   "title": "HubSpot",
   "description": "Connect with HubSpot and view and update information from your CRM while in Deskpro tickets",
   "appStoreUrl": "https://www.deskpro.com/product-embed/apps/hubspot",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,
   "targets": [{ "target": "user_sidebar", "entrypoint": "index.html" }],
+  "serveUrl": "https://apps-cdn.deskpro-service.com/__name__/__version__",
   "entityAssociations": {
     "linkedHubspotContacts": {
       "title": "Linked HubSpot Contact",
