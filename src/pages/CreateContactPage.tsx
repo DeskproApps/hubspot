@@ -1,4 +1,5 @@
-import { FC, useState, useCallback } from "react";
+import { FC, useState, useCallback, useMemo } from "react";
+import get from "lodash/get";
 import { useNavigate } from "react-router-dom";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -28,7 +29,7 @@ import type { ContextData } from "../types";
 const CreateContactPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
-    const { context } = useDeskproLatestAppContext();
+    const { context } = useDeskproLatestAppContext() as { context: Context<ContextData> };
     const { linkContactFn } = useLinkUnlinkNote();
     const { getContactInfo } = useLinkContact();
     const {
@@ -41,9 +42,8 @@ const CreateContactPage: FC = () => {
     const [error, setError] = useState<string|null>(null);
     const [formErrors, setFormErrors] = useState<FormErrors|null>(null);
 
-    const deskproUser = (context as Context<ContextData>)?.data?.user;
-    const primaryEmail = (context as Context<ContextData>)?.data?.user.primaryEmail;
-    
+    const deskproUser = useMemo(() => get(context, ["data", "user"]), [context]);
+
     useDeskproElements(({ deRegisterElement }) => {
         deRegisterElement("home");
         deRegisterElement("menu");
@@ -117,7 +117,11 @@ const CreateContactPage: FC = () => {
             {isLoading
                 ? <LoadingSpinner />
                 : <ContactForm
-                    initValues={{ email: primaryEmail }}
+                    initValues={{
+                        email: get(deskproUser, ["primaryEmail"]),
+                        firstName: get(deskproUser, ["firstName"]),
+                        lastName: get(deskproUser, ["lastName"]),
+                    }}
                     onSubmit={onSubmit}
                     onCancel={onCancel}
                     formErrors={formErrors}
