@@ -3,7 +3,8 @@ import { useNavigate, createSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import get from "lodash/get";
 import capitalize from "lodash/capitalize";
-import { P5, H3, HorizontalDivider } from "@deskpro/app-sdk";
+import { P5, H3 } from "@deskpro/deskpro-ui";
+import { HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName, getSymbolFromCurrency } from "../../utils";
 import { format } from "../../utils/date";
 import {

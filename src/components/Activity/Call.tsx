@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { P5 } from "@deskpro/app-sdk";
+import { P5 } from "@deskpro/deskpro-ui";
 import { Title, BaseContainer, TextBlockWithLabel } from "../common";
 import { getFullName } from "../../utils";
 import { format, msToDuration } from "../../utils/date";

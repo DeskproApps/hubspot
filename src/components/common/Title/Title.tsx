@@ -1,7 +1,7 @@
 import { FC, ComponentType, ReactNode } from "react";
 import styled   from "styled-components";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { H1, Stack, Button } from "@deskpro/app-sdk";
+import { H1, Stack, Button } from "@deskpro/deskpro-ui";
 import { HubSpotLink } from "../HubSpotLink";
 
 type Props = {

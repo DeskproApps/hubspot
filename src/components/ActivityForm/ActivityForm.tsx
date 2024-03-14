@@ -2,23 +2,19 @@ import { FC } from "react";
 import { faCheck, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import { useFormik } from "formik";
 import {
-    TSpan,
-    DivAsInputWithDisplay,
-} from "@deskpro/deskpro-ui";
-import {
     Stack,
+    TSpan,
     Dropdown,
     DropdownValueType,
-    HorizontalDivider,
-    useDeskproAppTheme,
     DropdownTargetProps,
-} from "@deskpro/app-sdk";
+    DivAsInputWithDisplay,
+} from "@deskpro/deskpro-ui";
+import { HorizontalDivider, useDeskproAppTheme, DateInput } from "@deskpro/app-sdk";
 import {
     Label,
     Title,
     Button,
     TextArea,
-    DateField,
     SingleSelect,
     BaseContainer,
     TextBlockWithLabel,
@@ -87,7 +83,7 @@ const ActivityForm: FC<Props> = ({
                     />
                 </Label>
 
-                <DateField
+                <DateInput
                     withTime
                     required
                     id="timestamp"

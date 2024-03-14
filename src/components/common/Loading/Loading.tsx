@@ -1,6 +1,5 @@
 import { FC } from "react";
-import { Spinner, SpinnerProps } from "@deskpro/deskpro-ui";
-import { Stack } from "@deskpro/app-sdk";
+import { Stack, Spinner, SpinnerProps } from "@deskpro/deskpro-ui";
 
 const Loading: FC<SpinnerProps> = (props) => (
     <Stack justify="center">

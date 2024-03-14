@@ -1,14 +1,13 @@
 import { FC, useState } from "react";
 import { useFormik } from "formik";
-import { HorizontalDivider, Stack } from "@deskpro/app-sdk";
-import { InputWithDisplay } from "@deskpro/deskpro-ui";
+import { Stack, InputWithDisplay } from "@deskpro/deskpro-ui";
+import { DateInput, HorizontalDivider } from "@deskpro/app-sdk";
 import { useStageOptions, usePipelineOptions } from "./hooks";
 import { getInitValues, validationSchema } from "./utils";
 import {
     Label,
     Title,
     Button,
-    DateField,
     SingleSelect,
     BaseContainer,
 } from "../common";
@@ -98,7 +97,7 @@ const DealForm: FC<Props> = ({
                     {...getFieldProps("amount")}
                 />
 
-                <DateField
+                <DateInput
                     required
                     id="closeDate"
                     label="Close date"

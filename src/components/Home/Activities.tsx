@@ -3,7 +3,8 @@ import concat from "lodash/concat";
 import capitalize from "lodash/capitalize";
 import isBefore from "date-fns/isBefore";
 import styled from "styled-components";
-import { H3, HorizontalDivider } from "@deskpro/app-sdk";
+import { H3 } from "@deskpro/deskpro-ui";
+import { HorizontalDivider } from "@deskpro/app-sdk";
 import {
     Link,
     Title,

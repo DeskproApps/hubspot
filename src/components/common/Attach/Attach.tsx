@@ -2,7 +2,7 @@ import { ChangeEvent, FC, useRef, useState } from "react";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import omit from "lodash/omit";
-import { AnyIcon, AttachmentTag, Button, Stack } from "@deskpro/app-sdk";
+import { AnyIcon, AttachmentTag, Button, Stack } from "@deskpro/deskpro-ui";
 
 export type AttachmentFile = {
     name: string,

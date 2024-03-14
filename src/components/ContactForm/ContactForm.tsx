@@ -1,8 +1,7 @@
 import { FC, useState } from "react";
 import { useFormik } from "formik";
 import get from "lodash/get";
-import { InputWithDisplay } from "@deskpro/deskpro-ui";
-import { Stack } from "@deskpro/app-sdk";
+import { Stack, InputWithDisplay } from "@deskpro/deskpro-ui";
 import {
     Label,
     Button,

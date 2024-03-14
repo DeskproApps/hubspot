@@ -1,11 +1,7 @@
 import { useCallback } from "react";
 import styled from "styled-components";
-import {
-    P1,
-    Radio,
-    Stack,
-    useDeskproAppTheme,
-} from "@deskpro/app-sdk";
+import { P1, Radio, Stack } from "@deskpro/deskpro-ui";
+import { useDeskproAppTheme } from "@deskpro/app-sdk";
 import { OverflowText } from "../common";
 import type { FC } from "react";
 import type { Contact } from "../../services/hubspot/types";

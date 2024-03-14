@@ -1,4 +1,4 @@
-import { LabelProps } from "@deskpro/app-sdk";
+import { LabelProps } from "@deskpro/deskpro-ui";
 
 export type Props = LabelProps & {
     marginBottom?: number

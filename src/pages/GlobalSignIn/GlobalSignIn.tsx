@@ -3,15 +3,8 @@ import isEmpty from "lodash/isEmpty";
 import styled from "styled-components";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { faCopy, faSignIn, faSignOut } from "@fortawesome/free-solid-svg-icons";
-import { AnchorButton } from "@deskpro/deskpro-ui";
-import {
-    P1,
-    P5,
-    H2,
-    Stack,
-    Button,
-    useDeskproAppTheme,
-} from "@deskpro/app-sdk";
+import { AnchorButton, P1, P5, H2, Stack, Button } from "@deskpro/deskpro-ui";
+import { useDeskproAppTheme } from "@deskpro/app-sdk";
 import { useGlobalSignIn } from "./useGlobalSignIn";
 import { Loading, OverflowText } from "../../components/common";
 import { AccessTokenInfo } from "../../services/hubspot/types";

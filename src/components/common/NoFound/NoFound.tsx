@@ -1,5 +1,6 @@
 import { FC } from "react";
-import { HorizontalDivider, P1 } from "@deskpro/app-sdk";
+import { P1 } from "@deskpro/deskpro-ui";
+import { HorizontalDivider } from "@deskpro/app-sdk";
 
 type Props = {
     text?: string,

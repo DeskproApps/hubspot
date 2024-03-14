@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useFormik } from "formik";
-import { Stack } from "@deskpro/app-sdk";
+import { Stack } from "@deskpro/deskpro-ui";
 import { validationSchema, getInitValues } from "./utils";
 import { Attach, Label, Button, TextArea } from "../common";
 import type { Props, Values } from "./types";

@@ -3,9 +3,8 @@ import type { FC, ChangeEvent } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useNavigate } from "react-router-dom";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { Stack, Button } from "@deskpro/deskpro-ui";
 import {
-    Stack,
-    Button,
     Context,
     TwoButtonGroup,
     HorizontalDivider,

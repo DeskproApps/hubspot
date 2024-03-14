@@ -1,10 +1,6 @@
 import { FC } from "react";
 import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
-import {
-    Label,
-    Input,
-    IconButton,
-} from "@deskpro/app-sdk";
+import { Label, Input, IconButton } from "@deskpro/deskpro-ui";
 import { Props } from "./types";
 
 const InputSearch: FC<Props> = ({ value, onChange, onClear }) => (

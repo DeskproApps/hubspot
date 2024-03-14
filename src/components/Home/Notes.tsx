@@ -3,8 +3,8 @@ import styled from "styled-components";
 import get from "lodash/get";
 import ReactTimeAgo from "react-time-ago";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { Avatar } from "@deskpro/deskpro-ui";
-import { P1, P11, Stack, HorizontalDivider } from "@deskpro/app-sdk";
+import { P1, P11, Stack, Avatar } from "@deskpro/deskpro-ui";
+import { HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName } from "../../utils";
 import { Title, BaseContainer } from "../common";
 

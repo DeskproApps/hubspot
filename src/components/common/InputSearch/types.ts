@@ -1,4 +1,4 @@
-import { InputProps } from "@deskpro/app-sdk";
+import { InputProps } from "@deskpro/deskpro-ui";
 
 export type Props = {
     value: string,
