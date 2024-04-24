@@ -14,7 +14,7 @@
     "bumpManifestVer": "node ./bin/bumpManifestVer.js"
   },
   "dependencies": {
-    "@deskpro/app-sdk": "^2.1.14",
+    "@deskpro/app-sdk": "2.1.12",
     "@deskpro/deskpro-ui": "^7.18.3",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "6.1.1",
@@ -23,6 +23,7 @@
     "date-fns": "^2.29.3",
     "flatpickr": "^4.6.13",
     "formik": "^2.2.9",
+    "iframe-resizer": "^4.3.11",
     "javascript-time-ago": "^2.5.7",
     "lodash": "^4.17.21",
     "polished": "^4.1.1",
