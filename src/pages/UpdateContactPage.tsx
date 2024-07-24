@@ -84,13 +84,13 @@ const UpdateContactPage: FC = () => {
                         {error && <ErrorBlock text={error}/>}
                         <ContactForm
                             initValues={{
-                                email: contact.email,
-                                firstName: contact.firstname,
-                                lastName: contact.lastname,
-                                jobTitle: contact.jobtitle,
-                                phone: contact.phone,
-                                ownerId: contact.hubspot_owner_id,
-                                lifecycleStage: contact.lifecyclestage
+                                email: contact?.email || "",
+                                firstName: contact?.firstname || "",
+                                lastName: contact?.lastname || "",
+                                jobTitle: contact?.jobtitle || "",
+                                phone: contact?.phone || "",
+                                ownerId: contact?.hubspot_owner_id || "",
+                                lifecycleStage: contact?.lifecyclestage || "",
                             }}
                             formErrors={formErrors}
                             isEditMode

@@ -138,8 +138,10 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
             priorities,
             accountInfo,
         ].every(({ isLoading }) => Boolean(isLoading)),
-        deal: get(deal, ["data", "properties"], {}) || {},
+        deal: get(deal, ["data", "properties"]) as Deal["properties"],
         pipelines: get(pipelines, ["data", "results"], []) || [],
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         currency: getSymbolFromCurrency(get(accountInfo, ["data", "companyCurrency"], "USD")),
         ownerOptions: owners.data || [],
         dealTypeOptions: dealTypes.data || [],
