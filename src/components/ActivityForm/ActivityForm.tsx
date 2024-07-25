@@ -83,15 +83,15 @@ const ActivityForm: FC<Props> = ({
                     />
                 </Label>
 
-                <DateInput
-                    withTime
-                    required
-                    id="timestamp"
-                    label="Date/time"
-                    error={Boolean(errors.timestamp)}
-                    {...getFieldProps("timestamp")}
-                    onChange={(date: [Date]) => setFieldValue("timestamp", date[0])}
-                />
+                <Label htmlFor="timestamp" label="Date/time" required>
+                    <DateInput
+                        enableTime
+                        id="timestamp"
+                        error={Boolean(errors.timestamp)}
+                        {...getFieldProps("timestamp")}
+                        onChange={(date: [Date]) => setFieldValue("timestamp", date[0])}
+                    />
+                </Label>
 
                 <Label htmlFor="contacted" label="Contacted">
                     <SingleSelect

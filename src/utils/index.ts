@@ -7,3 +7,4 @@ export { getUserEmail } from "./getUserEmail";
 export { getOption, noOwnerOption } from "./getOption";
 export { getEntityMetadata } from "./getEntityMetadata";
 export { mdToHtml } from "./mdToHtml";
+export { delay } from "./delay";
