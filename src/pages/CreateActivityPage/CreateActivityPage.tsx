@@ -87,7 +87,7 @@ const CreateActivityPage: FC = () => {
                     )),
             ]))
             .then(() => queryClient.invalidateQueries())
-            .then(() => delay()) // delay is needed for the "activity" to appear in the system on the HubSpot side
+            .then(() => delay(5000)) // delay is needed for the "activity" to appear in the system on the HubSpot side
             .then(() => navigate("/home"))
             .catch((err) => {
                 if (isValidationError(err)) {
@@ -98,9 +98,7 @@ const CreateActivityPage: FC = () => {
             });
     };
 
-    const onCancel = useCallback(() => {
-        navigate("/home");
-    }, [navigate]);
+    const onCancel = useCallback(() => navigate("/home"), [navigate]);
 
     if (isLoading) {
         return (

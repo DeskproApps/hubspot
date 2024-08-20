@@ -1,7 +1,7 @@
 import { FC, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import capitalize from "lodash/capitalize";
-import has from "lodash/has";
+import get from "lodash/get";
 import {
     LoadingSpinner,
     useDeskproElements,
@@ -62,7 +62,7 @@ const ActivityPage: FC = () => {
         [QueryKey.OWNERS, data?.properties?.hubspot_owner_id],
         (client) => getOwnerService(client, data?.properties?.hubspot_owner_id as string),
         {
-            enabled: has(data, ["properties", "hubspot_owner_id"]),
+            enabled: Boolean(get(data, ["properties", "hubspot_owner_id"])),
             useErrorBoundary: false,
         },
     );
