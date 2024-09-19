@@ -8,7 +8,6 @@ import {
 } from "@deskpro/app-sdk";
 import { queryClient } from "../../query";
 import { useSetAppTitle } from "../../hooks";
-import { delay } from "../../utils";
 import { useLoadActivityDeps } from "./hooks";
 import {
     setEntityAssocService,
@@ -87,7 +86,6 @@ const CreateActivityPage: FC = () => {
                     )),
             ]))
             .then(() => queryClient.invalidateQueries())
-            .then(() => delay(5000)) // delay is needed for the "activity" to appear in the system on the HubSpot side
             .then(() => navigate("/home"))
             .catch((err) => {
                 if (isValidationError(err)) {
