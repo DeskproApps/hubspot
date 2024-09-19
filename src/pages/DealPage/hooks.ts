@@ -42,7 +42,7 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
 
     const owner = useQueryWithClient(
         [QueryKey.OWNERS, get(deal, ["data", "properties", "hubspot_owner_id"], 0)],
-        (client) =>  getOwnerService(client, get(deal, ["data", "properties", "hubspot_owner_id"], 0)),
+        (client) =>  getOwnerService(client, get(deal, ["data", "properties", "hubspot_owner_id"], "0")),
         {
             enabled: !!get(deal, ["data", "properties", "hubspot_owner_id"], 0),
             useErrorBoundary: false,

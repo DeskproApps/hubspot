@@ -7,7 +7,6 @@ import en from "javascript-time-ago/locale/en.json";
 import { DeskproAppProvider } from "@deskpro/app-sdk";
 import { queryClient } from "./query";
 import App from "./App";
-
 import "flatpickr/dist/themes/light.css";
 import "tippy.js/dist/tippy.css";
 import "simplebar/dist/simplebar.min.css";

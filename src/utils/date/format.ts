@@ -1,8 +1,8 @@
 import { default as fnsFormat } from "date-fns/format";
-import { FORMAT } from "./constants";
+import { DATE_FORMAT } from "./constants";
 import { DateTime } from "../../types";
 
-const format = (date?: DateTime, pattern = FORMAT): string => {
+const format = (date?: DateTime, pattern = DATE_FORMAT): string => {
     if (!date) {
         return "-";
     }

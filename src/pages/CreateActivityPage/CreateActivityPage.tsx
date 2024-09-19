@@ -1,13 +1,12 @@
 import { FC, useState, useCallback } from "react";
 import isEmpty from "lodash/isEmpty";
-import delay from "lodash/delay";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
     LoadingSpinner,
     useDeskproElements,
     useDeskproAppClient,
 } from "@deskpro/app-sdk";
-import { queryClient, QueryKey } from "../../query";
+import { queryClient } from "../../query";
 import { useSetAppTitle } from "../../hooks";
 import { useLoadActivityDeps } from "./hooks";
 import {
@@ -86,12 +85,8 @@ const CreateActivityPage: FC = () => {
                         (dealId) => setEntityAssocService(client, activityType, activityId, "deal", dealId, `${type}_to_deal`)
                     )),
             ]))
-            .then(() => queryClient.removeQueries({
-                queryKey: [type === "call" ? QueryKey.CALLS_BY_CONTACT_ID : QueryKey.EMAILS_BY_CONTACT_ID, contactId]
-            }))
-            .then(() => {
-                delay(() => navigate("/home"), 1000)
-            })
+            .then(() => queryClient.invalidateQueries())
+            .then(() => navigate("/home"))
             .catch((err) => {
                 if (isValidationError(err)) {
                     setError(err.message);
@@ -101,9 +96,7 @@ const CreateActivityPage: FC = () => {
             });
     };
 
-    const onCancel = useCallback(() => {
-        navigate("/home");
-    }, [navigate]);
+    const onCancel = useCallback(() => navigate("/home"), [navigate]);
 
     if (isLoading) {
         return (
