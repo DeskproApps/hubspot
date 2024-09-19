@@ -1,7 +1,7 @@
 export { Button, AnchorButton } from "./Button";
 export { OverflowText } from "./OverflowText";
 export { Loading } from "./Loading";
-export { ErrorBlock, errorFallbackRender } from "./Error";
+export { ErrorBlock, ErrorFallback } from "./Error";
 export { BaseContainer } from "./Layout";
 export { InputSearch } from "./InputSearch";
 export { NoFound } from "./NoFound";
@@ -14,3 +14,4 @@ export { Label } from "./Label";
 export { SingleSelect } from "./SingleSelect";
 export { Attach } from "./Attach";
 export { TextArea } from "./TextArea";
+export { StructureBuilder } from "./Builder";

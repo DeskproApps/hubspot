@@ -32,6 +32,18 @@
       "isRequired": false,
       "isBackendOnly": false,
       "order": 20
+    },
+    "mapping_contact": {
+      "title": "Contact Field Mapping",
+      "type": "app_modal",
+      "options": {
+        "entrypoint": "#/admin/mapping/contact",
+        "label": "Edit Mapping",
+        "icon": "edit"
+      },
+      "isRequired": false,
+      "isBackendOnly": false,
+      "order": 30
     }
   },
   "proxy": {
