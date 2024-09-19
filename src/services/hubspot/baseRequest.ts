@@ -1,8 +1,7 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import { proxyFetch } from "@deskpro/app-sdk";
+import { proxyFetch, adminGenericProxyFetch } from "@deskpro/app-sdk";
 import { BASE_URL, placeholders } from "./constants";
-// import { refreshTokenService } from "./refreshTokenService";
 import { getQueryParams } from "../../utils";
 import type { HubSpotError } from "./types";
 import type { Request, ApiRequestMethod } from "../../types";
@@ -36,17 +35,18 @@ const baseRequest: Request = async (client, {
     data = {},
     method = "GET",
     queryParams = {},
-    headers: customHeaders
+    headers: customHeaders,
+    settings,
 }) => {
-    const dpFetch = await proxyFetch(client);
-
+    const isAdmin = Boolean(settings);
+    const dpFetch = await (isAdmin ? adminGenericProxyFetch : proxyFetch)(client);
     const baseUrl = `${BASE_URL}${url}`;
     const params = `${isEmpty(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
     const requestUrl = `${baseUrl}${params}`;
     const options: RequestInit = {
         method,
         headers: {
-            "Authorization": `Bearer ${placeholders.API_TOKEN}`,
+            "Authorization": `Bearer ${settings?.api_token ?? placeholders.API_TOKEN}`,
             ...customHeaders,
         },
     };
@@ -56,33 +56,12 @@ const baseRequest: Request = async (client, {
     } else if (data) {
         options.body = JSON.stringify(data);
         options.headers = {
-            ...options.headers,
             "Content-Type": "application/json",
+            ...options.headers,
         };
     }
 
     const res = await dpFetch(requestUrl, options);
-
-    /** ToDo: Uncomment when we'll back to the OAuth2
-    if ([401].includes(res.status)) {
-        options.headers = {
-            ...options.headers,
-            "Authorization": `Bearer ${placeholders.TOKEN_IN_STATE}`,
-        };
-        res = await dpFetch(requestUrl, options);
-
-        if ([401].includes(res.status)) {
-            const isRefresh = await refreshTokenService(client);
-
-            if (isRefresh) {
-                options.headers = {
-                    ...options.headers,
-                    "Authorization": `Bearer ${placeholders.TOKEN_IN_STATE}`,
-                };
-                res = await dpFetch(requestUrl, options);
-            }
-        }
-    }*/
 
     if (res.status < 200 || res.status > 399) {
         throw new DeskproError({
@@ -94,7 +73,16 @@ const baseRequest: Request = async (client, {
         });
     }
 
-    return await res.json();
+    let result;
+
+    try {
+        result = await res.json();
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn("Failed to parse response as JSON. Returning empty result");
+    }
+  
+    return result;
 };
 
 export { baseRequest };
