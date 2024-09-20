@@ -23,7 +23,7 @@
     "date-fns": "^2.29.3",
     "flatpickr": "^4.6.13",
     "formik": "^2.2.9",
-    "javascript-time-ago": "^2.5.7",
+    "javascript-time-ago": "^2.5.11",
     "lodash": "^4.17.21",
     "polished": "^4.1.1",
     "react": "^17.0.2",
