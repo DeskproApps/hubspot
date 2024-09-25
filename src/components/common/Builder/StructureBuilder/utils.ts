@@ -1,4 +1,4 @@
-import { isString, isPrimitive } from "../../../../utils";
+import { isPrimitive } from "../../../../utils";
 import type { DropdownItemType, DropdownValueType } from "@deskpro/deskpro-ui";
 
 const NO_FOUND = "No item(s) found";
@@ -21,7 +21,7 @@ const getFilteredOptions = <T,>(
 
       return !search
         ? true
-        : (isString(search) ? search.toLowerCase() : search).includes(searchInput.toLowerCase());
+        : `${search}`.toLowerCase().includes(searchInput.toLowerCase());
     });
 
   if (!Array.isArray(filteredOptions) || !filteredOptions.length) {

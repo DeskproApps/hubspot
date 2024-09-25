@@ -76,9 +76,10 @@ const baseRequest: Request = async (client, {
     let result;
 
     try {
-      result = await res.json();
+        result = await res.json();
     } catch (e) {
-      return {};
+        // eslint-disable-next-line no-console
+        console.warn("Failed to parse response as JSON. Returning empty result");
     }
   
     return result;
