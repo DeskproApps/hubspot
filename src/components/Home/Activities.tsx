@@ -101,8 +101,8 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
 );
 
 const Activities: FC<Props> = ({ calls, emails, accountInfo, contactId, onCreateActivity }) => {
-    const normalizeCall = calls.map(normalizeCallFn);
-    const normalizeEmail = emails.map(normalizeEmailFn);
+    const normalizeCall = calls?.map(normalizeCallFn) ?? [];
+    const normalizeEmail = emails?.map(normalizeEmailFn) ?? [];
     const activities = concat(normalizeCall, normalizeEmail).sort(sortDateFn);
 
     return (
