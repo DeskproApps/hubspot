@@ -362,17 +362,35 @@ export type UploadFile = {
     access: "PUBLIC_INDEXABLE" | "PUBLIC_NOT_INDEXABLE" | "PRIVATE",
 };
 
-export type EntityMetadata = {
-    id: Contact["id"],
-    fullName: string,
-    phone: Contact["properties"]["phone"],
-    email: Contact["properties"]["email"],
-    companies: Array<{
-        id: Company["id"],
-        name: Company["properties"]["name"],
-    }>,
-    deals: Array<{
-        id: Deal["id"],
-        name: Deal["properties"]["dealname"],
-    }>,
+export type PropertyMeta = {
+    name: string; // "address";
+    fieldType: string; // "text"
+    label: string;
+    type: string; // "string"
+
+    calculated: boolean;
+    createdAt: DateTime;
+    dataSensitivity: string; // "non_sensitive"
+    description: string;
+    displayOrder: number;
+    externalOptions: boolean;
+    formField: boolean;
+    groupName:  string;
+    hasUniqueValue: boolean;
+    hidden: boolean;
+    hubspotDefined: boolean;
+    modificationMetadata: {
+        archivable: boolean;
+        readOnlyDefinition: boolean;
+        readOnlyValue: boolean;
+    };
+    updatedAt: DateTime;
+    options: Array<{
+        displayOrder: number;
+        hidden: boolean;
+        label: string;
+        value: string;
+    }>;
+    showCurrencySymbol?: boolean;
+    dateDisplayHint?: string; // "absolute"
 };

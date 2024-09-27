@@ -1,14 +1,19 @@
 import { FC } from "react";
 import isEmpty from "lodash/isEmpty";
 import capitalize from "lodash/capitalize";
-import { HorizontalDivider } from "@deskpro/app-sdk";
-import { getFullName } from "../../utils";
+import {
+    HorizontalDivider,
+    useDeskproLatestAppContext,
+} from "@deskpro/app-sdk";
+import { getFullName, getScreenStructure } from "../../utils";
 import {
     Title,
+    BlocksBuilder,
     BaseContainer,
     TextBlockWithLabel,
 } from "../common";
-import type { AccountInto, Contact, Owner } from "../../services/hubspot/types";
+import { blocksMap } from "../blocks";
+import type { AccountInto, Contact, Owner, PropertyMeta } from "../../services/hubspot/types";
 
 type Props = {
     contact: Contact["properties"],
@@ -17,10 +22,19 @@ type Props = {
     }>,
     owners: Record<Owner["id"], Owner>,
     accountInfo?: AccountInto,
+    contactMetaMap: Record<PropertyMeta["name"], PropertyMeta>,
 };
 
 const ContactInfo: FC<Props> = ({
-    contact: {
+    contact,
+    owners,
+    companies,
+    accountInfo: { portalId } = {},
+    contactMetaMap,
+}) => {
+    const { context } = useDeskproLatestAppContext();
+    const structure = getScreenStructure(context?.settings, "contact", "home");
+    const {
         email,
         phone,
         jobtitle,
@@ -29,13 +43,15 @@ const ContactInfo: FC<Props> = ({
         lastname: lastName,
         firstname: firstName,
         hs_object_id: contactId,
-    } = {},
-    owners,
-    companies,
-    accountInfo: { portalId } = {},
-}) => {
+    } = contact;
+
     return (
-        <section>
+        <>
+            <BlocksBuilder<PropertyMeta>
+                config={{ structure, metaMap: contactMetaMap }}
+                blocksMap={blocksMap}
+                values={contact}
+            />
             <BaseContainer>
                 <Title
                     title={getFullName({ firstName, lastName }) || email || ""}
@@ -61,7 +77,7 @@ const ContactInfo: FC<Props> = ({
                 />
             </BaseContainer>
             <HorizontalDivider/>
-        </section>
+        </>
     );
 }
 

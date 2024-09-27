@@ -6,12 +6,13 @@ import type { Contact } from "./types";
 const getContactService = (
     client: IDeskproClient,
     contactId: Contact["id"],
+    properties?: string[],
 ) => {
     return baseRequest<Contact>(client, {
         url: `/crm/v3/objects/contacts/${contactId}`,
         entity: "contact",
         queryParams: {
-            properties: PROPERTIES.contacts.join(","),
+            properties: (properties ?? PROPERTIES.contacts).join(","),
         }
     });
 };

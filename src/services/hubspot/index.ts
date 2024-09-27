@@ -40,4 +40,5 @@ export {
     getCompaniesByContactId,
 } from "./getAssocEntitiesByContactId";
 export { getPropertiesService } from "./getPropertiesService";
+export { getPropertiesMetaService } from "./getPropertiesMetaService";
 export { DeskproError } from "./baseRequest";

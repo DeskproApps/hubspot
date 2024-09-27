@@ -8,3 +8,7 @@ export { getOption, noOwnerOption } from "./getOption";
 export { getEntityMetadata } from "./getEntityMetadata";
 export { mdToHtml } from "./mdToHtml";
 export * from "./is";
+export { getScreenStructure } from "./getScreenStructure";
+export { flatten } from "./flatten";
+export { addBlankTargetToLinks } from "./addBlankTargetToLinks";
+export { formatPrice } from "./formatPrice";
