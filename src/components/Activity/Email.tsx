@@ -35,7 +35,7 @@ const Email: FC<EmailActivity["properties"]> = ({
             />
             <TextBlockWithLabel
                 label="Date/time"
-                text={`${format(hs_timestamp)} at ${format(hs_timestamp, "HH:mm")}`}
+                text={`${format(hs_timestamp)} at ${format(hs_timestamp, { date: false, time: true })}`}
             />
         </BaseContainer>
     )

@@ -49,8 +49,6 @@ const Home: FC<Props> = ({
         <>
             <ContactInfo
                 contact={contact}
-                companies={companies}
-                owners={owners}
                 accountInfo={accountInfo}
                 contactMetaMap={contactMetaMap}
             />

@@ -1,7 +1,6 @@
 import { get } from "lodash-es";
 import { Property } from "@deskpro/app-sdk";
 import type { ComponentType } from "react";
-import type { Values } from "./types";
 
 type Props<Meta> = {
   meta: Meta;

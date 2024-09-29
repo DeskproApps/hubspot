@@ -12,7 +12,10 @@ const getContactService = (
         url: `/crm/v3/objects/contacts/${contactId}`,
         entity: "contact",
         queryParams: {
-            properties: (properties ?? PROPERTIES.contacts).join(","),
+            properties: [
+                ...PROPERTIES.contacts,
+                ...(properties ?? []),
+            ].join(","),
         }
     });
 };

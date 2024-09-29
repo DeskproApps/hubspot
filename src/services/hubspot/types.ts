@@ -390,7 +390,9 @@ export type PropertyMeta = {
         hidden: boolean;
         label: string;
         value: string;
+        description?: string;
     }>;
     showCurrencySymbol?: boolean;
     dateDisplayHint?: string; // "absolute"
+    referencedObjectType?: string; // "OWNER"
 };

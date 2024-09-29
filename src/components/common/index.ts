@@ -16,3 +16,4 @@ export { Attach } from "./Attach";
 export { TextArea } from "./TextArea";
 export { StructureBuilder, BlocksBuilder } from "./Builder";
 export * from "./Typography";
+export { Tag, Tags } from "./Tag";

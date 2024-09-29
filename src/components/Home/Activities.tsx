@@ -13,7 +13,6 @@ import {
     BaseContainer,
 } from "../common";
 import { format } from "../../utils/date";
-import { DATE_FORMAT, TIME_FORMAT } from "../../utils/date/constants";
 import type { DateTime } from "../../types";
 import type { EmailActivity, CallActivity, AccountInto, Contact } from "../../services/hubspot/types";
 
@@ -94,7 +93,7 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
             leftLabel="Type"
             leftText={capitalize(type)}
             rightLabel="Date"
-            rightText={format(date, `${DATE_FORMAT} ${TIME_FORMAT}`)}
+            rightText={format(date, { time: true })}
         />
         <HorizontalDivider style={{ marginBottom: 9 }}/>
     </>

@@ -9,7 +9,7 @@ type Props = {
 };
 
 const DatePickerBlock: FC<Props> = ({ meta, value }) => {
-    const date = format(value);
+    const date = format(value, { time: meta.type === "datetime" });
 
     return (
         <P5>{date}</P5>

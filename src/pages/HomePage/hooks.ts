@@ -34,6 +34,7 @@ import type {
     Company,
     CallActivity,
     EmailActivity,
+    PropertyMeta,
 } from "../../services/hubspot/types";
 
 const useLoadHomeDeps = () => {
@@ -170,7 +171,7 @@ const useLoadHomeDeps = () => {
         accountInfo: accountInfo.data,
         owners: owners.data as Record<Owner["id"], Owner>,
         contactMetaMap: useMemo(() => {
-            return (propertiesMeta.data?.results ?? []).reduce((acc, meta) => {
+            return (propertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
                 if (!acc[meta.name]) {
                     acc[meta.name] = meta;
                 }
