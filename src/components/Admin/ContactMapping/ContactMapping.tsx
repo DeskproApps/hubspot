@@ -1,4 +1,5 @@
 import { TabBar } from "@deskpro/deskpro-ui";
+import { TABS } from "../../../constants";
 import { BaseContainer, StructureBuilder } from "../../common";
 import type { FC, Dispatch, SetStateAction } from "react";
 import type { TabBarItemType } from "@deskpro/deskpro-ui";
@@ -37,10 +38,10 @@ const ContactMapping: FC<Props> = ({
 
                 }}
             />
-            {(activeTab === 0) && (
+            {(activeTab === TABS.HOME) && (
                 <StructureBuilder structure={structure.home} items={properties} onChange={onChangeHome}/>
             )}
-            {(activeTab === 1) && (
+            {(activeTab === TABS.VIEW) && (
                 <StructureBuilder structure={structure.view} items={properties} onChange={onChangeView}/>
             )}
         </BaseContainer>

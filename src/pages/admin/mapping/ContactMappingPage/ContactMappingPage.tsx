@@ -5,7 +5,7 @@ import {
 } from "@deskpro/app-sdk";
 import { useAppContext } from "../../../../hooks";
 import { useProperties } from "./hooks";
-import { STRUCTURE } from "../../../../constants";
+import { STRUCTURE, TABS } from "../../../../constants";
 import { ContactMapping } from "../../../../components";
 import type { FC } from "react";
 import type { TabBarItemType } from "@deskpro/deskpro-ui";
@@ -18,7 +18,7 @@ const tabs: TabBarItemType[] = [
 const ContactMappingPage: FC = () => {
     const { settings } = useAppContext();
     const { isLoading, properties } = useProperties();
-    const [activeTab, setActiveTab] = useState<number>(0);
+    const [activeTab, setActiveTab] = useState<number>(TABS.HOME);
     const [structure, setStructure] = useState<{ home: string[][], view: string[][] }>(settings?.mapping_contact
       ? JSON.parse(settings.mapping_contact)
       : STRUCTURE.CONTACT
