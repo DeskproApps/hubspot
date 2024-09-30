@@ -12,3 +12,7 @@ export const isNumber = (value: any): value is number => {
 export const isPrimitive = (value: any): value is string | number => {
     return isString(value) || isNumber(value);
 };
+
+export const isEmptyObject = (obj: object): boolean => {
+    return obj == null || (Object.keys(obj).length === 0 && obj.constructor === Object);
+};

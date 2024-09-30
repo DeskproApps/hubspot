@@ -1,6 +1,7 @@
 import get from "lodash/get";
 import { getFullName } from "./getFullName";
-import type { Company, Deal, Contact, EntityMetadata } from "../services/hubspot/types";
+import type { EntityMetadata } from "../types";
+import type { Company, Deal, Contact } from "../services/hubspot/types";
 
 const getEntityMetadata = ({ contact, companies, deals }: {
     contact?: Contact["properties"],

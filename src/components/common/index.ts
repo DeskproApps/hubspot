@@ -14,4 +14,6 @@ export { Label } from "./Label";
 export { SingleSelect } from "./SingleSelect";
 export { Attach } from "./Attach";
 export { TextArea } from "./TextArea";
-export { StructureBuilder } from "./Builder";
+export { StructureBuilder, BlocksBuilder } from "./Builder";
+export * from "./Typography";
+export { Tag, Tags } from "./Tag";

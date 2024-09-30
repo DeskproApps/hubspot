@@ -1,23 +1,15 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
 import {
-    Context,
     LoadingSpinner,
     useDeskproElements,
-    useDeskproLatestAppContext,
-    useInitialisedDeskproAppClient,
 } from "@deskpro/app-sdk";
-import { getEntityContactList } from "../../services/entityAssociation";
 import { useLoadHomeDeps } from "./hooks";
 import { useSetAppTitle } from "../../hooks";
 import { Home } from "../../components/Home";
-import type { UserContext, ContextData } from "../../types";
-import type { Contact } from "../../services/hubspot/types";
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const { context } = useDeskproLatestAppContext() as { context: UserContext };
-    const [contactId, setContactId] = useState<Contact["id"]|null>(null);
     const {
         isLoading,
         contact,
@@ -29,9 +21,9 @@ const HomePage = () => {
         callActivities,
         accountInfo,
         owners,
-    } = useLoadHomeDeps(contactId);
-
-    const userId = (context as Context<ContextData>)?.data?.user.id;
+        contactMetaMap,
+    } = useLoadHomeDeps();
+    const contactId = contact?.hs_object_id;
 
     useSetAppTitle("Contact");
 
@@ -49,23 +41,10 @@ const HomePage = () => {
             type: "menu",
             items: [{
                 title: "Unlink contact",
-                payload: { type: "unlink", userId, contactId },
+                payload: { type: "unlink", contactId },
             }],
         });
-    }, [userId, contactId]);
-
-    useInitialisedDeskproAppClient((client) => {
-        if (!userId) {
-            return;
-        }
-
-        getEntityContactList(client, userId)
-            .then((contactIds) => {
-                if (contactIds.length !== 0) {
-                    setContactId(contactIds[0]);
-                }
-            })
-    }, [userId]);
+    }, [contactId]);
 
     const onCreateNote = useCallback(() => {
         if (contactId) {
@@ -102,6 +81,7 @@ const HomePage = () => {
             accountInfo={accountInfo}
             onCreateNote={onCreateNote}
             onCreateActivity={onCreateActivity}
+            contactMetaMap={contactMetaMap}
         />
     );
 };
