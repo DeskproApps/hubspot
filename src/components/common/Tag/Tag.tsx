@@ -1,4 +1,3 @@
-import { size } from "lodash-es";
 import { P5, Tag as TagUI, lightTheme, Stack } from "@deskpro/deskpro-ui";
 import type { FC } from "react";
 
@@ -15,7 +14,7 @@ const Tag: FC<{ tag: string }> = ({ tag }) => (
 );
 
 const Tags: FC<{ tags: string[] }> = ({ tags }) => {
-  if (!Array.isArray(tags) || !size(tags)) {
+  if (!Array.isArray(tags) || (tags.length === 0)) {
     return <P5>-</P5>;
   }
 

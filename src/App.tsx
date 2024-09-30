@@ -7,7 +7,6 @@ import {
     LoadingSpinner,
     useDeskproAppClient,
     useDeskproAppEvents,
-    useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
 import { useLinkUnlinkNote, useUnlinkContact } from "./hooks";
 import {
@@ -29,7 +28,6 @@ import type { EventsPayload } from "./types";
 
 function App() {
     const navigate = useNavigate();
-    const { context } = useDeskproLatestAppContext();
     const { client } = useDeskproAppClient();
     const { isLoading, unlinkContactFn } = useLinkUnlinkNote();
     const { unlinkContact } = useUnlinkContact();
@@ -55,7 +53,7 @@ function App() {
         },
     }, [client, unlinkContactFn]);
 
-    if (!client || isLoading && !context) {
+    if (!client || isLoading) {
         return (<LoadingSpinner/>);
     }
 

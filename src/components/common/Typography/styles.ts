@@ -23,7 +23,12 @@ export const dpNormalize = css`
     height: auto;
   }
 
-  a, a:hover {
+  a {
     color: ${({ theme }) => theme.colors.cyan100};
+    cursor: pointer;
+
+    &:hover, &:visited, &:active {
+      color: ${({ theme }) => theme.colors.cyan80};
+    }
   }
 `;
