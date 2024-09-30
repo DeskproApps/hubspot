@@ -33,10 +33,6 @@ const HomePage = () => {
         deRegisterElement("edit");
         deRegisterElement("externalLink");
 
-        registerElement("edit", {
-            type: "edit_button",
-            payload: { type: "changePage", path: `/contacts/${contactId}` },
-        });
         registerElement("menu", {
             type: "menu",
             items: [{

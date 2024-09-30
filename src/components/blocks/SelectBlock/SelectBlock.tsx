@@ -28,7 +28,7 @@ const SelectBlock: FC<Props> = ({ meta, value }) => {
             <Member name={getFullName(owner)} />
         )
         : (
-            <P5>{value}</P5>
+            <P5>{value || "-"}</P5>
         );
 };
 

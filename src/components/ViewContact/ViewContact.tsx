@@ -1,46 +1,38 @@
-import { FC } from "react";
-import { Link as RouterLink } from "react-router-dom";
 import {
-    Link,
+    Title,
     HorizontalDivider,
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
 import { getFullName, getScreenStructure } from "../../utils";
-import {
-    Title,
-    BlocksBuilder,
-    BaseContainer,
-} from "../common";
+import { BaseContainer, BlocksBuilder, HubSpotLogo } from "../common";
 import { blocksMap } from "../blocks";
-import type { AccountInto, Contact, PropertyMeta } from "../../services/hubspot/types";
+import type { FC } from "react";
+import type { Contact, PropertyMeta, AccountInto } from "../../services/hubspot/types";
 
 type Props = {
+    accountInfo: AccountInto,
     contact: Contact["properties"],
-    accountInfo?: AccountInto,
     contactMetaMap: Record<PropertyMeta["name"], PropertyMeta>,
 };
 
-const ContactInfo: FC<Props> = ({
+const ViewContact: FC<Props> = ({
     contact,
-    accountInfo: { portalId } = {},
     contactMetaMap,
+    accountInfo: { portalId } = {},
 }) => {
     const { context } = useDeskproLatestAppContext();
-    const structure = getScreenStructure(context?.settings, "contact", "home");
+    const structure = getScreenStructure(context?.settings, "contact", "view");
 
     return (
         <>
             <BaseContainer>
                 <Title
-                    title={(
-                        <Link as={RouterLink} to={`/contacts/${contact.hs_object_id}`}>
-                            {getFullName({ firstName: contact.firstname, lastName: contact.lastname }) || contact.email || ""}
-                        </Link>
-                    )}
+                    title={getFullName({ firstName: contact.firstname, lastName: contact.lastname }) || contact.email || ""}
                     link={(portalId && contact.hs_object_id)
                         ? `https://app.hubspot.com/contacts/${portalId}/contact/${contact.hs_object_id}`
                         : ""
                     }
+                    icon={<HubSpotLogo/>}
                 />
             </BaseContainer>
             <BlocksBuilder
@@ -51,6 +43,6 @@ const ContactInfo: FC<Props> = ({
             <HorizontalDivider/>
         </>
     );
-}
+};
 
-export { ContactInfo };
+export { ViewContact };

@@ -7,11 +7,20 @@ export const DndTypes = {
 };
 
 export const STRUCTURE = {
-    CONTACT: [
-        ["email"],
-        ["phone"],
-        ["jobtitle"],
-        ["hubspot_owner_id"],
-        ["lifecyclestage"]
-    ],
+    CONTACT: {
+        home: [
+            ["jobtitle"],
+            ["email"],
+            ["phone"],
+            ["hubspot_owner_id"],
+            ["lifecyclestage"],
+        ],
+        view: [
+            ["jobtitle"],
+            ["email"],
+            ["phone"],
+            ["hubspot_owner_id"],
+            ["lifecyclestage"],
+        ]
+    },
 };

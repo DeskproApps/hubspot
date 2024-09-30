@@ -1,22 +1,40 @@
-import { useCallback } from "react";
-import { LoadingSpinner, useDeskproAppClient } from "@deskpro/app-sdk";
+import { useState, useCallback } from "react";
+import {
+  LoadingSpinner,
+  useInitialisedDeskproAppClient,
+} from "@deskpro/app-sdk";
 import { useAppContext } from "../../../../hooks";
 import { useProperties } from "./hooks";
 import { STRUCTURE } from "../../../../constants";
 import { ContactMapping } from "../../../../components";
 import type { FC } from "react";
+import type { TabBarItemType } from "@deskpro/deskpro-ui";
+
+const tabs: TabBarItemType[] = [
+  { label: "Contact Home Screen" },
+  { label: "Contact View Screen" },
+];
 
 const ContactMappingPage: FC = () => {
-    const { client } = useDeskproAppClient();
     const { settings } = useAppContext();
     const { isLoading, properties } = useProperties();
-    const structure = settings?.mapping_contact
-        ? JSON.parse(settings.mapping_contact)
-        : STRUCTURE.CONTACT;
+    const [activeTab, setActiveTab] = useState<number>(0);
+    const [structure, setStructure] = useState<{ home: string[][], view: string[][] }>(settings?.mapping_contact
+      ? JSON.parse(settings.mapping_contact)
+      : STRUCTURE.CONTACT
+    );
 
-    const onChange = useCallback((structure: string[][]) => {
-        client?.setAdminSetting(JSON.stringify(structure));
-    }, [client]);
+    useInitialisedDeskproAppClient((client) => {
+        client.setAdminSetting(JSON.stringify(structure));
+    }, [structure]);
+
+    const onChangeHome = useCallback((home: string[][]) => {
+        setStructure((structure) => ({ ...structure, home }));
+    }, []);
+
+    const onChangeView = useCallback((view: string[][]) => {
+      setStructure((structure) => ({ ...structure, view }));
+    }, []);
 
     if (isLoading) {
       return (
@@ -25,7 +43,15 @@ const ContactMappingPage: FC = () => {
     }
 
     return (
-        <ContactMapping structure={structure} properties={properties} onChange={onChange}/>
+        <ContactMapping
+          structure={structure}
+          properties={properties}
+          onChangeHome={onChangeHome}
+          onChangeView={onChangeView}
+          activeTab={activeTab}
+          tabs={tabs}
+          onChangeTab={setActiveTab}
+        />
     );
 };
 

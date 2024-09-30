@@ -18,6 +18,7 @@ import {
     CreateDealPage,
     CreateNotePage,
     UpdateDealPage,
+    ViewContactPage,
     UpdateContactPage,
     CreateContactPage,
     CreateActivityPage,
@@ -70,7 +71,8 @@ function App() {
                             <Route path="/deal/update/:dealId" element={<UpdateDealPage/>} />
                             <Route path="/deal/:dealId" element={<DealPage/>} />
                             <Route path="/contacts/create" element={<CreateContactPage/>} />
-                            <Route path="/contacts/:contactId" element={<UpdateContactPage/>} />
+                            <Route path="/contacts/:contactId" element={<ViewContactPage/>} />
+                            <Route path="/contacts/edit/:contactId" element={<UpdateContactPage/>} />
                             <Route path="/contacts/activities" element={<ActivityPage/>} />
                             <Route path="/note/create" element={<CreateNotePage/>} />
                             <Route path="/activity/create" element={<CreateActivityPage/>} />

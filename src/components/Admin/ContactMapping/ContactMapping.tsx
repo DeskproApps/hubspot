@@ -1,16 +1,48 @@
+import { TabBar } from "@deskpro/deskpro-ui";
 import { BaseContainer, StructureBuilder } from "../../common";
-import type { FC } from "react";
+import type { FC, Dispatch, SetStateAction } from "react";
+import type { TabBarItemType } from "@deskpro/deskpro-ui";
 
 type Props = {
     properties: string[];
-    structure: string[][];
-    onChange: (structure: string[][]) => void;
+    activeTab: number,
+    tabs: TabBarItemType[],
+    onChangeHome: (structure: string[][]) => void;
+    onChangeView: (structure: string[][]) => void;
+    structure: { home: string[][], view: string[][] };
+    onChangeTab: Dispatch<SetStateAction<number>>;
 };
 
-const ContactMapping: FC<Props> = ({ structure, properties, onChange }) => {
+const ContactMapping: FC<Props> = ({
+    tabs,
+    activeTab,
+    structure,
+    properties,
+    onChangeTab,
+    onChangeHome,
+    onChangeView,
+}) => {
     return (
         <BaseContainer>
-            <StructureBuilder structure={structure} items={properties} onChange={onChange}/>
+            <TabBar
+                type="tab"
+                tabs={tabs}
+                activeIndex={activeTab}
+                onClickTab={onChangeTab}
+                containerStyles={{
+                    padding: "0 12px",
+                    justifyContent: "flex-start",
+                    margin: "16px 0 8px",
+                    gap: "10px",
+
+                }}
+            />
+            {(activeTab === 0) && (
+                <StructureBuilder structure={structure.home} items={properties} onChange={onChangeHome}/>
+            )}
+            {(activeTab === 1) && (
+                <StructureBuilder structure={structure.view} items={properties} onChange={onChangeView}/>
+            )}
         </BaseContainer>
     );
 };

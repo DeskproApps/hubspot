@@ -11,7 +11,11 @@ const getScreenStructure = (
     return match([object, screen])
         .with(["contact", "home"], () => settings?.mapping_contact
             ? JSON.parse(settings.mapping_contact)
-            : STRUCTURE.CONTACT
+            : STRUCTURE.CONTACT.home
+        )
+        .with(["contact", "view"], () => settings?.mapping_contact
+            ? JSON.parse(settings.mapping_contact)
+            : STRUCTURE.CONTACT.view
         )
         .otherwise(() => []);
 };
