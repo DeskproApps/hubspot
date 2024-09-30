@@ -1,11 +1,8 @@
 import { P5 } from "@deskpro/deskpro-ui";
 import type { FC } from "react";
-import type { PropertyMeta } from "../../../services/hubspot/types";
+import type { BlockProps } from "../../common/Builder";
 
-type Props = {
-    meta: PropertyMeta;
-    value: string;
-};
+type Props = BlockProps<string>;
 
 const TextBlock: FC<Props> = ({ value }) => {
     return (

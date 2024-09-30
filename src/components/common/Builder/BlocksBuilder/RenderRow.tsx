@@ -1,37 +1,32 @@
-import { get } from "lodash-es";
 import { PropertyRow } from "@deskpro/app-sdk";
 import { GenerateBlock } from "./GenerateBlock";
+import type { FC } from "react";
+import type { PropertyMeta } from "../../../../services/hubspot/types";
 import type { Values, BlocksMap } from "./types";
 
-type Props<Meta> = {
+type Props = {
   row: string[],
-  metaMap: Record<string, Meta>,
+  metaMap: Record<PropertyMeta["fieldType"], PropertyMeta>,
   blocksMap: BlocksMap,
   values?: Values,
 };
 
-const RenderRow = <Meta,>({
+const RenderRow: FC<Props> = ({
   row,
   metaMap,
   blocksMap,
   values,
-}: Props<Meta>) => {
-  const isFull = get(metaMap, [row[0], "full"]);
-  const styles = {
-    paddingLeft: isFull ? 0 : 8,
-    paddingRight: isFull ? 0 : 8,
-  };
-
+}) => {
   return (
-    <PropertyRow marginBottom={10} style={{ boxSizing: "border-box", ...styles }}>
+    <PropertyRow marginBottom={10} style={{ boxSizing: "border-box", padding: "0 8px" }}>
       {row.map((name) => {
-        const meta = get(metaMap, name);
-        const blockType = get(meta, ["fieldType"]);
-        const value = get(values, [name]);
-        const Component = get(blocksMap, [blockType]);
+        const meta = metaMap[name];
+        const blockType = meta.fieldType;
+        const value = (values ?? {})[name];
+        const Component = blocksMap[blockType];
 
         return (
-          <GenerateBlock<Meta>
+          <GenerateBlock
             key={name}
             meta={meta}
             Component={Component}

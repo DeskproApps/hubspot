@@ -1,9 +1,9 @@
 import { isEmptyObject } from "../../../../../utils";
 import type { Config } from "../types";
 
-const validateConfig = <Meta,>(
-  structure: Config<Meta>["structure"],
-  metaMap: Config<Meta>["metaMap"],
+const validateConfig = (
+  structure: Config["structure"],
+  metaMap: Config["metaMap"],
 ): void => {
   if (!Array.isArray(structure) || structure.length === 0) {
     throw new Error("PageBuilder: wrong config - empty structure");

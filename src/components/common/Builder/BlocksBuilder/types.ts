@@ -1,22 +1,22 @@
 import type { FC } from "react";
+import type { PropertyMeta } from "../../../../services/hubspot/types";
 
-// @todo change key as keyof blocksMap
-export type BlocksMap = Record<string, FC>;
+export type BlocksMap = Record<PropertyMeta["fieldType"], FC>;
 
-export type Config<Meta> = {
+export type Config = {
   structure: string[][];
-  metaMap: Record<string, Meta>;
+  metaMap: Record<PropertyMeta["fieldType"], PropertyMeta>;
 };
 
-export type Values = Record<string, unknown>;
+export type Values = Record<PropertyMeta["name"], unknown>;
 
-export type BlocksBuilderProps<Meta> = {
-    config: Config<Meta>;
+export type BlocksBuilderProps = {
+    config: Config;
     blocksMap: BlocksMap;
     values?: Values;
 };
 
-export type BlockProps<Meta, Value> = {
-    meta: Meta;
+export type BlockProps<Value> = {
+    meta: PropertyMeta;
     value: Value;
 };

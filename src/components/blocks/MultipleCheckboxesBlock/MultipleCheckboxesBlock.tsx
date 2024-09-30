@@ -1,11 +1,8 @@
 import { Tags } from "../../common";
 import type { FC } from "react";
-import type { PropertyMeta } from "../../../services/hubspot/types";
+import type { BlockProps } from "../../common/Builder";
 
-type Props = {
-    meta: PropertyMeta;
-    value: string;
-};
+type Props = BlockProps<string>;
 
 const MultipleCheckboxesBlock: FC<Props> = ({ value }) => {
     const labels = `${value}`.split(";");

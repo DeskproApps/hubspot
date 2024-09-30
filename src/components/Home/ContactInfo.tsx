@@ -37,7 +37,7 @@ const ContactInfo: FC<Props> = ({
                     }
                 />
             </BaseContainer>
-            <BlocksBuilder<PropertyMeta>
+            <BlocksBuilder
                 config={{ structure, metaMap: contactMetaMap }}
                 blocksMap={blocksMap}
                 values={contact}

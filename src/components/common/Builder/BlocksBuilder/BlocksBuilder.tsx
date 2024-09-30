@@ -2,13 +2,13 @@ import { validateConfig } from "./utils";
 import { RenderRow } from "./RenderRow";
 import type { BlocksBuilderProps } from "./types";
 
-const BlocksBuilder = <Meta,>({
+const BlocksBuilder = ({
   values,
   config: { structure, metaMap },
   blocksMap,
-}: BlocksBuilderProps<Meta>) => {
+}: BlocksBuilderProps) => {
   try {
-    validateConfig<Meta>(structure, metaMap);
+    validateConfig(structure, metaMap);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
@@ -18,7 +18,7 @@ const BlocksBuilder = <Meta,>({
   return (
     <div style={{ marginTop: 8, marginBottom: 8 }}>
       {structure.map((row, idx) => (
-        <RenderRow<Meta>
+        <RenderRow
           key={idx}
           row={row}
           metaMap={metaMap}

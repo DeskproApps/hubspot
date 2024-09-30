@@ -1,16 +1,16 @@
-import { get } from "lodash-es";
 import { Property } from "@deskpro/app-sdk";
+import { PropertyMeta } from "../../../../services/hubspot/types";
 import type { ComponentType } from "react";
 
-type Props<Meta> = {
-  meta: Meta;
+type Props = {
+  meta: PropertyMeta;
   Component: ComponentType<{ value: unknown } & Record<string, unknown>>;
   value: unknown;
 };
 
-const GenerateBlock = <Meta,>({ meta, Component, value }: Props<Meta>) => {
-  const blockType = get(meta, ["type"]);
-  const label = get(meta, ["label"]);
+const GenerateBlock = ({ meta, Component, value }: Props) => {
+  const blockType = meta?.type;
+  const label = meta?.label;
 
   if (!meta) {
     // eslint-disable-next-line no-console

@@ -6,12 +6,9 @@ import { getFullName } from "../../../utils";
 import { getOwnersService } from "../../../services/hubspot";
 import { QueryKey } from "../../../query";
 import type { FC } from "react";
-import type { PropertyMeta } from "../../../services/hubspot/types";
+import type { BlockProps } from "../../common/Builder";
 
-type Props = {
-    meta: PropertyMeta;
-    value: string;
-};
+type Props = BlockProps<string>;
 
 const SelectBlock: FC<Props> = ({ meta, value }) => {
     const isOwner = meta.referencedObjectType === "OWNER"; 

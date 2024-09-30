@@ -5,12 +5,9 @@ import { getAccountInfoService } from "../../../services/hubspot";
 import { QueryKey } from "../../../query";
 import { formatPrice } from "../../../utils";
 import type { FC } from "react";
-import type { PropertyMeta } from "../../../services/hubspot/types";
+import type { BlockProps } from "../../common/Builder";
 
-type Props = {
-    meta: PropertyMeta;
-    value: string;
-};
+type Props = BlockProps<string>;
 
 const NumberBlock: FC<Props> = ({ meta, value }) => {
     const accountInfo = useQueryWithClient(
