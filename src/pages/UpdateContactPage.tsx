@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useCallback } from "react";
 import get from "lodash/get";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -61,7 +61,7 @@ const UpdateContactPage: FC = () => {
             });
     };
 
-    const onCancel = () => navigate("/home");
+    const onCancel = useCallback(() => navigate(`/contacts/${contactId}`), [navigate, contactId]);
 
     useDeskproElements(({ deRegisterElement, registerElement }) => {
         deRegisterElement("home");

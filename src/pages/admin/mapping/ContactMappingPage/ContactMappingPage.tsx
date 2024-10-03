@@ -1,5 +1,8 @@
-import { useCallback } from "react";
-import { LoadingSpinner, useDeskproAppClient } from "@deskpro/app-sdk";
+import { useMemo, useCallback } from "react";
+import {
+  LoadingSpinner,
+  useDeskproAppClient,
+} from "@deskpro/app-sdk";
 import { useAppContext } from "../../../../hooks";
 import { useProperties } from "./hooks";
 import { STRUCTURE } from "../../../../constants";
@@ -8,24 +11,32 @@ import type { FC } from "react";
 
 const ContactMappingPage: FC = () => {
     const { client } = useDeskproAppClient();
-    const { settings } = useAppContext();
-    const { isLoading, properties } = useProperties();
-    const structure = settings?.mapping_contact
+    const { settings, isLoading: isLoadingContext } = useAppContext();
+    const { properties, isLoading: isLoadingProperties } = useProperties();
+    const isLoading = isLoadingContext || isLoadingProperties;
+    
+    const structure: { home: string[][], view: string[][] } = useMemo(() => {
+      return settings?.mapping_contact
         ? JSON.parse(settings.mapping_contact)
-        : STRUCTURE.CONTACT;
+        : STRUCTURE.CONTACT
+    }, [settings?.mapping_contact]);
 
-    const onChange = useCallback((structure: string[][]) => {
-        client?.setAdminSetting(JSON.stringify(structure));
+    const onChangeStructure = useCallback((structure: { home: string[][], view: string[][] }) => {
+      client?.setAdminSetting(JSON.stringify(structure));
     }, [client]);
 
-    if (isLoading) {
+    if (!client || !settings || isLoading) {
       return (
         <LoadingSpinner/>
       );
     }
 
     return (
-        <ContactMapping structure={structure} properties={properties} onChange={onChange}/>
+        <ContactMapping
+          structure={structure}
+          properties={properties}
+          onChangeStructure={onChangeStructure}
+        />
     );
 };
 
