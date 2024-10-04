@@ -1,4 +1,4 @@
-import { IDeskproClient, proxyFetch } from "@deskpro/app-sdk";
+import { IDeskproClient, V2ProxyRequestInit, proxyFetch } from "@deskpro/app-sdk";
 import {
     placeholders,
     ACCESS_TOKEN_PATH,
@@ -8,7 +8,7 @@ import {
 const refreshTokenService = async (client: IDeskproClient) => {
     const fetch = await proxyFetch(client);
 
-    const refreshRequestOptions: RequestInit = {
+    const refreshRequestOptions: V2ProxyRequestInit = {
         method: "POST",
         body: `grant_type=refresh_token&client_id=${placeholders.CLIENT_ID}&client_secret=${placeholders.CLIENT_SECRET}&redirect_uri=${placeholders.REDIRECT_URI}&refresh_token=${placeholders.REFRESH_TOKEN}`,
         headers: {

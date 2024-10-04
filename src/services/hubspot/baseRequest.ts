@@ -1,6 +1,6 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import { proxyFetch } from "@deskpro/app-sdk";
+import { V2ProxyRequestInit, proxyFetch } from "@deskpro/app-sdk";
 import { BASE_URL, placeholders } from "./constants";
 // import { refreshTokenService } from "./refreshTokenService";
 import { getQueryParams } from "../../utils";
@@ -43,7 +43,7 @@ const baseRequest: Request = async (client, {
     const baseUrl = `${BASE_URL}${url}`;
     const params = `${isEmpty(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
     const requestUrl = `${baseUrl}${params}`;
-    const options: RequestInit = {
+    const options: V2ProxyRequestInit = {
         method,
         headers: {
             "Authorization": `Bearer ${placeholders.API_TOKEN}`,

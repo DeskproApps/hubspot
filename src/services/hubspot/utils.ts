@@ -1,7 +1,8 @@
 import get from "lodash/get";
 import type { HubSpotError } from "./types";
+import { ProxyResponse } from "@deskpro/app-sdk";
 
-export const isResponseError = (response: Response) => {
+export const isResponseError = (response: Response|ProxyResponse) => {
     return (response.status < 200 || response.status >= 400);
 }
 

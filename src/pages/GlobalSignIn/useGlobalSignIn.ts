@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import every from "lodash/every";
 import {
+    V2ProxyRequestInit,
     adminGenericProxyFetch,
     useDeskproAppClient,
     useDeskproAppEvents,
@@ -59,21 +59,19 @@ export const useGlobalSignIn = () => {
 
     // Exchange auth code for auth/refresh tokens
     useInitialisedDeskproAppClient((client) => {
-        const canRequestAccessToken = every([
-            accessCode,
-            callbackUrl,
-            settings?.client_id,
-            settings?.client_secret,
-            settings?.redirect_uri,
-        ]);
-
-        if (!canRequestAccessToken) {
+        if (
+            !accessCode
+            || !callbackUrl
+            || !settings?.client_id
+            || !settings?.client_secret
+            || !settings?.redirect_uri
+        ) {
             return;
         }
 
         const url = new URL(`https://api.hubapi.com/oauth/v1/token`);
 
-        const requestOptions: RequestInit = {
+        const requestOptions: V2ProxyRequestInit = {
             method: "POST",
             body: new URLSearchParams({
                 grant_type: 'authorization_code',

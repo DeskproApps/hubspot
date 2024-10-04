@@ -2,6 +2,7 @@ import every from "lodash/every";
 import isEmpty from "lodash/isEmpty";
 import {
     IDeskproClient,
+    V2ProxyRequestInit,
     adminGenericProxyFetch,
 } from "@deskpro/app-sdk";
 import { AuthTokens, PreInstalledRequest } from "../../types";
@@ -21,7 +22,7 @@ const preInstalledRequest: PreInstalledRequest = async (
 
     const fetch = await adminGenericProxyFetch(client);
 
-    const options: RequestInit = {
+    const options: V2ProxyRequestInit = {
         method,
         headers: {
             "Content-Type": "application/json",
