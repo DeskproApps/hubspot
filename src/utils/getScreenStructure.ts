@@ -1,6 +1,6 @@
 import { STRUCTURE } from "../constants";
 import type { Settings } from "../types";
-import type { Layout } from "../components/common/Builder/types";
+import type { Layout } from "../components/common/Builder";
 
 const getScreenStructure = (
     settings: Settings | undefined,

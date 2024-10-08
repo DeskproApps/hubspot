@@ -26,7 +26,6 @@ const NoteForm: FC<Props> = ({ onSubmit, onCancel }) => {
             <Label htmlFor="note" label="New notes" required>
                 <TextArea
                     id="note"
-                    minWidth="auto"
                     placeholder="Enter note"
                     {...getFieldProps("note")}
                     error={!!(touched.note && errors.note)}

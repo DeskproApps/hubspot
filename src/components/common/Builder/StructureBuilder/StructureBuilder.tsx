@@ -3,11 +3,12 @@ import styled from "styled-components";
 import { DndRow } from "./DndRow";
 import { AddItemDropdown } from "./AddItemDropdown";
 import type { FC } from "react";
+import type { Layout } from "../types";
 
 type Props = {
-    onChange: (structure: string[][]) => void;
+    onChange: (structure: Layout) => void;
     items: string[];
-    structure?: Array<string[]>;
+    structure?: Layout;
 };
 
 const DndContainer = styled.div`

@@ -1,23 +1,27 @@
-import isEmpty from "lodash/isEmpty";
 import { nbsp } from "../constants";
 
 type User = {
-    firstName?: string,
-    lastName?: string,
+    firstname?: string;
+    lastname?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
 };
 
-const getFullName = (user: User = {}): string => {
-    const fullName = [];
+const getFullName = (user?: User): string|undefined => {
+    let fullName = [];
 
-    if (user?.firstName) {
-        fullName.push(user.firstName);
+    if (user?.firstName || user?.firstname) {
+        fullName.push(user?.firstName || user?.firstname);
     }
 
-    if (user?.lastName) {
-        fullName.push(user.lastName)
+    if (user?.lastName || user?.lastname) {
+        fullName.push(user?.lastName || user?.lastname)
     }
 
-    return isEmpty(fullName) ? "-" : fullName.join(nbsp);
+    fullName = fullName.filter(Boolean);
+
+    return (fullName.length > 0) ? fullName.join(nbsp) : user?.email;
 };
 
 export { getFullName };

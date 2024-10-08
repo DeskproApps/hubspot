@@ -4,7 +4,7 @@ import { Contact } from "./types";
 
 const createContactService = (
     client: IDeskproClient,
-    data: Record<string, string>
+    data: Record<string, unknown>
 ) => {
     return baseRequest<Contact>(client, {
         url: "/crm/v3/objects/contacts",

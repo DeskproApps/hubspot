@@ -31,12 +31,12 @@ const ErrorFallback: FC<Props> = ({ resetErrorBoundary, error }) => {
     return (
         <BaseContainer>
             <ErrorBlock
-                text={(
+                texts={[(
                     <Stack gap={6} vertical style={{ padding: "8px" }}>
                         {message}
                         <Button text="Reload" icon={faRefresh} intent="secondary" onClick={resetErrorBoundary} />
                     </Stack>
-                )}
+                )]}
             />
         </BaseContainer>
     )
