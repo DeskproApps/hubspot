@@ -8,7 +8,7 @@ const validateConfig = (
   structure: Config["structure"],
   metaMap: Config["metaMap"],
 ): void => {
-  if (!Array.isArray(structure) || structure.length === 0) {
+  if (structure.length === 0) {
     throw new Error("FormBuilder: wrong config - empty structure");
   }
 

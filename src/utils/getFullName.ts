@@ -21,7 +21,7 @@ const getFullName = (user?: User): string|undefined => {
 
     fullName = fullName.filter(Boolean);
 
-    return (fullName.length > 0) ? fullName.join(nbsp) : user?.email;
+    return (fullName.length > 0) ? fullName.join(" ") : user?.email;
 };
 
 export { getFullName };

@@ -5,10 +5,10 @@ import type { Control } from "react-hook-form";
 import type { PropertyMeta } from "../../../../services/hubspot/types";
 
 type Props = {
-    meta: PropertyMeta;
-    Component: ComponentType<Record<string, unknown>>;
     control: Control<Record<string, unknown>>,
+    meta?: PropertyMeta;
     value?: unknown;
+    Component?: ComponentType<Record<string, unknown>>;
 };
 
 const GenerateField: FC<Props> = ({ meta, control, Component }) => {
