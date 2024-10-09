@@ -9,7 +9,7 @@ type Props = {
 };
 
 const GenerateBlock = ({ meta, Component, value }: Props) => {
-  const blockType = meta?.type;
+  const blockType = meta?.fieldType;
   const label = meta?.label;
 
   if (!meta) {

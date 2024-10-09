@@ -7,16 +7,16 @@ import {
     useDeskproAppClient,
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
-import { queryClient, QueryKey } from "../query";
-import { setEntityContact } from "../services/entityAssociation";
-import { isConflictError, isValidationError } from "../services/hubspot/utils";
-import { useLoadUpdateContactDeps, useLinkContact } from "../hooks";
-import { getEntityMetadata } from "../utils";
-import { ContactForm } from "../components";
-import { BaseContainer, ErrorBlock } from "../components/common";
-import { getContactValues } from "../components/ContactForm/utils";
-import { updateContactService } from "../services/hubspot";
-import type { Values, FormErrors } from "../components/ContactForm/types";
+import { queryClient, QueryKey } from "../../query";
+import { setEntityContact } from "../../services/entityAssociation";
+import { isConflictError, isValidationError } from "../../services/hubspot/utils";
+import { useContactMeta, useLinkContact } from "../../hooks";
+import { getEntityMetadata } from "../../utils";
+import { ContactForm } from "../../components";
+import { BaseContainer, ErrorBlock } from "../../components/common";
+import { getContactValues } from "../../components/ContactForm/utils";
+import { updateContactService } from "../../services/hubspot";
+import type { Values, FormErrors } from "../../components/ContactForm/types";
 
 const UpdateContactPage: FC = () => {
     const navigate = useNavigate();
@@ -24,44 +24,37 @@ const UpdateContactPage: FC = () => {
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
     const { getContactInfo } = useLinkContact();
-    const {
-        owners,
-        contact,
-        isLoading,
-        leadStatuses,
-        lifecycleStages,
-    } = useLoadUpdateContactDeps(contactId);
+    const [errors, setErrors] = useState<string[]>([]);
+    const { structure, contactMetaMap, isLoading } = useContactMeta();
 
-    const [error, setError] = useState<string|null>(null);
-    const [formErrors, setFormErrors] = useState<FormErrors|null>(null);
+    const dpUserId = context?.data?.user?.id;
 
-    const deskproUserId = get(context, ["data", "user", "id"]);
-
-    const onSubmit = (values: Values) => {
-        if (!client || !contactId) {
+    const onSubmit = useCallback((values: Record<string, unknown>) => {
+        if (!client || !contactId || !dpUserId) {
             return;
         }
 
         const data = getContactValues(values);
 
-        setFormErrors(null);
+        setErrors([]);
+
         return updateContactService(client, contactId, data)
             .then(() => getContactInfo(contactId))
             .then((data) => {
-                return setEntityContact(client, deskproUserId, contactId, getEntityMetadata(data))
+                return setEntityContact(client, dpUserId, contactId, getEntityMetadata(data));
             })
             .then(() => queryClient.refetchQueries([QueryKey.CONTACT, contactId]))
             .then(() => navigate("/home"))
             .catch((err) => {
                 if (isValidationError(err)) {
-                    setError(err.message);
+                    setErrors((state) => [...state, err.message]);
                 } else if (isConflictError(err)) {
-                    setFormErrors((state) => ({ ...state, email: err.message }) as FormErrors);
+                    setErrors((state) => [...state, err.message]);
                 } else {
                     throw new Error(err);
                 }
             });
-    };
+    }, [client, contactId, dpUserId, getContactInfo, navigate]);
 
     const onCancel = useCallback(() => navigate(`/contacts/${contactId}`), [navigate, contactId]);
 

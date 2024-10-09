@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
-import { useQueryWithClient } from "../../hooks";
-import { getPropertiesMetaService } from "../../services/hubspot";
-import { QueryKey } from "../../query";
-import { getScreenStructure } from "../../utils";
-import type { Layout, FormBuilderProps } from "../../components/common/Builder";
-import type { PropertyMeta } from "../../services/hubspot/types";
+import { useQueryWithClient } from "./useQueryWithClient";
+import { getPropertiesMetaService } from "../services/hubspot";
+import { QueryKey } from "../query";
+import { getScreenStructure } from "../utils";
+import type { Layout, FormBuilderProps } from "../components/common/Builder";
+import type { PropertyMeta } from "../services/hubspot/types";
 
 
 type UseContactMeta = () => {

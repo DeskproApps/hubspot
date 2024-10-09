@@ -7,12 +7,11 @@ import {
     useDeskproAppClient,
     useDeskproLatestAppContext,
 } from "@deskpro/app-sdk";
-import { useLinkContact, useLinkUnlinkNote } from "../../hooks";
+import { useLinkContact, useLinkUnlinkNote, useContactMeta } from "../../hooks";
 import { setEntityContact } from "../../services/entityAssociation";
 import { createContactService } from "../../services/hubspot";
 import { isValidationError, isConflictError } from "../../services/hubspot/utils";
 import { getEntityMetadata } from "../../utils";
-import { useContactMeta } from "./hooks";
 import { CreateContact } from "../../components";
 import type { ContextData } from "../../types";
 
