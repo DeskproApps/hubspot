@@ -4,6 +4,8 @@ import { NumberField } from "./NumberField";
 import { TextAreaField } from "./TextAreaField";
 import { DatePickerField } from "./DatePickerField";
 import { MultipleCheckboxesField } from "./MultipleCheckboxesField";
+import type { FC } from "react";
+import type { FieldProps } from "../common/Builder";
 import type { PropertyMeta } from "../../services/hubspot/types";
 
 export const fieldsMap = {
@@ -17,8 +19,7 @@ export const fieldsMap = {
     booleancheckbox: SelectField,
     radio: SelectField,
     checkbox: MultipleCheckboxesField,
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as Record<PropertyMeta["fieldType"], any>;
+} as Record<PropertyMeta["fieldType"], FC<FieldProps>>;
 
 export {
     TextField,

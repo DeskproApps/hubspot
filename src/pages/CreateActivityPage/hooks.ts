@@ -32,10 +32,7 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
             enabled: !!contactId,
             select: (data) => {
                 return [{
-                    ...getOption(data.id, getFullName({
-                        firstName: get(data, ["properties", "firstname"]),
-                        lastName: get(data, ["properties", "lastname"]),
-                    })),
+                    ...getOption(data.id, getFullName(data.properties)),
                     selected: true,
                 }];
             }

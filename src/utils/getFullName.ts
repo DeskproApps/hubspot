@@ -1,27 +1,32 @@
-import { nbsp } from "../constants";
+import { isContact, isOwner } from "../utils";
+import type { Contact, Owner } from "../services/hubspot/types";
 
-type User = {
-    firstname?: string;
-    lastname?: string;
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-};
+type User = Contact["properties"] | Owner;
 
 const getFullName = (user?: User): string|undefined => {
-    let fullName = [];
-
-    if (user?.firstName || user?.firstname) {
-        fullName.push(user?.firstName || user?.firstname);
+    if (!user) {
+        return
     }
 
-    if (user?.lastName || user?.lastname) {
-        fullName.push(user?.lastName || user?.lastname)
-    }
+    const fullName: string[] = [];
 
-    fullName = fullName.filter(Boolean);
-
-    return (fullName.length > 0) ? fullName.join(" ") : user?.email;
+    if (isContact(user)) {
+        if (user.firstname) {
+          fullName.push(user.firstname);
+        }
+        if (user.lastname) {
+          fullName.push(user.lastname);
+        }
+      } else if (isOwner(user)) {
+        if (user.firstName) {
+          fullName.push(user.firstName);
+        }
+        if (user.lastName) {
+          fullName.push(user.lastName);
+        }
+      }
+    
+      return (fullName.length > 0) ? fullName.join(" ") : user.email;
 };
 
 export { getFullName };

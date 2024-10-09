@@ -102,14 +102,8 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getContactsService,
         {
             select: (data) => {
-                return (get(data, ["results"], []) as Contact[]).map(({
-                    id: contactId,
-                    properties: {
-                        firstname: firstName,
-                        lastname: lastName
-                    },
-                }) => {
-                    return getOption(contactId, getFullName({ firstName, lastName }));
+                return (get(data, ["results"], []) as Contact[]).map((c) => {
+                    return getOption(c.id, getFullName(c.properties));
                 });
             },
         },

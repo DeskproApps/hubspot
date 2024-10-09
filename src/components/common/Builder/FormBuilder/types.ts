@@ -17,7 +17,7 @@ export type Config = {
     metaMap: Meta;
 };
 
-export type FieldsMap = Record<PropertyMeta["fieldType"], FC>;
+export type FieldsMap = Record<PropertyMeta["fieldType"], FC<FieldProps>>;
 
 export type FormBuilderProps = {
     config: Config;
