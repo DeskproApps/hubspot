@@ -1,5 +1,3 @@
-import get from "lodash/get";
-import concat from "lodash/concat";
 import {
     getDealService,
     getOwnersService,
@@ -60,14 +58,14 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getOwnersService,
         {
             select: (data) => {
-                const owners: Owner[] = get(data, ["results"], []);
+                const owners: Owner[] = data?.results ?? [];
                 let options = [noOwnerOption];
 
                 if (Array.isArray(owners) && owners.length > 0) {
-                    options = concat(
-                        options,
-                        owners.map((owner) => getOption(owner.id, getFullName(owner))),
-                    );
+                    options = [
+                        ...options,
+                        ...owners.map((owner) => getOption(owner.id, getFullName(owner))),
+                    ];
                 }
 
                 return options;
@@ -80,7 +78,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getDealTypesService,
         {
             select: (data) => {
-                return (get(data, ["options"], []) as DealTypeOption[])
+                return (data?.options ?? [] as DealTypeOption[])
                     .map(({ value, label }) => getOption(value, label));
             },
         }
@@ -91,7 +89,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getDealPrioritiesService,
         {
             select: (data) => {
-                return (get(data, ["options"], []) as DealPriorityOption[])
+                return (data?.options ?? [] as DealPriorityOption[])
                     .map(({ value, label }) => getOption(value, label));
             },
         }
@@ -102,7 +100,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getContactsService,
         {
             select: (data) => {
-                return (get(data, ["results"], []) as Contact[]).map((c) => {
+                return (data?.results ?? [] as Contact[]).map((c) => {
                     return getOption(c.id, getFullName(c.properties));
                 });
             },
@@ -114,7 +112,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getCompaniesService,
         {
             select: (data) => {
-                return (get(data, ["results"], []) as Company[]).map(({ id, properties: { name } }) => {
+                return (data?.results ?? [] as Company[]).map(({ id, properties: { name } }) => {
                     return getOption(id, name);
                 });
             }
@@ -132,8 +130,8 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
             priorities,
             accountInfo,
         ].every(({ isLoading }) => Boolean(isLoading)),
-        deal: get(deal, ["data", "properties"]) as Deal["properties"],
-        pipelines: get(pipelines, ["data", "results"], []) || [],
+        deal: (deal.data?.properties ?? []) as Deal["properties"],
+        pipelines: pipelines.data?.results || [],
         currency: getSymbolFromCurrency(undefined, accountInfo.data),
         ownerOptions: owners.data || [],
         dealTypeOptions: dealTypes.data || [],

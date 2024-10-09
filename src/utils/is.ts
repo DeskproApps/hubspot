@@ -20,13 +20,13 @@ export const isEmptyObject = (obj: object): boolean => {
 };
 
 export const isContact = (
-    contact: Contact["properties"] | Owner
+    contact: Partial<Contact["properties"] | Owner>,
 ): contact is Contact["properties"] => {
     return "firstname" in contact && "lastname" in contact;
 };
 
 export const isOwner = (
-    owner: Contact["properties"] | Owner
+    owner: Partial<Contact["properties"] | Owner>,
 ): owner is Owner => {
     return "firstName" in owner && "lastName" in owner;
 };

@@ -10,7 +10,7 @@ import type { Layout } from "../types";
 
 export type Meta = Record<PropertyMeta["name"], PropertyMeta>;
 
-export type Values = Record<PropertyMeta["name"], unknown>;
+export type Values = Record<PropertyMeta["name"], string>;
 
 export type Config = {
     structure: Layout;

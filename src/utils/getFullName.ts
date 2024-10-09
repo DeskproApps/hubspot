@@ -1,7 +1,7 @@
 import { isContact, isOwner } from "../utils";
 import type { Contact, Owner } from "../services/hubspot/types";
 
-type User = Contact["properties"] | Owner;
+type User = Partial<Contact["properties"] | Owner>;
 
 const getFullName = (user?: User): string|undefined => {
     if (!user) {
@@ -17,16 +17,16 @@ const getFullName = (user?: User): string|undefined => {
         if (user.lastname) {
           fullName.push(user.lastname);
         }
-      } else if (isOwner(user)) {
+    } else if (isOwner(user)) {
         if (user.firstName) {
           fullName.push(user.firstName);
         }
         if (user.lastName) {
           fullName.push(user.lastName);
         }
-      }
-    
-      return (fullName.length > 0) ? fullName.join(" ") : user.email;
+    }
+
+    return (fullName.length > 0) ? fullName.join(" ") : user.email;
 };
 
 export { getFullName };

@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { isEmptyObject } from "../../../../utils";
-import type { PropertyMeta } from "../../../../services/hubspot/types";
 import type { LayoutItem } from "../types";
-import type { Config } from "./types";
+import type { Config, Values } from "./types";
 
 const validateConfig = (
   structure: Config["structure"],
@@ -27,9 +26,9 @@ const getValidationSchema = (structure: LayoutItem[]) => {
 
 const getInitValues = (
   structure: LayoutItem[],
-  values?: Record<PropertyMeta["name"], unknown>,
+  values?: Values,
 ) => {
-  return structure.reduce<Record<PropertyMeta["name"], unknown>>((acc, fieldName) => {
+  return structure.reduce((acc, fieldName) => {
     return {
       ...acc,
       [fieldName]: (values || {})[fieldName] || "",

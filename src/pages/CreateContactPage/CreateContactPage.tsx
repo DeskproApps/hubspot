@@ -34,7 +34,7 @@ const CreateContactPage: FC = () => {
         deRegisterElement("externalLink");
     });
 
-    const onSubmit = useCallback((values: Record<string, unknown>) => {
+    const onSubmit = useCallback((values: Record<string, string>) => {
         if (!client || !dpUser?.id) {
             return;
         }
@@ -53,7 +53,7 @@ const CreateContactPage: FC = () => {
                 } else if (isConflictError(err)) {
                     setErrors((state) => ([...state, err.message ]));
                 } else {
-                    throw new Error(err);
+                    throw err;
                 }
             })
     }, [client, dpUser?.id, getContactInfo, linkContactFn, navigate]);
@@ -73,9 +73,9 @@ const CreateContactPage: FC = () => {
             onNavigateToLink={onNavigateToLink}
             config={{ structure, metaMap: contactMetaMap }}
             values={{
-                email: dpUser?.primaryEmail,
-                firstname: dpUser?.firstName,
-                lastname: dpUser?.lastName,
+                email: dpUser?.primaryEmail || "",
+                firstname: dpUser?.firstName || "",
+                lastname: dpUser?.lastName || "",
             }}
         />
     );

@@ -3,7 +3,7 @@ import { P5 } from "@deskpro/deskpro-ui";
 import { Title, BaseContainer, TextBlockWithLabel } from "../common";
 import { getFullName } from "../../utils";
 import { format } from "../../utils/date";
-import type { Owner, EmailActivity } from "../../services/hubspot/types";
+import type { EmailActivity } from "../../services/hubspot/types";
 
 const Email: FC<EmailActivity["properties"]> = ({
     hs_email_subject,
@@ -30,14 +30,14 @@ const Email: FC<EmailActivity["properties"]> = ({
                 text={getFullName({
                     firstName: hs_email_from_firstname,
                     lastName: hs_email_from_lastname,
-                } as Owner)}
+                })}
             />
             <TextBlockWithLabel
                 label="Contacted"
                 text={getFullName({
                     firstName: hs_email_to_firstname,
                     lastName: hs_email_to_lastname,
-                } as Owner)}
+                })}
             />
             <TextBlockWithLabel
                 label="Date/time"
