@@ -1,19 +1,21 @@
 import { useMemo } from "react";
 import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
-import { useQueryWithClient } from "../../hooks";
+import { useQueryWithClient } from "../hooks";
 import {
     getContactService,
     getAccountInfoService,
     getPropertiesMetaService,
-} from "../../services/hubspot";
-import { QueryKey } from "../../query";
-import { getScreenStructure, flatten } from "../../utils";
-import type { Contact, AccountInto, PropertyMeta } from "../../services/hubspot/types";
+} from "../services/hubspot";
+import { QueryKey } from "../query";
+import { getScreenStructure, flatten } from "../utils";
+import type { Contact, AccountInto, PropertyMeta } from "../services/hubspot/types";
+import type { Layout } from "../components/common/Builder";
 
 type UseContact = (contactId?: Contact["id"]) => {
     isLoading: boolean;
     accountInfo: AccountInto;
     contact: Contact["properties"];
+    structure: Layout;
     contactMetaMap: Record<PropertyMeta["name"], PropertyMeta>;
 };
 
@@ -47,10 +49,11 @@ const useContact: UseContact = (contactId) => {
     }, [propertiesMeta.data?.results]);
 
     return {
-        isLoading: !contactId && [contact, contactMetaMap, accountInfo].some(({ isLoading }) => isLoading),
+        isLoading: !context && [contact, contactMetaMap, accountInfo].some(({ isLoading }) => isLoading),
         accountInfo: accountInfo.data as AccountInto,
         contact: contact.data?.properties as Contact["properties"],
         contactMetaMap,
+        structure,
     };
 };
 

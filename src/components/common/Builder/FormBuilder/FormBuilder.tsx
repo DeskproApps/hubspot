@@ -17,6 +17,7 @@ const RenderForm: FC<FormBuilderProps> = ({
     config: { structure, metaMap },
     onSubmit,
     onCancel,
+    isEditMode,
 }) => {
     const [schema, setSchema] = useState<ZodTypeAny>(z.object({}));
     const form = useForm({
@@ -62,7 +63,7 @@ const RenderForm: FC<FormBuilderProps> = ({
             <Stack justify="space-between">
                 <Button
                     type="submit"
-                    text="Create"
+                    text={isEditMode ? "Save" : "Create"}
                     disabled={form.formState.isSubmitting}
                     loading={form.formState.isSubmitting}
                 />

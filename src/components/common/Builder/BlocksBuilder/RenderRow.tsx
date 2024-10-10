@@ -25,6 +25,20 @@ const RenderRow: FC<Props> = ({
         const value = (values ?? {})[name];
         const Component = blocksMap[blockType];
 
+        if (!meta) {
+          // eslint-disable-next-line no-console
+          console.error("BlocksBuilder: wrong config - block config not found");
+          return null;
+        }
+      
+        if (!Component) {
+          // eslint-disable-next-line no-console
+          console.error(
+            "BlocksBuilder: can't find component for block type:",
+            blockType,
+          );
+        }
+
         return (
           <GenerateBlock
             key={name}

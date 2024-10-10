@@ -15,9 +15,9 @@ const getScreenStructure = (
         return settings?.mapping_contact
             ? JSON.parse(settings.mapping_contact).view
             : STRUCTURE.CONTACT.view
-    } else {
-        return [];
     }
+    
+    return [];
 };
 
 export { getScreenStructure };
