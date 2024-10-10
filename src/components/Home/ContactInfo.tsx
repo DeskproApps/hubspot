@@ -34,7 +34,7 @@ const ContactInfo: FC<Props> = ({
                 <Title
                     title={(
                         <Link as={RouterLink} to={`/contacts/${contact.hs_object_id}`}>
-                            {getFullName({ firstName: contact.firstname, lastName: contact.lastname }) || contact.email || ""}
+                            {getFullName(contact) || "Contact"}
                         </Link>
                     )}
                     link={(portalId && contact.hs_object_id)

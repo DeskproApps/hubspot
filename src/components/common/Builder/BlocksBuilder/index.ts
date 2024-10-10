@@ -1,2 +1,2 @@
 export { BlocksBuilder } from "./BlocksBuilder";
-export type { BlockProps } from "./types";
+export type { BlockProps, BlocksBuilderProps } from "./types";

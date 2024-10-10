@@ -89,7 +89,7 @@ const CreateDealPage: FC = () => {
 
     return (
         <>
-            {error && <ErrorBlock text={error}/>}
+            {error && <ErrorBlock texts={[error]}/>}
             <DealForm
                 initValues={{ contactId, companyId }}
                 onSubmit={onSubmit}

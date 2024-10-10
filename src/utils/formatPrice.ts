@@ -9,7 +9,7 @@ type Options = {
 };
 
 const formatPrice = (price?: string | number, options?: Options): string => {
-  const formatter = new Intl.NumberFormat("en-GB", {
+  const formatter = new Intl.NumberFormat(navigator?.language || "en-GB", {
     style: options?.style || "currency",
     currency: options?.currency || "GBP",
     currencyDisplay: "narrowSymbol",

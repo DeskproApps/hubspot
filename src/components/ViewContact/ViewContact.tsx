@@ -27,7 +27,7 @@ const ViewContact: FC<Props> = ({
         <>
             <BaseContainer>
                 <Title
-                    title={getFullName({ firstName: contact.firstname, lastName: contact.lastname }) || contact.email || ""}
+                    title={getFullName(contact) || "-"}
                     link={(portalId && contact.hs_object_id)
                         ? `https://app.hubspot.com/contacts/${portalId}/contact/${contact.hs_object_id}`
                         : ""

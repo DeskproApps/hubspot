@@ -32,12 +32,7 @@ const Call: FC<Props> = ({
             <TextBlockWithLabel label="Call by" text={getFullName(owner)} />
             <TextBlockWithLabel
                 label="Direction"
-                text={contacts
-                    .map(({ firstname, lastname }) => getFullName({
-                        firstName: firstname,
-                        lastName: lastname,
-                    }))
-                    .join(", ")}
+                text={contacts.map(getFullName).join(", ")}
             />
             <TextBlockWithLabel
                 label="Duration"

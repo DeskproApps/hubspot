@@ -47,7 +47,9 @@ const UpdateContactPage: FC = () => {
         setFormErrors(null);
         return updateContactService(client, contactId, data)
             .then(() => getContactInfo(contactId))
-            .then((data) => setEntityContact(client, deskproUserId, contactId, getEntityMetadata(data)))
+            .then((data) => {
+                return setEntityContact(client, deskproUserId, contactId, getEntityMetadata(data))
+            })
             .then(() => queryClient.refetchQueries([QueryKey.CONTACT, contactId]))
             .then(() => navigate("/home"))
             .catch((err) => {
@@ -81,7 +83,7 @@ const UpdateContactPage: FC = () => {
                 ? <LoadingSpinner/>
                 : (
                     <>
-                        {error && <ErrorBlock text={error}/>}
+                        {error && <ErrorBlock texts={[error]}/>}
                         <ContactForm
                             initValues={{
                                 email: contact?.email || "",

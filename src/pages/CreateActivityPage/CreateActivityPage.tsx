@@ -108,7 +108,7 @@ const CreateActivityPage: FC = () => {
         <>
             {error && (
                 <BaseContainer>
-                    <ErrorBlock text={error}/>
+                    <ErrorBlock texts={[error]}/>
                 </BaseContainer>
             )}
             <ActivityForm
