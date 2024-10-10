@@ -1,5 +1,4 @@
-import { FC, useState, useCallback } from "react";
-import get from "lodash/get";
+import { useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
     LoadingSpinner,
@@ -10,35 +9,31 @@ import {
 import { queryClient, QueryKey } from "../../query";
 import { setEntityContact } from "../../services/entityAssociation";
 import { isConflictError, isValidationError } from "../../services/hubspot/utils";
-import { useContactMeta, useLinkContact } from "../../hooks";
+import { useContact, useLinkContact } from "../../hooks";
 import { getEntityMetadata } from "../../utils";
-import { ContactForm } from "../../components";
-import { BaseContainer, ErrorBlock } from "../../components/common";
-import { getContactValues } from "../../components/ContactForm/utils";
+import { UpdateContact } from "../../components";
 import { updateContactService } from "../../services/hubspot";
-import type { Values, FormErrors } from "../../components/ContactForm/types";
+import type { FC } from "react";
+import type { FormValues } from "../../components/common/Builder";
 
 const UpdateContactPage: FC = () => {
     const navigate = useNavigate();
     const { contactId } = useParams();
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext();
-    const { getContactInfo } = useLinkContact();
     const [errors, setErrors] = useState<string[]>([]);
-    const { structure, contactMetaMap, isLoading } = useContactMeta();
-
+    const { getContactInfo } = useLinkContact();
+    const { structure, contact, contactMetaMap, isLoading } = useContact(contactId);
     const dpUserId = context?.data?.user?.id;
 
-    const onSubmit = useCallback((values: Record<string, unknown>) => {
+    const onSubmit = useCallback((values: FormValues) => {
         if (!client || !contactId || !dpUserId) {
             return;
         }
 
-        const data = getContactValues(values);
-
         setErrors([]);
 
-        return updateContactService(client, contactId, data)
+        return updateContactService(client, contactId, values)
             .then(() => getContactInfo(contactId))
             .then((data) => {
                 return setEntityContact(client, dpUserId, contactId, getEntityMetadata(data));
@@ -70,35 +65,20 @@ const UpdateContactPage: FC = () => {
         });
     });
 
+    if (isLoading || !contact) {
+        return (
+            <LoadingSpinner/>
+        );
+    }
+
     return (
-        <BaseContainer>
-            {isLoading
-                ? <LoadingSpinner/>
-                : (
-                    <>
-                        {errors && <ErrorBlock texts={[errors]}/>}
-                        <ContactForm
-                            initValues={{
-                                email: contact?.email || "",
-                                firstName: contact?.firstname || "",
-                                lastName: contact?.lastname || "",
-                                jobTitle: contact?.jobtitle || "",
-                                phone: contact?.phone || "",
-                                ownerId: contact?.hubspot_owner_id || "",
-                                lifecycleStage: contact?.lifecyclestage || "",
-                            }}
-                            formErrors={formErrors}
-                            isEditMode
-                            onSubmit={onSubmit}
-                            onCancel={onCancel}
-                            owners={owners}
-                            lifecycleStages={lifecycleStages}
-                            leadStatuses={leadStatuses}
-                        />
-                    </>
-                )
-            }
-        </BaseContainer>
+        <UpdateContact
+            errors={errors}
+            onSubmit={onSubmit}
+            onCancel={onCancel}
+            config={{ structure, metaMap: contactMetaMap }}
+            values={contact as FormValues}
+        />
     );
 };
 

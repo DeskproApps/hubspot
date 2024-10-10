@@ -19,10 +19,8 @@ const Main = () => {
 
     useCheckLinkedContact(
         isAuth,
-        // useCallback(() => navigate("/home"), [navigate]),
-        useCallback(() => navigate("/contacts/edit/101"), [navigate]),
-        // useCallback(() => navigate("/link"), [navigate]),
-        useCallback(() => navigate("/contacts/edit/101"), [navigate]),
+        useCallback(() => navigate("/home"), [navigate]),
+        useCallback(() => navigate("/link"), [navigate]),
     );
 
     useInitialisedDeskproAppClient((client) => {
