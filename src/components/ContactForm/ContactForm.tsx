@@ -56,7 +56,7 @@ const ContactForm: FC<Props> = ({
 
     return (
         <form onSubmit={handleSubmit}>
-            {formErrors && <ErrorBlock text={Object.values(formErrors)} />}
+            {formErrors && <ErrorBlock texts={Object.values(formErrors)} />}
 
             <Label htmlFor="email" label="Email" required>
                 <InputWithDisplay

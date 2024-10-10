@@ -76,7 +76,7 @@ const UpdateDealPage: FC = () => {
 
     return (
         <>
-            {error && <ErrorBlock text={error}/>}
+            {error && <ErrorBlock texts={[error]}/>}
             <DealForm
                 isEditMode
                 initValues={{

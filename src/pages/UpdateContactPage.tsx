@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useCallback } from "react";
 import get from "lodash/get";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -47,7 +47,9 @@ const UpdateContactPage: FC = () => {
         setFormErrors(null);
         return updateContactService(client, contactId, data)
             .then(() => getContactInfo(contactId))
-            .then((data) => setEntityContact(client, deskproUserId, contactId, getEntityMetadata(data)))
+            .then((data) => {
+                return setEntityContact(client, deskproUserId, contactId, getEntityMetadata(data))
+            })
             .then(() => queryClient.refetchQueries([QueryKey.CONTACT, contactId]))
             .then(() => navigate("/home"))
             .catch((err) => {
@@ -61,7 +63,7 @@ const UpdateContactPage: FC = () => {
             });
     };
 
-    const onCancel = () => navigate("/home");
+    const onCancel = useCallback(() => navigate(`/contacts/${contactId}`), [navigate, contactId]);
 
     useDeskproElements(({ deRegisterElement, registerElement }) => {
         deRegisterElement("home");
@@ -81,7 +83,7 @@ const UpdateContactPage: FC = () => {
                 ? <LoadingSpinner/>
                 : (
                     <>
-                        {error && <ErrorBlock text={error}/>}
+                        {error && <ErrorBlock texts={[error]}/>}
                         <ContactForm
                             initValues={{
                                 email: contact?.email || "",

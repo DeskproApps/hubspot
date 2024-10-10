@@ -8,3 +8,5 @@ export { useOwnerOptions } from "./useOwnerOptions";
 export { useLinkUnlinkNote } from "./useLinkUnlinkNote";
 export { useLinkContact } from "./useLinkContact";
 export { useUnlinkContact } from "./useUnlinkContact";
+export { useAppContext, AppProvider } from "./AppContext";
+export { useAsyncError } from "./useAsyncError";
