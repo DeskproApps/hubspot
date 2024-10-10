@@ -12,3 +12,4 @@ export { getScreenStructure } from "./getScreenStructure";
 export { flatten } from "./flatten";
 export { addBlankTargetToLinks } from "./addBlankTargetToLinks";
 export { formatPrice } from "./formatPrice";
+export { getCurrencySymbol } from "./getCurrencySymbol";

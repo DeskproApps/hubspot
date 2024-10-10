@@ -27,11 +27,17 @@ const Email: FC<EmailActivity["properties"]> = ({
             />
             <TextBlockWithLabel
                 label="Sent by"
-                text={getFullName({ firstName: hs_email_from_firstname, lastName: hs_email_from_lastname })}
+                text={getFullName({
+                    firstName: hs_email_from_firstname,
+                    lastName: hs_email_from_lastname,
+                })}
             />
             <TextBlockWithLabel
                 label="Contacted"
-                text={getFullName({ firstName: hs_email_to_firstname, lastName: hs_email_to_lastname })}
+                text={getFullName({
+                    firstName: hs_email_to_firstname,
+                    lastName: hs_email_to_lastname,
+                })}
             />
             <TextBlockWithLabel
                 label="Date/time"

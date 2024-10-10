@@ -76,7 +76,7 @@ const UpdateContactPage: FC = () => {
                 ? <LoadingSpinner/>
                 : (
                     <>
-                        {error && <ErrorBlock texts={[error]}/>}
+                        {errors && <ErrorBlock texts={[errors]}/>}
                         <ContactForm
                             initValues={{
                                 email: contact?.email || "",

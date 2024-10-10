@@ -38,6 +38,18 @@ const RenderForm: FC<FormBuilderProps> = ({
                 const fieldType = meta.fieldType;
                 const Component = fieldsMap[fieldType];
 
+                if (!meta) {
+                    // eslint-disable-next-line no-console
+                    console.error("FormBuilder: wrong config - block config not found");
+                    return null;
+                }
+            
+                if (!Component) {
+                    // eslint-disable-next-line no-console
+                    console.error("FormBuilder: can't find component for block type:", fieldType);
+                    return null;
+                }
+
                 return (
                     <GenerateField
                         key={fieldName}

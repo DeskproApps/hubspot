@@ -10,18 +10,20 @@ import type { Layout } from "../types";
 
 export type Meta = Record<PropertyMeta["name"], PropertyMeta>;
 
+export type Values = Record<PropertyMeta["name"], string>;
+
 export type Config = {
     structure: Layout;
     metaMap: Meta;
 };
 
-export type FieldsMap = Record<PropertyMeta["fieldType"], FC>;
+export type FieldsMap = Record<PropertyMeta["fieldType"], FC<FieldProps>>;
 
 export type FormBuilderProps = {
     config: Config;
     fieldsMap: FieldsMap;
-    onSubmit: SubmitHandler<Record<string, unknown>>;
-    values?: Record<PropertyMeta["name"], unknown>;
+    onSubmit: SubmitHandler<Values>;
+    values?: Values;
     onCancel?: () => void;
 };
 

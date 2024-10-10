@@ -15,6 +15,7 @@ import {
     BaseContainer,
 } from "../common";
 import type {
+    Owner,
     Contact,
     Pipeline,
     AccountInto,
@@ -26,16 +27,10 @@ const DealContainer = styled.div`
     margin-bottom: 14px;
 `;
 
-type DealOwner = {
-    id: string,
-    firstName: string,
-    lastName: string,
-};
-
 type Props = {
     deals: Array<DealType["properties"]>,
     accountInfo?: AccountInto,
-    owners: Record<DealOwner["id"], DealOwner>,
+    owners: Record<Owner["id"], Owner>,
     dealPipelines?: Record<Pipeline["id"], Pipeline>,
     contact: Contact["properties"],
     companies: Array<Company["properties"]>,
@@ -43,8 +38,8 @@ type Props = {
 
 const Deal: FC<{
     deal: DealType["properties"],
-    owner: DealOwner,
     dealPipelines: Props["dealPipelines"],
+    owner?: Owner,
     accountInfo?: AccountInto,
 }> = ({ deal, dealPipelines, owner, accountInfo }) => {
     const { amount, dealname, pipeline, dealstage, closedate, hs_object_id: dealId } = deal;
