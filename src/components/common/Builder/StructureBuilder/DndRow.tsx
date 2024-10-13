@@ -4,7 +4,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { DndTypes } from "../../../../constants";
 import { DndItem } from "./DndItem";
 import type { FC } from "react";
-import type { DragItem } from "./types";
+import type { MetaMap, DragItem } from "./types";
 
 type Props = {
     items: string[];
@@ -15,6 +15,7 @@ type Props = {
     onMoveBetweenRows: (draggedIndex: number, targetRowIndex: number, sourceRowIndex: number) => void;
     activeRow: number|null;
     onChangeActiveRow: (idx: number|null) => void;
+    meta?: MetaMap;
 };
 
 const DndRowContainer = styled.div<{ count: number, isDragging: boolean }>`
@@ -26,14 +27,8 @@ const DndRowContainer = styled.div<{ count: number, isDragging: boolean }>`
     padding: 6px;
     background-color: ${({ theme }) => theme.colors.brandShade10};
     cursor: move;
-
     position: relative;
-    transition: transform 1s ease;
-    /*
-    transition: transform 0.2s ease, opacity 0.2s ease;
-    opacity: ${({ isDragging }) => (isDragging ? 0.8 : 1)};
-    transform: ${({ isDragging }) => (isDragging ? "rotate(1deg)" : "rotate(0deg)")};
-    */
+    transition: transform 0.5s ease;
 `;
 
 const Placeholder = styled.div`
@@ -43,15 +38,14 @@ const Placeholder = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-left: 6px;
-    /* border: 1px solid ${({ theme }) => theme.colors.brandShade50}; */
     border-radius: 4px;
-    /* background-color: ${({ theme }) => theme.colors.white}; */
     background-color: transparent;
     border: 1px dashed ${({ theme }) => theme.colors.brandShade50};
     margin-left: 6px;
 `;
 
 const DndRow: FC<Props> = ({
+    meta,
     items,
     rowIndex,
     onMoveRow,
@@ -109,6 +103,7 @@ const DndRow: FC<Props> = ({
                         rowIndex={rowIndex}
                         onDeleteItem={onDeleteItem}
                         onMoveWithinRow={onMoveWithinRow}
+                        meta={meta}
                     />
                 ))}
                 {isNeedPlaceholder && (

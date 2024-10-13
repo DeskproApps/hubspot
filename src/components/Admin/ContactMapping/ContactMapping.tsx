@@ -4,11 +4,13 @@ import { TABS } from "../../../constants";
 import { BaseContainer, StructureBuilder } from "../../common";
 import type { FC } from "react";
 import type { TabBarItemType } from "@deskpro/deskpro-ui";
+import type { PropertyMeta } from "../../../services/hubspot/types";
 
 type Props = {
     properties: string[];
     onChangeStructure: (structure: { home: string[][], view: string[][] }) => void;
     structure: { home: string[][], view: string[][] };
+    meta?: Record<PropertyMeta["name"], PropertyMeta>;
 };
 
 const tabs: TabBarItemType[] = [
@@ -17,6 +19,7 @@ const tabs: TabBarItemType[] = [
 ];
 
 const ContactMapping: FC<Props> = ({
+    meta,
     structure,
     properties,
     onChangeStructure
@@ -47,10 +50,20 @@ const ContactMapping: FC<Props> = ({
                 }}
             />
             {(activeTab === TABS.HOME) && (
-                <StructureBuilder structure={structure.home} items={properties} onChange={onChangeHome}/>
+                <StructureBuilder
+                    structure={structure.home}
+                    items={properties}
+                    onChange={onChangeHome}
+                    meta={meta}
+                />
             )}
             {(activeTab === TABS.VIEW) && (
-                <StructureBuilder structure={structure.view} items={properties} onChange={onChangeView}/>
+                <StructureBuilder
+                    structure={structure.view}
+                    items={properties}
+                    onChange={onChangeView}
+                    meta={meta}
+                />
             )}
         </BaseContainer>
     );

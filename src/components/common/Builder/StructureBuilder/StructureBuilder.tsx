@@ -3,12 +3,14 @@ import styled from "styled-components";
 import { DndRow } from "./DndRow";
 import { AddItemDropdown } from "./AddItemDropdown";
 import type { FC } from "react";
+import type { MetaMap } from "./types";
 import type { Layout } from "../types";
 
 type Props = {
     onChange: (structure: Layout) => void;
     items: string[];
     structure?: Layout;
+    meta?: MetaMap;
 };
 
 const DndContainer = styled.div`
@@ -22,7 +24,7 @@ const DndContainer = styled.div`
     gap: 6px;
 `;
 
-const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
+const StructureBuilder: FC<Props> = ({ structure, items, onChange, meta }) => {
     const [rows, setRows] = useState(structure ?? []);
     const [activeRow, setActiveRow] = useState<number|null>(null);
 
@@ -78,6 +80,7 @@ const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
             <DndContainer>
                 {rows.map((items, rowIndex) => (
                     <DndRow
+                        meta={meta}
                         key={rowIndex}
                         items={items}
                         rowIndex={rowIndex}
