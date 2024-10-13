@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useDeskproElements, LoadingSpinner } from "@deskpro/app-sdk";
-import { useContact } from "./hooks";
+import { useContact } from "../../hooks";
 import { ViewContact } from "../../components";
 import type { FC } from "react";
 

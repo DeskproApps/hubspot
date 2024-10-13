@@ -15,6 +15,7 @@ import { getEntityMetadata } from "../../utils";
 import { useContactMeta } from "./hooks";
 import { CreateContact } from "../../components";
 import type { ContextData } from "../../types";
+import type { FormValues } from "../../components/common/Builder";
 
 const CreateContactPage: FC = () => {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ const CreateContactPage: FC = () => {
         deRegisterElement("externalLink");
     });
 
-    const onSubmit = useCallback((values: Record<string, string>) => {
+    const onSubmit = useCallback((values: FormValues) => {
         if (!client || !dpUser?.id) {
             return;
         }
