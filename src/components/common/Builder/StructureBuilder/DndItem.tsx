@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import styled from "styled-components";
 import { useDrag, useDrop } from "react-dnd";
 import { P5, IconV2, Button } from "@deskpro/deskpro-ui";
@@ -13,7 +14,7 @@ type Props = {
   onDeleteItem: (rowIndex: number, itemIndex: number) => void;
 };
 
-const DndItemStyled = styled.div`
+const DndItemStyled = styled.div<{ isDragging: boolean }>`
     box-sizing: border-box;
     display: flex;
     gap: 6px;
@@ -24,6 +25,9 @@ const DndItemStyled = styled.div`
     border-radius: 4px;
     background-color: ${({ theme }) => theme.colors.white};
     cursor: move;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    opacity: ${({ isDragging }) => (isDragging ? 0.8 : 1)};
+    transform: ${({ isDragging }) => (isDragging ? "rotate(1deg)" : "rotate(0deg)")};
 
     .dnd-item-0 {
       margin-left: 0;
@@ -35,9 +39,14 @@ const DndItemLabel = styled(P5)`
 `;
 
 const DndItem: FC<Props> = ({ item, index, onMoveWithinRow, rowIndex, onDeleteItem }) => {
-    const [, ref] = useDrag({
+    const ref = useRef<HTMLDivElement>(null);
+
+    const [{ isDragging }, drag] = useDrag({
       type: `item-${DndTypes.CONTACT}`,
-      item: { index, rowIndex },
+      item: { index, rowIndex, type: DndTypes.CONTACT },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
     });
   
     const [, drop] = useDrop<DragItem>({
@@ -49,9 +58,11 @@ const DndItem: FC<Props> = ({ item, index, onMoveWithinRow, rowIndex, onDeleteIt
         }
       },
     });
+
+    drag(drop(ref));
   
     return (
-      <DndItemStyled id="dnd-item" ref={(node) => ref(drop(node))} style={{ marginLeft: index === 0 ? "0" : "6px" }}>
+      <DndItemStyled id="dnd-item" ref={ref} isDragging={isDragging} style={{ marginLeft: index === 0 ? "0" : "6px" }}>
         <IconV2 icon="dp-custom-solid-grip-vertical" themeColor="grey40" size={14}/>
         <DndItemLabel type="p_p3">{item}</DndItemLabel>
         <Button

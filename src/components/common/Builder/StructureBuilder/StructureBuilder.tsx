@@ -24,6 +24,7 @@ const DndContainer = styled.div`
 
 const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
     const [rows, setRows] = useState(structure ?? []);
+    const [activeRow, setActiveRow] = useState<number|null>(null);
 
     const onMoveBetweenRows = (draggedIndex: number, targetRowIndex: number, sourceRowIndex: number) => {
         if (sourceRowIndex === targetRowIndex) {
@@ -68,6 +69,7 @@ const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
         const newRows = [...rows];
         const [draggedRow] = newRows.splice(draggedRowIndex, 1);
         newRows.splice(targetRowIndex, 0, draggedRow);
+        onChange(newRows);
         setRows(newRows);
       };
 
@@ -83,6 +85,8 @@ const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
                         onMoveBetweenRows={onMoveBetweenRows}
                         onMoveWithinRow={onMoveWithinRow}
                         onDeleteItem={onDeleteItem}
+                        activeRow={activeRow}
+                        onChangeActiveRow={setActiveRow}
                     />
                 ))}
             </DndContainer>
