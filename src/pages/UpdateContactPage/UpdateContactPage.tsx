@@ -46,7 +46,7 @@ const UpdateContactPage: FC = () => {
                 } else if (isConflictError(err)) {
                     setErrors((state) => [...state, err.message]);
                 } else {
-                    throw new Error(err);
+                    throw err;
                 }
             });
     }, [client, contactId, dpUserId, getContactInfo, navigate]);
