@@ -57,7 +57,7 @@ const DndRow: FC<Props> = ({
 }) => {
     const isNeedPlaceholder = (activeRow !== null && activeRow === rowIndex);
 
-    const [{ isOver }, drop] = useDrop<DragItem>({
+    const [{ isOver }, drop] = useDrop<DragItem, void, { isOver: boolean }>({
         accept: `item-${DndTypes.CONTACT}`,
         drop: (draggedItem) => onMoveBetweenRows(draggedItem.index, rowIndex, draggedItem.rowIndex),
         collect: (monitor) => ({

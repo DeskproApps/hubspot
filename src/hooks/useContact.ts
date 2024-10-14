@@ -1,11 +1,6 @@
-import { useMemo } from "react";
 import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import { useQueryWithClient, useContactMeta } from "../hooks";
-import {
-    getContactService,
-    getAccountInfoService,
-    getPropertiesMetaService,
-} from "../services/hubspot";
+import { getContactService, getAccountInfoService } from "../services/hubspot";
 import { QueryKey } from "../query";
 import { getScreenStructure, flatten } from "../utils";
 import type { Contact, AccountInto, PropertyMeta } from "../services/hubspot/types";
