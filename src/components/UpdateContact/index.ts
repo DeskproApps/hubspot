@@ -1,0 +1,1 @@
+export { UpdateContact } from "./UpdateContact";

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { isEmptyObject } from "../../../../utils";
 import type { LayoutItem } from "../types";
-import type { Config, Values } from "./types";
+import type { Config, FormValues } from "./types";
 
 const validateConfig = (
   structure: Config["structure"],
@@ -26,14 +26,12 @@ const getValidationSchema = (structure: LayoutItem[]) => {
 
 const getInitValues = (
   structure: LayoutItem[],
-  values?: Values,
+  values?: FormValues,
 ) => {
-  return structure.reduce((acc, fieldName) => {
-    return {
-      ...acc,
-      [fieldName]: (values || {})[fieldName] || "",
-    };
-  }, {});
+  return structure.reduce((acc, fieldName) => ({
+    ...acc,
+    [fieldName]: (values || {})[fieldName] || "",
+  }), {});
 };
 
 export {
