@@ -1,9 +1,10 @@
 import { isContact, isOwner } from "../utils";
 import type { Contact, Owner } from "../services/hubspot/types";
 
-type User =
+type User = Partial<
   | Pick<Contact["properties"], "firstname"|"lastname"|"email">
-  | Pick<Owner, "firstName"|"lastName"|"email">;
+  | Pick<Owner, "firstName"|"lastName"|"email">
+>;
 
 const getFullName = (user?: User): string|undefined => {
     if (!user) {

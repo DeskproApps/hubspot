@@ -39,7 +39,7 @@ const UpdateContactPage: FC = () => {
                 return setEntityContact(client, dpUserId, contactId, getEntityMetadata(data));
             })
             .then(() => queryClient.refetchQueries([QueryKey.CONTACT, contactId]))
-            .then(() => navigate("/home"))
+            .then(() => navigate(`/contacts/${contactId}`))
             .catch((err) => {
                 if (isValidationError(err)) {
                     setErrors((state) => [...state, err.message]);

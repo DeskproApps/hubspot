@@ -3,27 +3,30 @@ import styled from "styled-components";
 import { DndRow } from "./DndRow";
 import { AddItemDropdown } from "./AddItemDropdown";
 import type { FC } from "react";
+import type { MetaMap } from "./types";
 import type { Layout } from "../types";
 
 type Props = {
     onChange: (structure: Layout) => void;
     items: string[];
     structure?: Layout;
+    meta?: MetaMap;
 };
 
 const DndContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     box-sizing: border-box;
     border-radius: 4px;
     border: 1px dashed ${({ theme }) => theme.colors.brandShade50};
     padding: 3px;
     margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
 `;
 
-const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
+const StructureBuilder: FC<Props> = ({ structure, items, onChange, meta }) => {
     const [rows, setRows] = useState(structure ?? []);
+    const [activeRow, setActiveRow] = useState<number|null>(null);
 
     const onMoveBetweenRows = (draggedIndex: number, targetRowIndex: number, sourceRowIndex: number) => {
         if (sourceRowIndex === targetRowIndex) {
@@ -68,6 +71,7 @@ const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
         const newRows = [...rows];
         const [draggedRow] = newRows.splice(draggedRowIndex, 1);
         newRows.splice(targetRowIndex, 0, draggedRow);
+        onChange(newRows);
         setRows(newRows);
       };
 
@@ -76,6 +80,7 @@ const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
             <DndContainer>
                 {rows.map((items, rowIndex) => (
                     <DndRow
+                        meta={meta}
                         key={rowIndex}
                         items={items}
                         rowIndex={rowIndex}
@@ -83,10 +88,12 @@ const StructureBuilder: FC<Props> = ({ structure, items, onChange }) => {
                         onMoveBetweenRows={onMoveBetweenRows}
                         onMoveWithinRow={onMoveWithinRow}
                         onDeleteItem={onDeleteItem}
+                        activeRow={activeRow}
+                        onChangeActiveRow={setActiveRow}
                     />
                 ))}
             </DndContainer>
-            <AddItemDropdown items={items} onAddItem={onAddItem} />
+            <AddItemDropdown meta={meta} items={items} onAddItem={onAddItem} />
         </>
     );
 };

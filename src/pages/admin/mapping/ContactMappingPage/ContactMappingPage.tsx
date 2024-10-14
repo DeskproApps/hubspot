@@ -3,7 +3,7 @@ import {
   LoadingSpinner,
   useDeskproAppClient,
 } from "@deskpro/app-sdk";
-import { useAppContext } from "../../../../hooks";
+import { useAppContext, useContactMeta } from "../../../../hooks";
 import { useProperties } from "./hooks";
 import { STRUCTURE } from "../../../../constants";
 import { ContactMapping } from "../../../../components";
@@ -13,7 +13,8 @@ const ContactMappingPage: FC = () => {
     const { client } = useDeskproAppClient();
     const { settings, isLoading: isLoadingContext } = useAppContext();
     const { properties, isLoading: isLoadingProperties } = useProperties();
-    const isLoading = isLoadingContext || isLoadingProperties;
+    const { contactMetaMap, isLoading: isLoadingMeta } = useContactMeta();
+    const isLoading = isLoadingContext || isLoadingProperties || isLoadingMeta;
     
     const structure: { home: string[][], view: string[][] } = useMemo(() => {
       return settings?.mapping_contact
@@ -33,6 +34,7 @@ const ContactMappingPage: FC = () => {
 
     return (
         <ContactMapping
+          meta={contactMetaMap}
           structure={structure}
           properties={properties}
           onChangeStructure={onChangeStructure}
