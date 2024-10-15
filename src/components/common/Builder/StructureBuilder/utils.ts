@@ -1,7 +1,7 @@
 import { isPrimitive } from "../../../../utils";
 import type { DropdownItemType, DropdownValueType } from "@deskpro/deskpro-ui";
 
-const NO_FOUND = "No item(s) found";
+const NOT_FOUND = "No item(s) found";
 
 const getFilteredOptions = <T,>(
   options: Array<DropdownValueType<T>>,
@@ -10,7 +10,7 @@ const getFilteredOptions = <T,>(
   const searchInput: string = input || "";
 
   if (!Array.isArray(options) || !options.length) {
-    return [{ type: "header", label: NO_FOUND }];
+    return [{ type: "header", label: NOT_FOUND }];
   }
 
   const filteredOptions = options
@@ -25,7 +25,7 @@ const getFilteredOptions = <T,>(
     });
 
   if (!Array.isArray(filteredOptions) || !filteredOptions.length) {
-    return [{ type: "header", label: NO_FOUND }];
+    return [{ type: "header", label: NOT_FOUND }];
   } else {
     return filteredOptions;
   }

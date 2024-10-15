@@ -61,9 +61,6 @@ export type DeskproUser = {
 };
 
 export type ContextData = {
-    app: object;
-    currentAgent: object,
-    env: object,
     user: DeskproUser,
 };
 

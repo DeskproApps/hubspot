@@ -5,7 +5,7 @@ import { RichTextBlock } from "./RichTextBlock";
 import { DatePickerBlock } from "./DatePickerBlock";
 import { MultipleCheckboxesBlock } from "./MultipleCheckboxesBlock";
 import { BooleanBlock } from "./BooleanBlock";
-import type { FC } from "react";
+import type { BlocksMap } from "../common/Builder/BlocksBuilder/types";
 
 export const blocksMap = {
     text: TextBlock,
@@ -18,8 +18,7 @@ export const blocksMap = {
     checkbox: MultipleCheckboxesBlock,
     select: SelectBlock,
     booleancheckbox: BooleanBlock,
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as Record<string, FC<any>>;
+} as const as BlocksMap;
 
 export {
     TextBlock,

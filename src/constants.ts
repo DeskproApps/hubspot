@@ -7,11 +7,11 @@ export const LOCALE = "en-GB";
 export const TABS = {
     HOME: 0,
     VIEW: 1,
-};
+} as const;
 
 export const DndTypes = {
     CONTACT: "contact",
-};
+} as const;
 
 export const STRUCTURE = {
     CONTACT: {
@@ -30,4 +30,4 @@ export const STRUCTURE = {
             ["lifecyclestage"],
         ]
     },
-};
+} as const;

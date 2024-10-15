@@ -10,7 +10,6 @@ import { getFilteredOptions } from "./utils";
 import { Button } from "../../Button";
 import type { FC } from "react";
 import type { DropdownTargetProps } from "@deskpro/deskpro-ui";
-import type { Option } from "../../../../types";
 import type { MetaMap } from "./types";
 
 type Props = {
@@ -24,7 +23,7 @@ const AddItemDropdown: FC<Props> = ({ items, onAddItem, meta }) => {
     const options = items.map((i) => getOption(i, (meta ?? {})[i]?.label ?? i));
 
     const currentOptions = useMemo(() => {
-        return getFilteredOptions(options as Array<Option>, searchInput);
+        return getFilteredOptions(options, searchInput);
       }, [options, searchInput]);
 
     return (
