@@ -71,7 +71,7 @@ export type UserContext = Context<ContextData>;
 
 export type EventsPayload =
     | { type: "changePage", path: string }
-    | { type: "unlink", userId: string, contactId: string };
+    | { type: "unlink", userId: string, contactId: Contact["id"] };
 
 export type Option<Value = unknown> = Omit<DropdownValueType<Value>, "subItems">;
 
