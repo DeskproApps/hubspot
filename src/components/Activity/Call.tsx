@@ -32,12 +32,7 @@ const Call: FC<Props> = ({
             <TextBlockWithLabel label="Call by" text={getFullName(owner)} />
             <TextBlockWithLabel
                 label="Direction"
-                text={contacts
-                    .map(({ firstname, lastname }) => getFullName({
-                        firstName: firstname,
-                        lastName: lastname,
-                    }))
-                    .join(", ")}
+                text={contacts.map(getFullName).join(", ")}
             />
             <TextBlockWithLabel
                 label="Duration"
@@ -45,7 +40,7 @@ const Call: FC<Props> = ({
             />
             <TextBlockWithLabel
                 label="Date/time"
-                text={`${format(hs_timestamp)} at ${format(hs_timestamp, "HH:mm")}`}
+                text={`${format(hs_timestamp)} at ${format(hs_timestamp, { date: false, time: true })}`}
             />
         </BaseContainer>
     )

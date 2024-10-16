@@ -7,6 +7,7 @@ import { P1, P11, Stack, Avatar } from "@deskpro/deskpro-ui";
 import { HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName } from "../../utils";
 import { Title, BaseContainer } from "../common";
+import type { Owner } from "../../services/hubspot/types";
 
 const TimeAgo = styled(ReactTimeAgo)`
   color: ${({ theme }) => theme.colors.grey80};
@@ -35,26 +36,20 @@ const NoteBlock = styled(P1)`
   }
 `;
 
-type OwnerProps = {
-    id: string,
-    firstName: string,
-    lastName: string,
-};
-
 type NoteProps = {
     hs_object_id: string,
     hs_note_body: string,
     hs_lastmodifieddate: string,
-    hubspot_owner_id: OwnerProps["id"],
+    hubspot_owner_id: Owner["id"],
 };
 
 type Props = {
     notes: Array<NoteProps>,
-    owners: Record<OwnerProps["id"], OwnerProps>,
+    owners: Record<Owner["id"], Owner>,
     onCreateNote: () => void,
 };
 
-const Note: FC<NoteProps & { owner?: OwnerProps }> = ({
+const Note: FC<NoteProps & { owner?: Owner }> = ({
     hs_note_body,
     hs_lastmodifieddate,
     owner,

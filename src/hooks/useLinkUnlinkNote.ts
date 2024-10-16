@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState, useCallback } from "react";
 import { useDeskproAppClient, useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import { queryClient, QueryKey } from "../query";
 import { createNoteService, setEntityAssocService } from "../services/hubspot";

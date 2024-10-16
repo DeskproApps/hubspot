@@ -3,9 +3,11 @@ import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            suspense: true,
-            useErrorBoundary: true,
-            refetchOnWindowFocus: false,
+          suspense: false,
+          useErrorBoundary: true,
+          refetchOnWindowFocus: false,
+          retry: 1,
+          retryDelay: 1500,
         },
     },
 });
@@ -16,6 +18,7 @@ export enum QueryKey {
     ENTITY = "entity",
     CONTACT = "contact",
     CONTACTS = "contacts",
+    LINKED_CONTACTS = "linkedContacts",
     COMPANY = "company",
     COMPANIES = "companies",
     OWNERS = "owners",
@@ -26,6 +29,7 @@ export enum QueryKey {
     PIPELINES = "pipelines",
     ACCOUNT_INFO = "accountInfo",
     PROPERTIES = "properties",
+    PROPERTIES_META = "propertiesMeta",
     DEALS_BY_CONTACT_ID = "dealsByContactId",
     NOTES_BY_CONTACT_ID = "notesByContactId",
     CALLS_BY_CONTACT_ID = "callsByContactId",

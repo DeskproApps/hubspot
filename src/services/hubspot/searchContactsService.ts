@@ -4,8 +4,7 @@ import type { Contacts } from "./types";
 
 const searchContactsService = (
     client: IDeskproClient,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any,
+    data: object,
 ) => {
     return baseRequest<Contacts>(client, {
         url: "/crm/v3/objects/contacts/search",

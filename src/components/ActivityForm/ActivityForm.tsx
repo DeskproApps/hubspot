@@ -76,7 +76,6 @@ const ActivityForm: FC<Props> = ({
                 <Label htmlFor="description" label="Description" required>
                     <TextArea
                         id="description"
-                        minWidth="auto"
                         placeholder="Enter value"
                         {...getFieldProps("description")}
                         error={!!(touched.description && errors.description)}
@@ -150,6 +149,8 @@ const ActivityForm: FC<Props> = ({
                                 ? values.associateContact.filter((contactId) => contactId !== option.value)
                                 : [...values.associateContact, option.value]
 
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             setFieldValue("associateContact", newValue);
                         }
                     }}
@@ -202,6 +203,8 @@ const ActivityForm: FC<Props> = ({
                                 ? values.associateCompany.filter((id) => id !== option.value)
                                 : [...values.associateCompany, option.value]
 
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             setFieldValue("associateCompany", newValue);
                         }
                     }}
@@ -254,6 +257,8 @@ const ActivityForm: FC<Props> = ({
                                 ? values.associateDeal.filter((id) => id !== option.value)
                                 : [...values.associateDeal, option.value]
 
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             setFieldValue("associateDeal", newValue);
                         }
                     }}

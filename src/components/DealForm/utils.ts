@@ -93,8 +93,7 @@ const getInitValues = (
     };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getDealValues = (values: Omit<Values, "contact"|"company">): any => ({
+const getDealValues = (values: Omit<Values, "contact"|"company">): Record<string, string> => ({
     dealname: values.name,
     amount: values.amount,
     hubspot_owner_id: values.dealOwner.value,
