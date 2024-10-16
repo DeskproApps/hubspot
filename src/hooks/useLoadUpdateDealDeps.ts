@@ -129,7 +129,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
             dealTypes,
             priorities,
             accountInfo,
-        ].every(({ isLoading }) => Boolean(isLoading)),
+        ].some(({ isLoading }) => Boolean(isLoading)),
         deal: (deal.data?.properties ?? []) as Deal["properties"],
         pipelines: pipelines.data?.results || [],
         currency: getSymbolFromCurrency(undefined, accountInfo.data),

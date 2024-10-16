@@ -4,6 +4,7 @@ import { useQueryWithClient } from "../../hooks";
 import { getPropertiesMetaService } from "../../services/hubspot";
 import { QueryKey } from "../../query";
 import { getScreenStructure } from "../../utils";
+import type { ContextData, Settings } from "../../types";
 import type { Layout, FormBuilderProps } from "../../components/common/Builder";
 import type { PropertyMeta } from "../../services/hubspot/types";
 
@@ -15,7 +16,7 @@ type UseContactMeta = () => {
 };
 
 const useContactMeta: UseContactMeta = () => {
-    const { context } = useDeskproLatestAppContext();
+    const { context } = useDeskproLatestAppContext<ContextData, Settings>();
     const structure = getScreenStructure(context?.settings, "contact", "view");
 
     const propertiesMeta = useQueryWithClient(

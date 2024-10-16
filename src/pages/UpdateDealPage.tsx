@@ -12,7 +12,7 @@ import { ErrorBlock } from "../components/common";
 import { DealForm } from "../components";
 import { getDealValues } from "../components/DealForm/utils";
 import { isValidationError } from "../services/hubspot/utils";
-import type { Deal } from "../services/hubspot/types";
+import type { Deal, HubSpotError } from "../services/hubspot/types";
 import type { Values } from "../components/DealForm/types";
 
 const UpdateDealPage: FC = () => {
@@ -47,7 +47,7 @@ const UpdateDealPage: FC = () => {
 
     const onSubmit = (values: Values) => {
         if (!client || !dealId) {
-            return;
+            return Promise.resolve();
         }
 
         setError(null);
@@ -55,11 +55,11 @@ const UpdateDealPage: FC = () => {
         return updateDealService(client, dealId, getDealValues(values))
             .then(() =>  queryClient.refetchQueries([QueryKey.DEALS, dealId]))
             .then(() => navigate(`/deal/${dealId}`))
-            .catch((err) => {
+            .catch((err: HubSpotError) => {
                 if (isValidationError(err)) {
                     setError(err.message);
                 } else {
-                    throw new Error(err);
+                    throw err;
                 }
             });
     };

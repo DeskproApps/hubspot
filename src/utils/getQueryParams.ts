@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getQueryParams = (params: Record<string, any>, encode?: boolean): string => {
+const getQueryParams = (params: Record<string, string|number|boolean>, encode?: boolean): string => {
     return Object.keys(params)
         .map((key) => encode
             ? `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`

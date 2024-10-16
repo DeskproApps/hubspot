@@ -6,6 +6,6 @@ export type Values = {
 };
 
 export type Props = {
-    onSubmit: (values: Values) => void,
+    onSubmit: (values: Values) => Promise<void>,
     onCancel: () => void,
 };

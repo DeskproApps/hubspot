@@ -4,9 +4,9 @@ import get from "lodash/get";
 import ReactTimeAgo from "react-time-ago";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { P1, P11, Stack, Avatar } from "@deskpro/deskpro-ui";
-import { HorizontalDivider } from "@deskpro/app-sdk";
+import { Title, HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName } from "../../utils";
-import { Title, BaseContainer } from "../common";
+import { BaseContainer } from "../common";
 import type { Owner } from "../../services/hubspot/types";
 
 const TimeAgo = styled(ReactTimeAgo)`

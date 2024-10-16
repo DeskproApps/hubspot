@@ -6,7 +6,7 @@ import { CallActivity, EmailActivity } from "./types";
 type GetActivityService = (
     client: IDeskproClient,
     entity: "email" | "call",
-    entityId: CallActivity["id"] | EmailActivity["id"],
+    entityId: string,
 ) => Promise<CallActivity|EmailActivity>;
 
 const getActivityService: GetActivityService = (client, entity, entityId) => {

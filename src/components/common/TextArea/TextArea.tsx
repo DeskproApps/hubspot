@@ -6,7 +6,9 @@ import {
 } from "@deskpro/deskpro-ui";
 
 type Props = TextAreaWithDisplayProps & {
-    minHeight?: number | string | "auto",
+    // This is needed to show the possible options 6, 10px, auto
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    minHeight?: "auto"|number|string,
 };
 
 const TextArea = styled(forwardRef(({ minHeight, ...props }: Props, ref: Ref<HTMLTextAreaElement>) =>

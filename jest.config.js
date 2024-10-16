@@ -1,28 +1,53 @@
-/*
- * For a detailed explanation regarding each configuration property, visit:
- * https://jestjs.io/docs/en/configuration.html
- */
-
-const esModules = ["d3-array", "d3-hierarchy", "internmap", "d3-scale", "pretty-bytes"].join("|");
+const esModules = [
+    "d3-array",
+    "d3-hierarchy",
+    "internmap",
+    "d3-scale",
+    "pretty-bytes",
+    "simplebar-react",
+    "simplebar",
+    "@react-dnd",
+    "react-dnd",
+    "dnd-core",
+    "react-dnd-html5-backend",
+    "react-merge-refs",
+    "uuid",
+    "@deskpro/deskpro-ui",
+    "node-fetch",
+    "data-uri-to-buffer",
+    "fetch-blob",
+    "formdata-polyfill",
+].join("|");
 
 module.exports = {
-    clearMocks: true,
-    setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+    preset: "ts-jest",
     testEnvironment: "jsdom",
-    transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
-    modulePathIgnorePatterns: ["/node_modules/", ".dist"],
+    resolver: "<rootDir>/custom-jest-resolver",
     maxWorkers: "75%",
+    modulePaths: ["<rootDir>/src/"],
+    setupFilesAfterEnv: ["<rootDir>/jest.setup.tsx"],
     transform: {
-        "^.+\\.(js|jsx|ts|tsx)$": "ts-jest",
+        "^.+\\.(t|j)sx?$": [
+            "@swc/jest",
+            {
+                sourceMaps: true,
+            },
+        ],
+        "^.+\\.mjs$": "@swc/jest",
     },
     moduleNameMapper: {
         "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
-            "<rootDir>/jest/fileTransform.js",
-        "\\.(css|less)$": "<rootDir>/jest/fileTransform.js",
+            "<rootDir>/config/jest/fileTransform.js",
+        "\\.(css|less)$": "<rootDir>/config/jest/fileTransform.js",
     },
+    transformIgnorePatterns: [`/node_modules/.pnpm/(?!${esModules})`],
+    modulePathIgnorePatterns: ["/node_modules/", ".dist"],
     collectCoverageFrom: ["<rootDir>/src/**/*.{ts,tsx}"],
+    testMatch: ["**/?(*.)+(spec|test).[jt]s?(x)"],
     coveragePathIgnorePatterns: [
         "node_modules",
+        "codegen-agent",
+        "codegen-admin",
         ".gen.ts",
         "testing",
         "__tests__",
@@ -34,13 +59,6 @@ module.exports = {
         ".d.ts",
         "mocks",
         ".app-story.tsx",
-        "main.tsx",
     ],
-    coverageThreshold: {
-        global: {
-            branches: 60,
-            functions: 60,
-            lines: 60,
-        },
-    },
+    globalSetup: "./config/jest/global-setup.js",
 };

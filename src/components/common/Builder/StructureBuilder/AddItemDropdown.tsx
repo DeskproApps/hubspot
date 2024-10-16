@@ -38,7 +38,7 @@ const AddItemDropdown: FC<Props> = ({ items, onAddItem, meta }) => {
             options={currentOptions}
             showInternalSearch
             hideIcons
-            onSelectOption={({ value }) => onAddItem(value as string)}
+            onSelectOption={({ value }) => onAddItem(value)}
         >
             {({ active, targetProps, targetRef }: DropdownTargetProps<HTMLButtonElement>) => (
                 <Button

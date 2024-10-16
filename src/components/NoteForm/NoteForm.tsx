@@ -35,6 +35,8 @@ const NoteForm: FC<Props> = ({ onSubmit, onCancel }) => {
             <Label label="Attachments">
                 <Attach
                     onFiles={(files) => {
+                        // It's a promise, but Formik guarantees that there won't be an error.
+                        // eslint-disable-next-line @typescript-eslint/no-floating-promises
                         setFieldValue("files", files);
                     }}
                 />

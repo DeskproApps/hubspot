@@ -3,14 +3,15 @@ import isEmpty from "lodash/isEmpty";
 import { proxyFetch, adminGenericProxyFetch } from "@deskpro/app-sdk";
 import { BASE_URL, placeholders } from "./constants";
 import { getQueryParams } from "../../utils";
+import type { IDeskproClient } from "@deskpro/app-sdk";
 import type { HubSpotError } from "./types";
-import type { Request, ApiRequestMethod } from "../../types";
+import type { Request, ApiRequestMethod, RequestParams } from "../../types";
 
 type ErrorData = {
     url: string,
     method: ApiRequestMethod,
     code: number,
-    json?: HubSpotError,
+    json?: HubSpotError|null,
     entity?: string,
 };
 
@@ -29,15 +30,19 @@ export class DeskproError extends Error {
     }
 }
 
-const baseRequest: Request = async (client, {
-    url,
-    entity,
-    data = {},
-    method = "GET",
-    queryParams = {},
-    headers: customHeaders,
-    settings,
-}) => {
+
+const baseRequest: Request = async <T = unknown>(
+    client: IDeskproClient,
+    {
+        url,
+        entity,
+        data = {},
+        method = "GET",
+        queryParams = {},
+        headers: customHeaders,
+        settings,
+    }: RequestParams,
+): Promise<T> => {
     const isAdmin = Boolean(settings);
     const dpFetch = await (isAdmin ? adminGenericProxyFetch : proxyFetch)(client);
     const baseUrl = `${BASE_URL}${url}`;
@@ -69,14 +74,14 @@ const baseRequest: Request = async (client, {
             method,
             entity,
             code: res.status,
-            json: (res.status === 404) ? null : await res.json(),
+            json: (res.status === 404) ? null : await res.json() as HubSpotError,
         });
     }
 
-    let result;
+    let result = {} as T;
 
     try {
-        result = await res.json();
+        result = await res.json() as T;
     } catch (e) {
         // eslint-disable-next-line no-console
         console.warn("Failed to parse response as JSON. Returning empty result");

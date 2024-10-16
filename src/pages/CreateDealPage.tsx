@@ -12,6 +12,7 @@ import { queryClient, QueryKey } from "../query";
 import { ErrorBlock } from "../components/common";
 import { DealForm } from "../components";
 import { getDealValues } from "../components/DealForm/utils";
+import type { HubSpotError } from "../services/hubspot/types";
 import type { Values } from "../components/DealForm/types";
 
 const CreateDealPage: FC = () => {
@@ -68,11 +69,11 @@ const CreateDealPage: FC = () => {
             })
             .then(() => queryClient.refetchQueries([QueryKey.DEALS_BY_CONTACT_ID, contactId]))
             .then(() => navigate("/home"))
-            .catch((err) => {
+            .catch((err: HubSpotError) => {
                 if (isValidationError(err)) {
                     setError(err.message);
                 } else {
-                    throw new Error(err);
+                    throw err;
                 }
             });
     };

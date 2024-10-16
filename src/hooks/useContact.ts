@@ -3,6 +3,7 @@ import { useQueryWithClient, useContactMeta } from "../hooks";
 import { getContactService, getAccountInfoService } from "../services/hubspot";
 import { QueryKey } from "../query";
 import { getScreenStructure, flatten } from "../utils";
+import type { ContextData, Settings } from "../types";
 import type { Contact, AccountInto, PropertyMeta } from "../services/hubspot/types";
 import type { Layout } from "../components/common/Builder";
 
@@ -15,7 +16,7 @@ type UseContact = (contactId?: Contact["id"]) => {
 };
 
 const useContact: UseContact = (contactId) => {
-    const { context } = useDeskproLatestAppContext();
+    const { context } = useDeskproLatestAppContext<ContextData, Settings>();
     const structure = getScreenStructure(context?.settings, "contact", "view");
     const meta = useContactMeta();
 

@@ -20,6 +20,7 @@ const ErrorFallback: FC<Props> = ({ resetErrorBoundary, error }) => {
         nativeErrorMessage = msg;
 
         message = match(code)
+            .with(401, () => "Access token invalid, please fix in admin settings")
             .with(403, () => `Please ensure that the app has been granted all necessary permissions in HubSpot`)
             .with(404, () => `Can't find ${entity ? entity : ""}`)
             .otherwise(() => "There was an error!");
