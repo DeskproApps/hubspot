@@ -1,7 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
+import type { To } from "react-router-dom";
 import type { DropdownValueType } from "@deskpro/deskpro-ui";
 import type { IDeskproClient, Context } from "@deskpro/app-sdk";
 import type { Contact, Deal, Company } from "./services/hubspot/types";
+import type { Layout } from "./components/common/Builder";
 
 /** Common types */
 
@@ -14,8 +16,7 @@ export type ApiRequestMethod = "GET" | "POST" | "PUT" | "PATCH";
 export type RequestParams = {
     url: string,
     method?: ApiRequestMethod,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?: any,
+    data?: object,
     headers?: Record<string, string>,
     queryParams?: Record<string, string|number|boolean>,
     entity?: string,
@@ -64,7 +65,7 @@ export type ContextData = {
     user: DeskproUser,
 };
 
-export type UserContext = Context<ContextData>;
+export type UserContext = Context<ContextData, Settings>;
 
 export type EventsPayload =
     | { type: "changePage", path: string }
@@ -73,6 +74,27 @@ export type EventsPayload =
 export type Option<Value = unknown> = Omit<DropdownValueType<Value>, "subItems">;
 
 export type UseSetStateFn<T> = Dispatch<SetStateAction<T>>;
+
+export type ContactLayout = {
+    home: Layout;
+    view: Layout;
+};
+
+export type DealLayout = {
+    home: Layout;
+    view: Layout;
+};
+
+export type LayoutType = ContactLayout|DealLayout;
+
+export type NavigateToChangePage = { type: "changePage", path: To };
+
+export type UnlinkPayload = { type: "unlink", contactId: Contact["id"] };
+
+export type EventPayload =
+  | NavigateToChangePage
+  | UnlinkPayload
+;
 
 /** HubSpot */
 export type EntityMetadata = {
@@ -88,4 +110,10 @@ export type EntityMetadata = {
         id: Deal["id"],
         name: Deal["properties"]["dealname"],
     }>,
+};
+
+export type ContactDeps = {
+    contact?: Contact["properties"],
+    companies?: Array<Company["properties"]>,
+    deals?: Array<Deal["properties"]>,
 };

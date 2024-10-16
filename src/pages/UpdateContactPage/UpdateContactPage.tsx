@@ -14,6 +14,7 @@ import { getEntityMetadata } from "../../utils";
 import { UpdateContact } from "../../components";
 import { updateContactService } from "../../services/hubspot";
 import type { FC } from "react";
+import type { HubSpotError } from "../../services/hubspot/types";
 import type { FormValues } from "../../components/common/Builder";
 
 const UpdateContactPage: FC = () => {
@@ -40,7 +41,7 @@ const UpdateContactPage: FC = () => {
             })
             .then(() => queryClient.refetchQueries([QueryKey.CONTACT, contactId]))
             .then(() => navigate(`/contacts/${contactId}`))
-            .catch((err) => {
+            .catch((err: HubSpotError) => {
                 if (isValidationError(err)) {
                     setErrors((state) => [...state, err.message]);
                 } else if (isConflictError(err)) {

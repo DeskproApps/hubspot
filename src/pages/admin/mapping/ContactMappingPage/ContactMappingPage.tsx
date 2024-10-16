@@ -8,6 +8,7 @@ import { useProperties } from "./hooks";
 import { STRUCTURE } from "../../../../constants";
 import { ContactMapping } from "../../../../components";
 import type { FC } from "react";
+import type { ContactLayout } from "../../../../types";
 
 const ContactMappingPage: FC = () => {
     const { client } = useDeskproAppClient();
@@ -18,11 +19,11 @@ const ContactMappingPage: FC = () => {
     
     const structure: { home: string[][], view: string[][] } = useMemo(() => {
       return settings?.mapping_contact
-        ? JSON.parse(settings.mapping_contact)
+        ? JSON.parse(settings.mapping_contact) as ContactLayout
         : STRUCTURE.CONTACT
     }, [settings?.mapping_contact]);
 
-    const onChangeStructure = useCallback((structure: { home: string[][], view: string[][] }) => {
+    const onChangeStructure = useCallback((structure: ContactLayout) => {
       client?.setAdminSetting(JSON.stringify(structure));
     }, [client]);
 

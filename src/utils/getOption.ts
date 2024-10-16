@@ -1,7 +1,7 @@
 import type { DropdownValueType } from "@deskpro/deskpro-ui";
 import type { Option } from "../types";
 
-const getOption = <Value, >(
+const getOption = <Value extends string, >(
     value: Value,
     label?: DropdownValueType<Value>["label"],
     description?: DropdownValueType<Value>["description"],

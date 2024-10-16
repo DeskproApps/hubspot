@@ -4,12 +4,13 @@ import { TABS } from "../../../constants";
 import { BaseContainer, StructureBuilder } from "../../common";
 import type { FC } from "react";
 import type { TabBarItemType } from "@deskpro/deskpro-ui";
+import type { ContactLayout } from "../../../types";
 import type { PropertyMeta } from "../../../services/hubspot/types";
 
 type Props = {
     properties: string[];
     onChangeStructure: (structure: { home: string[][], view: string[][] }) => void;
-    structure: { home: string[][], view: string[][] };
+    structure: ContactLayout;
     meta?: Record<PropertyMeta["name"], PropertyMeta>;
 };
 

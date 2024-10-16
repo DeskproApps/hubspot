@@ -10,7 +10,7 @@ type ErrorData = {
     url: string,
     method: ApiRequestMethod,
     code: number,
-    json?: HubSpotError,
+    json?: HubSpotError|null,
     entity?: string,
 };
 
@@ -69,14 +69,14 @@ const baseRequest: Request = async (client, {
             method,
             entity,
             code: res.status,
-            json: (res.status === 404) ? null : await res.json(),
+            json: (res.status === 404) ? null : await res.json() as HubSpotError,
         });
     }
 
     let result;
 
     try {
-        result = await res.json();
+        result = await res.json() as unknown;
     } catch (e) {
         // eslint-disable-next-line no-console
         console.warn("Failed to parse response as JSON. Returning empty result");

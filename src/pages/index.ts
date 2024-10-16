@@ -5,7 +5,7 @@ export { ActivityPage } from "./ActivityPage";
 export { CreateContactPage } from "./CreateContactPage";
 export { CreateDealPage } from "./CreateDealPage";
 export { LinkPage } from "./LinkPage";
-export { Main } from "./Main";
+export { LoadingAppPage } from "./LoadingAppPage";
 export { UpdateContactPage } from "./UpdateContactPage";
 export { UpdateDealPage } from "./UpdateDealPage";
 export { CreateActivityPage } from "./CreateActivityPage";

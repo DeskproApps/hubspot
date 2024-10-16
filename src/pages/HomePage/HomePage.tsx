@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
     LoadingSpinner,
     useDeskproElements,
@@ -46,7 +46,7 @@ const HomePage = () => {
         if (contactId) {
             navigate({
                 pathname: `/note/create`,
-                search: `?${createSearchParams({ contactId })}`
+                search: `?contactId=${contactId}`
             });
         }
     }, [navigate, contactId]);
@@ -55,7 +55,7 @@ const HomePage = () => {
         if (contactId) {
             navigate({
                 pathname: `/activity/create`,
-                search: `?${createSearchParams({ contactId })}`
+                search: `?contactId=${contactId}`
             });
         }
     }, [navigate, contactId]);

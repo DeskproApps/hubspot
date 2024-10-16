@@ -6,13 +6,8 @@ import {
     getDealsByContactId,
     getCompaniesByContactId,
 } from "../services/hubspot";
+import type { ContactDeps } from "../types";
 import type { Contact, Company, Deal } from "../services/hubspot/types";
-
-type ContactDeps = {
-    contact?: Contact["properties"],
-    companies?: Array<Company["properties"]>,
-    deals?: Array<Deal["properties"]>,
-};
 
 type UseLinkContact = () => {
     getContactInfo: (contactId: Contact["id"]) => Promise<ContactDeps>,

@@ -1,3 +1,5 @@
+import type { Layout } from "./components/common/Builder";
+
 export const nbsp = "\u00A0";
 
 export const DEFAULT_ERROR = "There was an error!";
@@ -21,13 +23,13 @@ export const STRUCTURE = {
             ["phone"],
             ["hubspot_owner_id"],
             ["lifecyclestage"],
-        ],
+        ] as Layout,
         view: [
             ["jobtitle"],
             ["email"],
             ["phone"],
             ["hubspot_owner_id"],
             ["lifecyclestage"],
-        ]
+        ] as Layout,
     },
 } as const;
