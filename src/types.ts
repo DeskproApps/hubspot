@@ -1,23 +1,14 @@
-import { ReactElement, Dispatch, SetStateAction } from "react";
-import { IDeskproClient, Context } from "@deskpro/app-sdk";
+import type { Dispatch, SetStateAction } from "react";
+import type { DropdownValueType } from "@deskpro/deskpro-ui";
+import type { IDeskproClient, Context } from "@deskpro/app-sdk";
+import type { Contact, Deal, Company } from "./services/hubspot/types";
 
-/**
- * An ISO-8601 encoded UTC date time string. Example value: `""2019-09-07T15:50:00Z"`.
- */
+/** Common types */
+
+/** An ISO-8601 encoded UTC date time string. Example value: `""2019-09-07T15:50:00Z"` */
 export type DateTime = string;
 
-export type Settings = {
-    client_id?: string,
-    client_secret?: string,
-    redirect_uri?: string,
-    global_access_token?: string,
-};
-
-export type AuthTokens = {
-    accessToken: string,
-    refreshToken: string,
-};
-
+/** Request types */
 export type ApiRequestMethod = "GET" | "POST" | "PUT" | "PATCH";
 
 export type RequestParams = {
@@ -28,6 +19,7 @@ export type RequestParams = {
     headers?: Record<string, string>,
     queryParams?: Record<string, string|number|boolean>,
     entity?: string,
+    settings?: Settings;
 };
 
 export type Request = <T>(
@@ -48,6 +40,13 @@ export type PreInstalledRequest = <T>(
     params: PreRequestParams,
 ) => Promise<T>;
 
+/** Deskpro types */
+export type Settings = {
+    redirect_uri?: string;
+    api_token?: string;
+    mapping_contact?: string;
+};
+
 export type DeskproUser = {
     emails: string[],
     firstName: string,
@@ -62,12 +61,9 @@ export type DeskproUser = {
 };
 
 export type ContextData = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    app: any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    currentAgent: any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    env: any,
+    app: object;
+    currentAgent: object,
+    env: object,
     user: DeskproUser,
 };
 
@@ -75,13 +71,24 @@ export type UserContext = Context<ContextData>;
 
 export type EventsPayload =
     | { type: "changePage", path: string }
-    | { type: "unlink", userId: string, contactId: string };
+    | { type: "unlink", userId: string, contactId: Contact["id"] };
 
-export type Option<Value> = {
-    value: Value,
-    key: Value,
-    label: string | ReactElement,
-    type: "value",
-};
+export type Option<Value = unknown> = Omit<DropdownValueType<Value>, "subItems">;
 
 export type UseSetStateFn<T> = Dispatch<SetStateAction<T>>;
+
+/** HubSpot */
+export type EntityMetadata = {
+    id: Contact["id"],
+    fullName: string,
+    phone: Contact["properties"]["phone"],
+    email: Contact["properties"]["email"],
+    companies: Array<{
+        id: Company["id"],
+        name: Company["properties"]["name"],
+    }>,
+    deals: Array<{
+        id: Deal["id"],
+        name: Deal["properties"]["dealname"],
+    }>,
+};

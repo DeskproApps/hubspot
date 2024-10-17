@@ -72,7 +72,7 @@ const CreateNotePage: FC = () => {
 
     return (
         <BaseContainer>
-            {error && <ErrorBlock text={error}/>}
+            {error && <ErrorBlock texts={[error]}/>}
             <NoteForm onSubmit={onSubmit} onCancel={onCancel} />
         </BaseContainer>
     );

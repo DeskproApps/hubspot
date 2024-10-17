@@ -31,7 +31,7 @@ const Main = () => {
         return (
             <BaseContainer>
                 <ErrorBlock
-                    text="Access token invalid, please fix in admin settings"
+                    texts={["Access token invalid, please fix in admin settings"]}
                 />
                 <br/><br/><br/><br/><br/>
             </BaseContainer>

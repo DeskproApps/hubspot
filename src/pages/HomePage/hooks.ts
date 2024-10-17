@@ -2,14 +2,16 @@ import { useMemo } from "react";
 import get from "lodash/get";
 import has from "lodash/has";
 import { useNavigate } from "react-router-dom";
+import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import { QueryKey } from "../../query";
-import { DeskproError } from "../../services/hubspot";
+import { getEntityContactList } from "../../services/entityAssociation";
 import {
     useUnlinkContact,
     useQueryWithClient,
     useQueriesWithClient,
 } from "../../hooks";
 import {
+    DeskproError,
     getOwnersService,
     getCompanyService,
     getContactService,
@@ -20,8 +22,9 @@ import {
     getEmailsByContactId,
     getAccountInfoService,
     getEntityAssocService,
+    getPropertiesMetaService,
 } from "../../services/hubspot";
-import { normalize, filterEntities } from "../../utils";
+import { normalize, filterEntities, getScreenStructure, flatten } from "../../utils";
 import type { IDeskproClient } from "@deskpro/app-sdk";
 import type {
     Note,
@@ -31,15 +34,28 @@ import type {
     Company,
     CallActivity,
     EmailActivity,
+    PropertyMeta,
 } from "../../services/hubspot/types";
 
-const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
+const useLoadHomeDeps = () => {
     const navigate = useNavigate();
     const { unlinkContact } = useUnlinkContact();
+    const { context } = useDeskproLatestAppContext();
+    const userId = context?.data?.user.id;
+
+    const structure = getScreenStructure(context?.settings, "contact", "home");
+
+    const linkedContactIds = useQueryWithClient(
+        [QueryKey.LINKED_CONTACTS, userId],
+        (client) => getEntityContactList(client, userId),
+        { enabled: Boolean(userId) },
+    );
+
+    const contactId = (linkedContactIds?.data ?? [])[0];
 
     const contact = useQueryWithClient(
         [QueryKey.CONTACT, contactId],
-        (client) => getContactService(client, contactId as string),
+        (client) => getContactService(client, contactId as Contact["id"], flatten(structure)),
         {
             enabled: !!contactId,
             useErrorBoundary: false,
@@ -52,6 +68,11 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
                 }
             },
         },
+    );
+
+    const propertiesMeta = useQueryWithClient(
+        [QueryKey.PROPERTIES_META, "contact"],
+        (client) => getPropertiesMetaService(client, "contacts"),
     );
 
     const companyIds = useQueryWithClient(
@@ -139,7 +160,7 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
     );
 
     return {
-        isLoading: [contact].every(({ isLoading }) => Boolean(isLoading)),
+        isLoading: [linkedContactIds, contact, propertiesMeta].some(({ isLoading }) => isLoading),
         contact: get(contact, ["data", "properties"], {}) as Contact["properties"],
         companies: filterEntities(companies) as Array<Company["properties"]>,
         deals: deals.data || [],
@@ -149,6 +170,14 @@ const useLoadHomeDeps = (contactId: Contact["id"]|null) => {
         callActivities: callActivities.data as Array<CallActivity["properties"]>,
         accountInfo: accountInfo.data,
         owners: owners.data as Record<Owner["id"], Owner>,
+        contactMetaMap: useMemo(() => {
+            return (propertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
+                if (!acc[meta.name]) {
+                    acc[meta.name] = meta;
+                }
+                return acc;
+            }, {});
+        }, [propertiesMeta.data?.results]),
     } as const;
 };
 

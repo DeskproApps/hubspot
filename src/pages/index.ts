@@ -1,6 +1,5 @@
 export { CreateNotePage } from "./CreateNotePage";
 export { DealPage } from "./DealPage";
-export { GlobalSignIn } from "./GlobalSignIn";
 export { HomePage } from "./HomePage";
 export { ActivityPage } from "./ActivityPage";
 export { CreateContactPage } from "./CreateContactPage";
@@ -10,3 +9,5 @@ export { Main } from "./Main";
 export { UpdateContactPage } from "./UpdateContactPage";
 export { UpdateDealPage } from "./UpdateDealPage";
 export { CreateActivityPage } from "./CreateActivityPage";
+export { ViewContactPage } from "./ViewContactPage";
+export * from "./admin";

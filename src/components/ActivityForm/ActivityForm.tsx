@@ -76,7 +76,6 @@ const ActivityForm: FC<Props> = ({
                 <Label htmlFor="description" label="Description" required>
                     <TextArea
                         id="description"
-                        minWidth="auto"
                         placeholder="Enter value"
                         {...getFieldProps("description")}
                         error={!!(touched.description && errors.description)}
