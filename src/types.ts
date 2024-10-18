@@ -46,6 +46,7 @@ export type Settings = {
     api_token?: string;
     default_dont_add_note_when_linking_contact?: boolean;
     mapping_contact?: string;
+    mapping_deal?: string;
 };
 
 export type DeskproUser = {
@@ -77,7 +78,7 @@ export type ContactLayout = {
 };
 
 export type DealLayout = {
-    home: Layout;
+    list: Layout;
     view: Layout;
 };
 

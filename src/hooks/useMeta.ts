@@ -3,24 +3,24 @@ import { useAppContext, useQueryWithClient } from "../hooks";
 import { getPropertiesMetaService } from "../services/hubspot";
 import { QueryKey } from "../query";
 import type { Settings } from "../types";
-import type { Contact, PropertyMeta } from "../services/hubspot/types";
+import type { MetaMap } from "../components/common/Builder/StructureBuilder";
 
-type useContactMeta = (contactId?: Contact["id"]) => {
+type UseMeta = (entity: "contacts"|"deals") => {
     isLoading: boolean;
-    contactMetaMap: Record<PropertyMeta["name"], PropertyMeta>;
+    metaMap: MetaMap;
 };
 
-const useContactMeta = () => {
+const useMeta: UseMeta = (entity) => {
     const { settings } = useAppContext();
 
     const propertiesMeta = useQueryWithClient(
         [QueryKey.PROPERTIES_META, "contact"],
-        (client) => getPropertiesMetaService(client, "contacts", { settings } as { settings: Settings }),
+        (client) => getPropertiesMetaService(client, entity, { settings } as { settings: Settings }),
         { enabled: Boolean(settings), cacheTime: 0 },
     );
 
-    const contactMetaMap = useMemo(() => {
-        return (propertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["name"], PropertyMeta>>((acc, meta) => {
+    const metaMap = useMemo(() => {
+        return (propertiesMeta.data?.results ?? []).reduce<MetaMap>((acc, meta) => {
             if (!acc[meta.name]) {
                 acc[meta.name] = meta;
             }
@@ -29,9 +29,9 @@ const useContactMeta = () => {
     }, [propertiesMeta.data?.results]);
 
     return {
-        isLoading: contactMetaMap.isLoading,
-        contactMetaMap,
+        isLoading: propertiesMeta.isLoading,
+        metaMap,
     };
 };
 
-export { useContactMeta };
+export { useMeta };

@@ -1,4 +1,4 @@
-import type { Layout } from "./components/common/Builder";
+import type { ContactLayout, DealLayout } from "./types";
 
 export const nbsp = "\u00A0";
 
@@ -23,13 +23,27 @@ export const STRUCTURE = {
             ["phone"],
             ["hubspot_owner_id"],
             ["lifecyclestage"],
-        ] as Layout,
+        ],
         view: [
             ["jobtitle"],
             ["email"],
             ["phone"],
             ["hubspot_owner_id"],
             ["lifecyclestage"],
-        ] as Layout,
-    },
+        ],
+    } as ContactLayout,
+    DEAL: {
+        list: [
+            ["dealname"],
+            ["amount", "dealstage"],
+            ["hubspot_owner_id", "closedate"],
+        ],
+        view: [
+            ["dealname"],
+            ["amount", "dealstage"],
+            ["createdate", "closedate"],
+            ["hs_priority", "dealtype"],
+            ["hubspot_owner_id"]
+        ],
+    } as DealLayout,
 } as const;

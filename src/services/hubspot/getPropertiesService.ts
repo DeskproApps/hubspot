@@ -4,11 +4,11 @@ import type { RequestParams } from "../../types";
 
 const getPropertiesService = (
     client: IDeskproClient,
-    type: "contacts",
+    entity: "contacts"|"deals",
     params: Partial<RequestParams>,
 ): Promise<string[]> => {
     return baseRequest(client, {
-        url: `/crm/v3/objects/${type}/properties`,
+        url: `/crm/v3/objects/${entity}/properties`,
         ...params,
     });
 };

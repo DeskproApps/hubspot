@@ -10,4 +10,5 @@ export { useUnlinkContact } from "./useUnlinkContact";
 export { useAppContext, AppProvider } from "./AppContext";
 export { useAsyncError } from "./useAsyncError";
 export { useContact } from "./useContact";
-export { useContactMeta } from "./useContactMeta";
+export { useMeta } from "./useMeta";
+export { useProperties } from "./useProperties";

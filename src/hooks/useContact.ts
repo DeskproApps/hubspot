@@ -1,5 +1,5 @@
 import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
-import { useQueryWithClient, useContactMeta } from "../hooks";
+import { useQueryWithClient, useMeta } from "../hooks";
 import { getContactService, getAccountInfoService } from "../services/hubspot";
 import { QueryKey } from "../query";
 import { getScreenStructure, flatten } from "../utils";
@@ -18,7 +18,7 @@ type UseContact = (contactId?: Contact["id"]) => {
 const useContact: UseContact = (contactId) => {
     const { context } = useDeskproLatestAppContext<ContextData, Settings>();
     const structure = getScreenStructure(context?.settings, "contact", "view");
-    const meta = useContactMeta();
+    const meta = useMeta("contacts");
 
     const contact = useQueryWithClient(
         [QueryKey.CONTACT, contactId],
@@ -35,7 +35,7 @@ const useContact: UseContact = (contactId) => {
         isLoading: !context && [contact, meta, accountInfo].some(({ isLoading }) => isLoading),
         accountInfo: accountInfo.data as AccountInto,
         contact: contact.data?.properties as Contact["properties"],
-        contactMetaMap: meta.contactMetaMap,
+        contactMetaMap: meta.metaMap,
         structure,
     };
 };
