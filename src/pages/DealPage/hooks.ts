@@ -58,6 +58,7 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
         { enabled: !!dealId },
     );
 
+    // ToDo: rewrite to search api
     const contacts = useQueriesWithClient(contactIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.CONTACT, id],
         queryFn: (client) => getContactService(client, id),
@@ -87,7 +88,7 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
             accountInfo,
             ...contacts,
             ...companies,
-        ].every(({ isLoading }) => Boolean(isLoading)),
+        ].some(({ isLoading }) => Boolean(isLoading)),
         deal: get(deal, ["data", "properties"], {}) as Deal["properties"],
         owner: get(owner, ["data"], {}) as Owner,
         pipeline: get(pipeline, ["data"], {}) as Pipeline,

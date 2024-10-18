@@ -1,18 +1,11 @@
 import { FC } from "react";
-import {
-    Title,
-    BaseContainer,
-    TextBlockWithLabel,
-} from "../common";
+import { Title } from "@deskpro/app-sdk";
+import { BaseContainer, TextBlockWithLabel } from "../common";
 import { getFullName } from "../../utils";
 import type { Props } from "./types";
 
 const AssociatedWith: FC<Pick<Props, "contacts" | "companies">> = ({ contacts, companies }) => {
-    const contactsFullName = contacts?.map(({ firstname, lastname }) => getFullName({
-        firstName: firstname,
-        lastName: lastname
-    }));
-
+    const contactsFullName = contacts?.map(getFullName);
     const companyNames = companies?.map(({ name }) => name);
 
     return (

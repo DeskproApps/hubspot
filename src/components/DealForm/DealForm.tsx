@@ -1,12 +1,11 @@
 import { FC, useState } from "react";
 import { useFormik } from "formik";
 import { Stack, InputWithDisplay } from "@deskpro/deskpro-ui";
-import { DateInput, HorizontalDivider } from "@deskpro/app-sdk";
+import { Title, DateInput, HorizontalDivider } from "@deskpro/app-sdk";
 import { useStageOptions, usePipelineOptions } from "./hooks";
 import { getInitValues, validationSchema } from "./utils";
 import {
     Label,
-    Title,
     Button,
     SingleSelect,
     BaseContainer,
@@ -77,7 +76,11 @@ const DealForm: FC<Props> = ({
                         value={values.pipeline}
                         options={pipelineOptions}
                         error={!!(touched.pipeline && errors.pipeline)}
-                        onChange={(value: Option<string>) => setFieldValue("pipeline", value)}
+                        onChange={(value: Option<string>) => {
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            setFieldValue("pipeline", value)
+                        }}
                     />
                 </Label>
 
@@ -87,7 +90,11 @@ const DealForm: FC<Props> = ({
                         value={values.dealStage}
                         options={stageOptions}
                         error={!!(touched.dealStage && errors.dealStage)}
-                        onChange={(value: Option<string>) => setFieldValue("dealStage", value)}
+                        onChange={(value: Option<string>) => {
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            setFieldValue("dealStage", value)
+                        }}
                     />
                 </Label>
 
@@ -112,7 +119,11 @@ const DealForm: FC<Props> = ({
                         value={values.dealOwner}
                         options={ownerOptions}
                         error={!!(touched.dealOwner && errors.dealOwner)}
-                        onChange={(value: Option<string>) => setFieldValue("dealOwner", value)}
+                        onChange={(value: Option<string>) => {
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            setFieldValue("dealOwner", value)
+                        }}
                     />
                 </Label>
 
@@ -122,7 +133,11 @@ const DealForm: FC<Props> = ({
                         value={values.dealType}
                         options={dealTypeOptions}
                         error={!!(touched.dealType && errors.dealType)}
-                        onChange={(value: Option<string>) => setFieldValue("dealType", value)}
+                        onChange={(value: Option<string>) => {
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            setFieldValue("dealType", value)
+                        }}
                     />
                 </Label>
 
@@ -132,7 +147,11 @@ const DealForm: FC<Props> = ({
                         value={values.priority}
                         options={priorityOptions}
                         error={!!(touched.priority && errors.priority)}
-                        onChange={(value: Option<string>) => setFieldValue("priority", value)}
+                        onChange={(value: Option<string>) => {
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            setFieldValue("priority", value)
+                        }}
                     />
                 </Label>
             </BaseContainer>
@@ -149,7 +168,11 @@ const DealForm: FC<Props> = ({
                             value={values.contact}
                             options={contactOptions}
                             error={!!(touched.contact && errors.contact)}
-                            onChange={(value: Option<string>) => setFieldValue("contact", value)}
+                            onChange={(value: Option<string>) => {
+                                // It's a promise, but Formik guarantees that there won't be an error.
+                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                setFieldValue("contact", value)
+                            }}
                         />
                     </Label>
                 )}
@@ -161,7 +184,11 @@ const DealForm: FC<Props> = ({
                             value={values.company}
                             options={companyOptions}
                             error={!!(touched.company && errors.company)}
-                            onChange={(value: Option<string>) => setFieldValue("company", value)}
+                            onChange={(value: Option<string>) => {
+                                // It's a promise, but Formik guarantees that there won't be an error.
+                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                setFieldValue("company", value)
+                            }}
                         />
                     </Label>
                 )}
