@@ -81,8 +81,8 @@ const getInitValues = (
 
     return {
         name: get(initValues, ["name"], "") || "",
-        pipeline: getOption<string>(pipeline.id, pipeline.label),
-        dealStage: getOption<string>(stage.id, stage.label),
+        pipeline: getOption<string>(pipeline?.id || "", pipeline?.label || ""),
+        dealStage: getOption<string>(stage?.id || "", stage?.label || ""),
         amount: get(initValues, ["amount"], "") || "",
         closeDate: !initValues?.closeDate ? "" : new Date(initValues.closeDate),
         dealOwner: !owner ? noOwnerOption : getOption(owner.value, owner.label),
@@ -93,12 +93,11 @@ const getInitValues = (
     };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getDealValues = (values: Omit<Values, "contact"|"company">): any => ({
+const getDealValues = (values: Omit<Values, "contact"|"company">): Record<string, string> => ({
     dealname: values.name,
     amount: values.amount,
     hubspot_owner_id: values.dealOwner.value,
-    closedate: parseDateTime(values.closeDate),
+    closedate: parseDateTime(values.closeDate) || "",
     ...(isEmpty(values.pipeline) ? {} : { pipeline: values.pipeline.value }),
     ...(isEmpty(values.dealStage) ? {} : { dealstage: values.dealStage.value }),
     ...(isEmpty(values.dealType.value) ? {} : { dealtype: values.dealType.value }),

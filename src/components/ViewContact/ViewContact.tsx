@@ -7,6 +7,7 @@ import { getFullName, getScreenStructure } from "../../utils";
 import { BaseContainer, BlocksBuilder, HubSpotLogo } from "../common";
 import { blocksMap } from "../blocks";
 import type { FC } from "react";
+import type { ContextData, Settings } from "../../types";
 import type { Contact, PropertyMeta, AccountInto } from "../../services/hubspot/types";
 
 type Props = {
@@ -20,7 +21,7 @@ const ViewContact: FC<Props> = ({
     contactMetaMap,
     accountInfo: { portalId } = {},
 }) => {
-    const { context } = useDeskproLatestAppContext();
+    const { context } = useDeskproLatestAppContext<ContextData, Settings>();
     const structure = getScreenStructure(context?.settings, "contact", "view");
 
     return (
@@ -28,11 +29,13 @@ const ViewContact: FC<Props> = ({
             <BaseContainer>
                 <Title
                     title={getFullName(contact) || "-"}
-                    link={(portalId && contact.hs_object_id)
-                        ? `https://app.hubspot.com/contacts/${portalId}/contact/${contact.hs_object_id}`
-                        : ""
-                    }
-                    icon={<HubSpotLogo/>}
+                    {...((portalId && contact.hs_object_id)
+                        ? {
+                            link: `https://app.hubspot.com/contacts/${portalId}/contact/${contact.hs_object_id}`,
+                            icon: <HubSpotLogo/>
+                        }
+                        : {}
+                    )}
                 />
             </BaseContainer>
             <BlocksBuilder

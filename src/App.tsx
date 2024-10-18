@@ -8,9 +8,9 @@ import {
     useDeskproAppClient,
     useDeskproAppEvents,
 } from "@deskpro/app-sdk";
-import { useLinkUnlinkNote, useUnlinkContact } from "./hooks";
+import { useUnlinkContact } from "./hooks";
+import { isNavigatePayload, isUnlinkPayload } from "./utils";
 import {
-    Main,
     LinkPage,
     HomePage,
     DealPage,
@@ -18,6 +18,7 @@ import {
     CreateDealPage,
     CreateNotePage,
     UpdateDealPage,
+    LoadingAppPage,
     ViewContactPage,
     DealMappingPage,
     UpdateContactPage,
@@ -26,34 +27,27 @@ import {
     ContactMappingPage,
 } from "./pages";
 import { ErrorFallback } from "./components/common";
-import type { EventsPayload } from "./types";
+import type { EventPayload } from "./types";
 
 function App() {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
-    const { isLoading, unlinkContactFn } = useLinkUnlinkNote();
-    const { unlinkContact } = useUnlinkContact();
+    const { unlinkContact, isLoading } = useUnlinkContact();
 
     useDeskproAppEvents({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        onElementEvent: (id, type, payload: EventsPayload) => {
+        onElementEvent: (_, __, payload: EventPayload) => {
             match(payload.type)
                 .with("changePage", () => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    payload?.path && navigate(payload.path);
+                    isNavigatePayload(payload) && navigate(payload.path);
                 })
                 .with("unlink", () => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    unlinkContact(payload?.contactId, (contactId) => {
-                        unlinkContactFn(contactId).then(() => navigate("/link"))
-                    });
+                    isUnlinkPayload(payload) && unlinkContact(payload.contactId);
                 })
                 .otherwise(() => {});
         },
-    }, [client, unlinkContactFn]);
+    }, [client, unlinkContact, navigate]);
 
     if (!client || isLoading) {
         return (<LoadingSpinner/>);
@@ -78,7 +72,7 @@ function App() {
                             <Route path="/contacts/activities" element={<ActivityPage/>} />
                             <Route path="/note/create" element={<CreateNotePage/>} />
                             <Route path="/activity/create" element={<CreateActivityPage/>} />
-                            <Route index element={<Main/>} />
+                            <Route index element={<LoadingAppPage/>} />
                         </Routes>
                     </ErrorBoundary>
                 )}

@@ -15,6 +15,7 @@ import { getEntityMetadata } from "../../utils";
 import { useContactMeta } from "./hooks";
 import { CreateContact } from "../../components";
 import type { ContextData } from "../../types";
+import type { HubSpotError } from "../../services/hubspot/types";
 import type { FormValues } from "../../components/common/Builder";
 
 const CreateContactPage: FC = () => {
@@ -48,7 +49,7 @@ const CreateContactPage: FC = () => {
                 linkContactFn(id),
             ]))
             .then(() => navigate("/home"))
-            .catch((err) => {
+            .catch((err: HubSpotError) => {
                 if (isValidationError(err)) {
                     setErrors([err.message]);
                 } else if (isConflictError(err)) {

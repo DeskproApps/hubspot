@@ -4,13 +4,13 @@ import styled from "styled-components";
 import get from "lodash/get";
 import capitalize from "lodash/capitalize";
 import { P5, H3 } from "@deskpro/deskpro-ui";
-import { HorizontalDivider } from "@deskpro/app-sdk";
+import { Title, HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName, getSymbolFromCurrency } from "../../utils";
 import { format } from "../../utils/date";
 import {
     Link,
-    Title,
     TwoColumn,
+    HubSpotLogo,
     OverflowText,
     BaseContainer,
 } from "../common";
@@ -56,10 +56,13 @@ const Deal: FC<{
                 title={(
                     <Link to={`/deal/${dealId}`}>{dealname}</Link>
                 )}
-                link={(portalId && dealId)
-                    ? `https://app.hubspot.com/contacts/${portalId}/deal/${dealId}`
-                    : ""
-                }
+                {...((portalId && dealId)
+                    ? {
+                        link: `https://app.hubspot.com/contacts/${portalId}/deal/${dealId}`,
+                        icon: <HubSpotLogo/>
+                    }
+                    : {}
+                )}
                 marginBottom={7}
             />
             <TwoColumn
@@ -98,16 +101,19 @@ const Deals: FC<Props> = ({
             <BaseContainer>
                 <Title
                     title={`Deals (${deals.length})`}
-                    link={accountInfo?.portalId
-                        ? `https://app.hubspot.com/contacts/${accountInfo?.portalId}/deals`
-                        : ""
-                    }
+                    {...(accountInfo?.portalId
+                        ? {
+                            link: `https://app.hubspot.com/contacts/${accountInfo?.portalId}/deals`,
+                            icon: <HubSpotLogo/>
+                        }
+                        : {}
+                    )}
                     onClick={() => navigate({
                         pathname: `/deal/create`,
                         search: `?${createSearchParams({
                             contactId,
                             ...(!companyId ? {} : { companyId }),
-                        })}`
+                        }).toString()}`
                     })}
                 />
                 {deals.map((deal) => (

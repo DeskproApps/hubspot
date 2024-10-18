@@ -1,4 +1,4 @@
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { HashRouter } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -25,7 +25,7 @@ TimeAgo.addDefaultLocale(en);
 
 const root = ReactDOM.createRoot(document.getElementById("root") as Element);
 root.render((
-    <React.StrictMode>
+    <StrictMode>
         <Scrollbar style={{ height: "100%", width: "100%" }}>
             <DeskproAppProvider>
                 <AppProvider>
@@ -39,5 +39,5 @@ root.render((
                 </AppProvider>
             </DeskproAppProvider>
         </Scrollbar>
-    </React.StrictMode>
+    </StrictMode>
 ));

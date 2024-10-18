@@ -1,10 +1,11 @@
 import { Property } from "@deskpro/app-sdk";
-import { PropertyMeta } from "../../../../services/hubspot/types";
-import type { ComponentType } from "react";
+import type { BlockProps } from "./types";
+import type { PropertyMeta } from "../../../../services/hubspot/types";
+import type { FC } from "react";
 
 type Props = {
   meta: PropertyMeta;
-  Component: ComponentType<{ value: unknown } & Record<string, unknown>>;
+  Component: FC<BlockProps>;
   value: unknown;
 };
 

@@ -4,9 +4,7 @@ import { NumberField } from "./NumberField";
 import { TextAreaField } from "./TextAreaField";
 import { DatePickerField } from "./DatePickerField";
 import { MultipleCheckboxesField } from "./MultipleCheckboxesField";
-import type { FC } from "react";
-import type { FieldProps } from "../common/Builder";
-import type { PropertyMeta } from "../../services/hubspot/types";
+import type { FieldsMap } from "../common/Builder";
 
 export const fieldsMap = {
     text: TextField,
@@ -19,7 +17,7 @@ export const fieldsMap = {
     booleancheckbox: SelectField,
     radio: SelectField,
     checkbox: MultipleCheckboxesField,
-} as Record<PropertyMeta["fieldType"], FC<FieldProps>>;
+} as const as FieldsMap;
 
 export {
     TextField,

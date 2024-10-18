@@ -1,2 +1,2 @@
 export { FormBuilder } from "./FormBuilder";
-export type { FieldProps, FormValues, FormBuilderProps } from "./types";
+export type { FieldProps, FieldsMap, FormValues, FormBuilderProps } from "./types";

@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { P5 } from "@deskpro/deskpro-ui";
-import { Title, BaseContainer, TextBlockWithLabel } from "../common";
+import { Title } from "@deskpro/app-sdk";
+import { BaseContainer, TextBlockWithLabel } from "../common";
 import { getFullName } from "../../utils";
 import { format, msToDuration } from "../../utils/date";
 import type { CallActivity, Contact, Owner } from "../../services/hubspot/types";

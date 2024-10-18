@@ -47,7 +47,7 @@ export type InitValuesParams = {
 export type Props = {
     isEditMode?: boolean,
     initValues: InitValues,
-    onSubmit: (values: Values) => void,
+    onSubmit: (values: Values) => Promise<void>,
     onCancel: () => void,
     pipelines: Pipeline[],
     currency: string,

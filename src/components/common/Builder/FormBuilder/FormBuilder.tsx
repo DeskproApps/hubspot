@@ -32,6 +32,7 @@ const RenderForm: FC<FormBuilderProps> = ({
     return (
         <form
             style={{ marginTop: 8, marginBottom: 8 }}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmit={form.handleSubmit(onSubmit)}
         >
             {flatten(structure).map((fieldName) => {

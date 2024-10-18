@@ -6,13 +6,8 @@ import {
     getDealsByContactId,
     getCompaniesByContactId,
 } from "../services/hubspot";
-import type { Contact, Company, Deal } from "../services/hubspot/types";
-
-type ContactDeps = {
-    contact?: Contact["properties"],
-    companies?: Array<Company["properties"]>,
-    deals?: Array<Deal["properties"]>,
-};
+import type { ContactDeps } from "../types";
+import type { Contact, Deal } from "../services/hubspot/types";
 
 type UseLinkContact = () => {
     getContactInfo: (contactId: Contact["id"]) => Promise<ContactDeps>,
@@ -32,8 +27,8 @@ const useLinkContact: UseLinkContact = () => {
             getDealsByContactId(client, contactId),
         ])
             .then(([contact, companies, deals]) => ({
-                contact: get(contact, ["properties"]),
-                companies: (get(companies, ["results"], []) || []).map(({ properties }: Company) => properties),
+                contact: contact?.properties,
+                companies: (companies?.results ?? []).map(({ properties }) => properties),
                 deals: (get(deals, ["results"], []) || []).map(({ properties }: Deal) => properties),
             }))
             .catch(() => ({}));

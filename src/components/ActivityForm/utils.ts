@@ -33,10 +33,10 @@ const getInitValues = (
         description: "",
         timestamp: new Date(),
         contacted: !contact
-            ? getOption("", "")
+            ? getOption<string>("", "")
             : getOption<Contact["id"]>(contact.value, contact.label),
-        callDisposition: getOption("", ""),
-        callDirection: getOption("", ""),
+        callDisposition: getOption<string>("", ""),
+        callDirection: getOption<string>("", ""),
         associateContact: !contact ? [] : [contact.value],
         associateCompany: companyOptions?.map(({ value }) => value) || [],
         associateDeal: dealOptions?.map(({ value }) => value) || [],
@@ -55,7 +55,7 @@ const getCallActivityValues = ({ contact }: { contact?: Option<string> }) => (va
     return {
         ...(!values.description ? {} : { hs_call_body: mdToHtml(values.description) }),
         ...(!timestamp ? {} : { hs_timestamp: timestamp }),
-        ...(!contact?.label ? {} : { hs_call_title: `Call with ${contact.label}` }),
+        ...((typeof contact?.label !== "string") ? {} : { hs_call_title: `Call with ${contact.label}` }),
         ...(isEmpty(values.callDisposition.value) ? {} : { hs_call_disposition: values.callDisposition.value}),
         ...(isEmpty(values.callDirection.value) ? {} : { hs_call_direction: values.callDirection.value }),
     };

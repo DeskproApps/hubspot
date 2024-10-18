@@ -1,7 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
+import type { To } from "react-router-dom";
 import type { DropdownValueType } from "@deskpro/deskpro-ui";
 import type { IDeskproClient, Context } from "@deskpro/app-sdk";
 import type { Contact, Deal, Company } from "./services/hubspot/types";
+import type { Layout } from "./components/common/Builder";
 
 /** Common types */
 
@@ -14,15 +16,14 @@ export type ApiRequestMethod = "GET" | "POST" | "PUT" | "PATCH";
 export type RequestParams = {
     url: string,
     method?: ApiRequestMethod,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?: any,
+    data?: object,
     headers?: Record<string, string>,
     queryParams?: Record<string, string|number|boolean>,
     entity?: string,
     settings?: Settings;
 };
 
-export type Request = <T>(
+export type Request = <T = unknown>(
     client: IDeskproClient,
     params: RequestParams,
 ) => Promise<T>;
@@ -42,8 +43,8 @@ export type PreInstalledRequest = <T>(
 
 /** Deskpro types */
 export type Settings = {
-    redirect_uri?: string;
     api_token?: string;
+    default_dont_add_note_when_linking_contact?: boolean;
     mapping_contact?: string;
 };
 
@@ -61,21 +62,35 @@ export type DeskproUser = {
 };
 
 export type ContextData = {
-    app: object;
-    currentAgent: object,
-    env: object,
     user: DeskproUser,
 };
 
-export type UserContext = Context<ContextData>;
-
-export type EventsPayload =
-    | { type: "changePage", path: string }
-    | { type: "unlink", userId: string, contactId: Contact["id"] };
+export type UserContext = Context<ContextData, Settings>;
 
 export type Option<Value = unknown> = Omit<DropdownValueType<Value>, "subItems">;
 
 export type UseSetStateFn<T> = Dispatch<SetStateAction<T>>;
+
+export type ContactLayout = {
+    home: Layout;
+    view: Layout;
+};
+
+export type DealLayout = {
+    home: Layout;
+    view: Layout;
+};
+
+export type LayoutType = ContactLayout|DealLayout;
+
+export type NavigateToChangePage = { type: "changePage", path: To };
+
+export type UnlinkPayload = { type: "unlink", contactId: Contact["id"] };
+
+export type EventPayload =
+  | NavigateToChangePage
+  | UnlinkPayload
+;
 
 /** HubSpot */
 export type EntityMetadata = {
@@ -91,4 +106,10 @@ export type EntityMetadata = {
         id: Deal["id"],
         name: Deal["properties"]["dealname"],
     }>,
+};
+
+export type ContactDeps = {
+    contact?: Contact["properties"],
+    companies?: Array<Company["properties"]>,
+    deals?: Array<Deal["properties"]>,
 };

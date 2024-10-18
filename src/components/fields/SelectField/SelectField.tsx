@@ -7,7 +7,7 @@ import { getOption, getFullName } from "../../../utils";
 import type { FC } from "react";
 import type { FieldProps } from "../../common/Builder";
 
-const SelectField: FC<FieldProps> = ({ meta, formControl }) => {
+const SelectField: FC<FieldProps<string>> = ({ meta, formControl }) => {
     const isOwner = meta.referencedObjectType === "OWNER"; 
 
     const owners = useQueryWithClient(
