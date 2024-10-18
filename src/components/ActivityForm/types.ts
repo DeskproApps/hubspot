@@ -31,7 +31,7 @@ export type InitValuesParams = {
 
 export type Props = {
     initValues: InitValues,
-    onSubmit: (values: Values) => void,
+    onSubmit: (values: Values) => Promise<void>,
     onCancel: () => void,
     contactOptions: Array<Option<Contact["id"]>>,
     companyOptions: Array<Option<Company["id"]>>,

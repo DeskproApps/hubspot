@@ -9,10 +9,14 @@ import {
     DropdownTargetProps,
     DivAsInputWithDisplay,
 } from "@deskpro/deskpro-ui";
-import { HorizontalDivider, useDeskproAppTheme, DateInput } from "@deskpro/app-sdk";
+import {
+    Title,
+    DateInput,
+    HorizontalDivider,
+    useDeskproAppTheme,
+} from "@deskpro/app-sdk";
 import {
     Label,
-    Title,
     Button,
     TextArea,
     SingleSelect,
@@ -24,9 +28,9 @@ import {
     validationSchema,
 } from "./utils";
 import { useActivityTypeOptions } from "./hooks";
-import type { Values, Props } from "./types";
 import type { Option } from "../../types";
-import type {Company, Contact} from "../../services/hubspot/types";
+import type { Values, Props } from "./types";
+import type { Company, Contact } from "../../services/hubspot/types";
 
 const ActivityForm: FC<Props> = ({
     onCancel,
@@ -69,14 +73,22 @@ const ActivityForm: FC<Props> = ({
                         value={values.activityType}
                         options={activityTypeOptions}
                         error={!!(touched.activityType && errors.activityType)}
-                        onChange={(value: Option<string>) => setFieldValue("activityType", value)}
+                        onChange={(value: Option<string>) => {
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            setFieldValue("activityType", value)
+                        }}
                     />
                 </Label>
+
+                {/*
+                    Property 'children' is missing in type '{ id: string; value: Option<string>; options: Option<string>[]; error: boolean; onChange: (value: Option<string>) => void; }'
+                        but required in type 'Omit<DropdownProps<string, HTMLElement>, "fetchMoreText" | "autoscrollText" | "selectedIcon" | "externalLinkIcon" | "options">'
+                */}
 
                 <Label htmlFor="description" label="Description" required>
                     <TextArea
                         id="description"
-                        minWidth="auto"
                         placeholder="Enter value"
                         {...getFieldProps("description")}
                         error={!!(touched.description && errors.description)}
@@ -99,7 +111,11 @@ const ActivityForm: FC<Props> = ({
                         value={values.contacted}
                         options={contactOptions}
                         error={!!(touched.contacted && errors.contacted)}
-                        onChange={(value: Option<string>) => setFieldValue("contacted", value)}
+                        onChange={(value: Option<string>) => {
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            setFieldValue("contacted", value)
+                        }}
                     />
                 </Label>
 
@@ -110,7 +126,11 @@ const ActivityForm: FC<Props> = ({
                             value={values.callDisposition}
                             options={callDispositionOptions}
                             error={!!(touched.callDisposition && errors.callDisposition)}
-                            onChange={(value: Option<string>) => setFieldValue("callDisposition", value)}
+                            onChange={(value: Option<string>) => {
+                                // It's a promise, but Formik guarantees that there won't be an error.
+                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                setFieldValue("callDisposition", value)
+                            }}
                         />
                     </Label>
                 )}
@@ -122,7 +142,11 @@ const ActivityForm: FC<Props> = ({
                             value={values.callDirection}
                             options={callDirectionOptions}
                             error={!!(touched.callDirection && errors.callDirection)}
-                            onChange={(value: Option<string>) => setFieldValue("callDirection", value)}
+                            onChange={(value: Option<string>) => {
+                                // It's a promise, but Formik guarantees that there won't be an error.
+                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                setFieldValue("callDirection", value);
+                            }}
                         />
                     </Label>
                 )}
@@ -150,6 +174,8 @@ const ActivityForm: FC<Props> = ({
                                 ? values.associateContact.filter((contactId) => contactId !== option.value)
                                 : [...values.associateContact, option.value]
 
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             setFieldValue("associateContact", newValue);
                         }
                     }}
@@ -202,6 +228,8 @@ const ActivityForm: FC<Props> = ({
                                 ? values.associateCompany.filter((id) => id !== option.value)
                                 : [...values.associateCompany, option.value]
 
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             setFieldValue("associateCompany", newValue);
                         }
                     }}
@@ -254,6 +282,8 @@ const ActivityForm: FC<Props> = ({
                                 ? values.associateDeal.filter((id) => id !== option.value)
                                 : [...values.associateDeal, option.value]
 
+                            // It's a promise, but Formik guarantees that there won't be an error.
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             setFieldValue("associateDeal", newValue);
                         }
                     }}

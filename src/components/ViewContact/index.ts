@@ -1,0 +1,1 @@
+export { ViewContact } from "./ViewContact";

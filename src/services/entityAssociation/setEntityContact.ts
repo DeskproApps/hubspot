@@ -1,7 +1,7 @@
 import { IDeskproClient } from "@deskpro/app-sdk";
 import { HUBSPOT_ENTITY } from "./constants";
-import type { DeskproUser } from "../../types";
-import type { Contact, EntityMetadata } from "../hubspot/types";
+import type { DeskproUser, EntityMetadata } from "../../types";
+import type { Contact } from "../hubspot/types";
 
 const setEntityContact = (
     client: IDeskproClient,
