@@ -362,6 +362,14 @@ export type UploadFile = {
     access: "PUBLIC_INDEXABLE" | "PUBLIC_NOT_INDEXABLE" | "PRIVATE",
 };
 
+export type MetaOption = {
+    displayOrder: number;
+    hidden: boolean;
+    label: string;
+    value: string;
+    description?: string;
+};
+
 export type PropertyMeta = {
     name: string; // "address";
     fieldType: string; // "text"
@@ -385,13 +393,7 @@ export type PropertyMeta = {
         readOnlyValue: boolean;
     };
     updatedAt: DateTime;
-    options: Array<{
-        displayOrder: number;
-        hidden: boolean;
-        label: string;
-        value: string;
-        description?: string;
-    }>;
+    options: MetaOption[];
     showCurrencySymbol?: boolean;
     dateDisplayHint?: string; // "absolute"
     referencedObjectType?: string; // "OWNER"

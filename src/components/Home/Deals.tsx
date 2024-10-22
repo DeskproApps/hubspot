@@ -1,109 +1,103 @@
-import { FC } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
-import styled from "styled-components";
-import get from "lodash/get";
-import capitalize from "lodash/capitalize";
-import { P5, H3 } from "@deskpro/deskpro-ui";
-import { Title, HorizontalDivider } from "@deskpro/app-sdk";
-import { getFullName, getSymbolFromCurrency } from "../../utils";
-import { format } from "../../utils/date";
+import { useMemo, Fragment } from "react";
+import { useNavigate, createSearchParams, Link as RouterLink } from "react-router-dom";
 import {
     Link,
-    TwoColumn,
+    Title,
+    HorizontalDivider,
+    useDeskproLatestAppContext,
+} from "@deskpro/app-sdk";
+import { isLast, getScreenStructure } from "../../utils";
+import {
+    NoFound,
     HubSpotLogo,
-    OverflowText,
     BaseContainer,
+    BlocksBuilder,
 } from "../common";
+import { blocksMap } from "../blocks";
+import type { FC } from "react";
+import type { ContextData, Settings } from "../../types";
 import type {
-    Owner,
+    Company,
     Contact,
-    Pipeline,
     AccountInto,
-    PipelineStage,
-    Deal as DealType, Company,
+    PropertyMeta,
+    Deal as DealType,
 } from "../../services/hubspot/types";
 
-const DealContainer = styled.div`
-    margin-bottom: 14px;
-`;
-
 type Props = {
-    deals: Array<DealType["properties"]>,
-    accountInfo?: AccountInto,
-    owners: Record<Owner["id"], Owner>,
-    dealPipelines?: Record<Pipeline["id"], Pipeline>,
-    contact: Contact["properties"],
-    companies: Array<Company["properties"]>,
+    deals: Array<DealType["properties"]>;
+    accountInfo?: AccountInto;
+    contact: Contact["properties"];
+    companies: Array<Company["properties"]>;
+    dealMetaMap: Record<PropertyMeta["name"], PropertyMeta>;
 };
 
-const Deal: FC<{
-    deal: DealType["properties"],
-    dealPipelines: Props["dealPipelines"],
-    owner?: Owner,
-    accountInfo?: AccountInto,
-}> = ({ deal, dealPipelines, owner, accountInfo }) => {
-    const { amount, dealname, pipeline, dealstage, closedate, hs_object_id: dealId } = deal;
-    const portalId = get(accountInfo, ["portalId"]);
-    const pipelineData: Pipeline|null = get(dealPipelines, [pipeline], null);
-    const pipeLineStage: PipelineStage|null = pipelineData
-        ? pipelineData.stages.find(({ id }) => id === dealstage) || null
-        : null;
+type DealProps = {
+    isLast: boolean;
+    accountInfo?: AccountInto;
+    deal: DealType["properties"];
+    dealMetaMap: Record<PropertyMeta["name"], PropertyMeta>;
+};
+
+const Deal: FC<DealProps> = ({ deal, dealMetaMap, isLast, accountInfo }) => {
+    const portalId = accountInfo?.portalId;
+    const dealId = deal.hs_object_id;
+    const { context } = useDeskproLatestAppContext<ContextData, Settings>();
+    const structure = useMemo(() => {
+        let layout = getScreenStructure(context?.settings, "deal", "list");
+
+        if (layout[0].length === 1 && layout[0][0] === "dealname") {
+            layout = [...layout.slice(1)];
+        }
+
+        return layout;
+    }, [context?.settings]);
 
     return (
-        <DealContainer>
-            <Title
-                as={H3}
-                title={(
-                    <Link to={`/deal/${dealId}`}>{dealname}</Link>
-                )}
-                {...((portalId && dealId)
-                    ? {
-                        link: `https://app.hubspot.com/contacts/${portalId}/deal/${dealId}`,
-                        icon: <HubSpotLogo/>
-                    }
-                    : {}
-                )}
-                marginBottom={7}
-            />
-            <TwoColumn
-                leftLabel="Stage"
-                leftText={(
-                    <OverflowText as={P5}>
-                        {capitalize(pipeLineStage ? pipeLineStage.label : dealstage)}
-                    </OverflowText>
-                )}
-                rightLabel="Amount"
-                rightText={amount ? `${getSymbolFromCurrency(deal, accountInfo)} ${amount}` : "-"}
-            />
-            <TwoColumn
-                leftLabel="Owner"
-                leftText={getFullName(owner) || "-"}
-                rightLabel="Close Date"
-                rightText={format(closedate)}
-            />
-        </DealContainer>
+        (
+            <Fragment key={dealId}>
+                <Title
+                    title={<Link as={RouterLink} to={`/deal/${dealId}`}>{deal.dealname}</Link>}
+                    marginBottom={0}
+                    {...((portalId && dealId)
+                        ? {
+                            link: `https://app.hubspot.com/contacts/${portalId}/deal/${dealId}`,
+                            icon: <HubSpotLogo/>
+                        }
+                        : {}
+                    )}
+                />
+                <BlocksBuilder
+                    type="deals"
+                    config={{ structure, metaMap: dealMetaMap }}
+                    blocksMap={blocksMap}
+                    values={deal}
+                />
+                {!isLast && <HorizontalDivider style={{ marginBottom: 8 }}/>}
+            </Fragment>
+        )
     );
 };
 
 const Deals: FC<Props> = ({
     deals,
-    owners,
     accountInfo,
-    dealPipelines,
     contact: { hs_object_id: contactId },
     companies,
+    dealMetaMap,
 }) => {
     const navigate = useNavigate();
-    const companyId = get(companies, [0, "hs_object_id"], null);
+    const portalId = accountInfo?.portalId;
+    const companyId = companies[0]?.hs_object_id || null;
 
     return (
         <>
             <BaseContainer>
                 <Title
                     title={`Deals (${deals.length})`}
-                    {...(accountInfo?.portalId
+                    {...(portalId
                         ? {
-                            link: `https://app.hubspot.com/contacts/${accountInfo?.portalId}/deals`,
+                            link: `https://app.hubspot.com/contacts/${portalId}/deals`,
                             icon: <HubSpotLogo/>
                         }
                         : {}
@@ -116,15 +110,18 @@ const Deals: FC<Props> = ({
                         }).toString()}`
                     })}
                 />
-                {deals.map((deal) => (
-                    <Deal
-                        key={deal.hs_object_id}
-                        deal={deal}
-                        owner={get(owners, [deal?.hubspot_owner_id])}
-                        accountInfo={accountInfo}
-                        dealPipelines={dealPipelines}
-                    />
-                ))}
+                {deals.length === 0
+                    ? <NoFound text="No deals found" />
+                    : deals.map((deal, idx) => (
+                        <Deal
+                            deal={deal}
+                            key={deal.hs_object_id}
+                            accountInfo={accountInfo}
+                            dealMetaMap={dealMetaMap}
+                            isLast={isLast(deals, idx)}
+                        />
+                    ))
+                }
             </BaseContainer>
             <HorizontalDivider/>
         </>

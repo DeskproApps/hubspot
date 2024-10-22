@@ -5,12 +5,13 @@ import { RichTextBlock } from "./RichTextBlock";
 import { DatePickerBlock } from "./DatePickerBlock";
 import { MultipleCheckboxesBlock } from "./MultipleCheckboxesBlock";
 import { BooleanBlock } from "./BooleanBlock";
+import { RadioBlock } from "./RadioBlock";
 import type { BlocksMap } from "../common/Builder/BlocksBuilder/types";
 
 export const blocksMap = {
     text: TextBlock,
     phonenumber: TextBlock,
-    radio: TextBlock,
+    radio: RadioBlock,
     html: RichTextBlock,
     textarea: RichTextBlock,
     number: NumberBlock,

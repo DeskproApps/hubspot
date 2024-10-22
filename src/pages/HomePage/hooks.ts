@@ -14,7 +14,6 @@ import {
     getOwnersService,
     getCompanyService,
     getContactService,
-    getPipelineService,
     getDealsByContactId,
     getNotesByContactId,
     getCallsByContactId,
@@ -23,8 +22,7 @@ import {
     getEntityAssocService,
     getPropertiesMetaService,
 } from "../../services/hubspot";
-import { normalize, filterEntities, getScreenStructure, flatten } from "../../utils";
-import type { IDeskproClient } from "@deskpro/app-sdk";
+import { filterEntities, getScreenStructure, flatten } from "../../utils";
 import type { DeskproUser, ContextData, Settings } from "../../types";
 import type {
     Note,
@@ -35,7 +33,6 @@ import type {
     CallActivity,
     EmailActivity,
     PropertyMeta,
-    Pipeline,
 } from "../../services/hubspot/types";
 
 const useLoadHomeDeps = () => {
@@ -67,9 +64,14 @@ const useLoadHomeDeps = () => {
         },
     );
 
-    const propertiesMeta = useQueryWithClient(
+    const contactPropertiesMeta = useQueryWithClient(
         [QueryKey.PROPERTIES_META, "contact"],
         (client) => getPropertiesMetaService(client, "contacts"),
+    );
+
+    const dealPropertiesMeta = useQueryWithClient(
+        [QueryKey.PROPERTIES_META, "deals"],
+        (client) => getPropertiesMetaService(client, "deals"),
     );
 
     const companyIds = useQueryWithClient(
@@ -127,20 +129,6 @@ const useLoadHomeDeps = () => {
         getAccountInfoService,
     );
 
-    const dealPipelines = useQueriesWithClient(deals.data?.map((deal: Deal["properties"]) => ({
-        queryKey: [QueryKey.PIPELINES, deal.pipeline],
-        queryFn: (client: IDeskproClient) => getPipelineService(client, "deals", deal.pipeline),
-        enabled: Boolean(deals.data.length) && deals.isFetched && deals.isSuccess,
-    })) ?? []);
-
-    const dealPipelinesData = useMemo(() => {
-        if (!dealPipelines.every(({ isFetched, isSuccess }) => (isFetched && isSuccess))) {
-            return {};
-        }
-
-        return normalize(dealPipelines);
-    }, [dealPipelines]);
-
     const owners = useQueryWithClient([
         QueryKey.OWNERS],
         getOwnersService,
@@ -157,24 +145,31 @@ const useLoadHomeDeps = () => {
     );
 
     return {
-        isLoading: [linkedContactIds, contact, propertiesMeta].some(({ isLoading }) => isLoading),
+        isLoading: [linkedContactIds, contact, deals, contactPropertiesMeta].some(({ isLoading }) => isLoading),
         contact: get(contact, ["data", "properties"], {}) as Contact["properties"],
         companies: filterEntities(companies) as Array<Company["properties"]>,
         deals: deals.data || [],
-        dealPipelines: dealPipelinesData as Record<Pipeline["id"], Pipeline>,
         notes: notes.data || [],
         emailActivities: emailActivities.data as Array<EmailActivity["properties"]>,
         callActivities: callActivities.data as Array<CallActivity["properties"]>,
         accountInfo: accountInfo.data,
         owners: owners.data as Record<Owner["id"], Owner>,
         contactMetaMap: useMemo(() => {
-            return (propertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
+            return (contactPropertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
                 if (!acc[meta.name]) {
                     acc[meta.name] = meta;
                 }
                 return acc;
             }, {});
-        }, [propertiesMeta.data?.results]),
+        }, [contactPropertiesMeta.data?.results]),
+        dealMetaMap: useMemo(() => {
+            return (dealPropertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
+                if (!acc[meta.name]) {
+                    acc[meta.name] = meta;
+                }
+                return acc;
+            }, {});
+        }, [dealPropertiesMeta.data?.results]),
     } as const;
 };
 

@@ -12,6 +12,7 @@ export type Config = {
 export type Values = Record<PropertyMeta["name"], unknown>;
 
 export type BlocksBuilderProps = {
+    type: "contacts"|"deals";
     config: Config;
     blocksMap: BlocksMap;
     values?: Values;

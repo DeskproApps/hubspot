@@ -35,12 +35,12 @@ export const STRUCTURE = {
     DEAL: {
         list: [
             ["dealname"],
-            ["amount", "dealstage"],
+            ["dealstage", "amount"],
             ["hubspot_owner_id", "closedate"],
         ],
         view: [
             ["dealname"],
-            ["amount", "dealstage"],
+            ["dealstage", "amount"],
             ["createdate", "closedate"],
             ["hs_priority", "dealtype"],
             ["hubspot_owner_id"]

@@ -47,7 +47,7 @@
       "order": 30
     },
     "mapping_deal": {
-      "title": "Contact Field Mapping",
+      "title": "Deal Field Mapping",
       "type": "app_modal",
       "options": {
         "entrypoint": "#/admin/mapping/deal",

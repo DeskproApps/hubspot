@@ -11,7 +11,7 @@ import type { BlockProps } from "../../common/Builder";
 type Props = BlockProps<string>;
 
 const SelectBlock: FC<Props> = ({ meta, value }) => {
-    const isOwner = meta.referencedObjectType === "OWNER"; 
+    const isOwner = meta.referencedObjectType === "OWNER";
 
     const owners = useQueryWithClient(
         [QueryKey.OWNERS],
