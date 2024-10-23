@@ -40,10 +40,13 @@ export const STRUCTURE = {
         ],
         view: [
             ["dealname"],
-            ["dealstage", "amount"],
-            ["createdate", "closedate"],
-            ["hs_priority", "dealtype"],
-            ["hubspot_owner_id"]
+            ["dealtype"],
+            ["pipeline"],
+            ["dealstage"],
+            ["amount"],
+            ["closedate"],
+            ["hubspot_owner_id"],
+            ["hs_priority"],
         ],
     } as DealLayout,
 } as const;

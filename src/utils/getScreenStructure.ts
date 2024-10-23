@@ -19,6 +19,10 @@ function getScreenStructure (settings: Settings|undefined, object: "contact"|"de
         return settings?.mapping_deal
             ? (JSON.parse(settings.mapping_deal) as DealLayout).list
             : STRUCTURE.DEAL.list
+    } else if (object === "deal" && screen === "view") {
+        return settings?.mapping_deal
+        ? (JSON.parse(settings.mapping_deal) as DealLayout).view
+        : STRUCTURE.DEAL.view
     }
     
     return [];

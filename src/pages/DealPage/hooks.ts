@@ -1,25 +1,22 @@
+import { useMemo } from "react";
 import get from "lodash/get";
 import { useQueriesWithClient, useQueryWithClient } from "../../hooks";
 import {
     getDealService,
-    getOwnerService,
     getCompanyService,
     getContactService,
-    getPipelineService,
-    getDealTypesService,
     getEntityAssocService,
     getAccountInfoService,
+    getPropertiesMetaService,
 } from "../../services/hubspot";
 import { QueryKey } from "../../query";
 import { filterEntities } from "../../utils";
 import type {
     Deal,
-    Owner,
     Contact,
     Company,
-    Pipeline,
-    DealTypes,
     AccountInto,
+    PropertyMeta,
 } from "../../services/hubspot/types";
 
 const useLoadDealDeps = (dealId?: Deal["id"]) => {
@@ -29,27 +26,15 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
         { enabled: !!dealId },
     );
 
-    const pipeline = useQueryWithClient<Pipeline>(
-        [QueryKey.PIPELINES, "deals", deal.data?.properties.pipeline],
-        (client) => getPipelineService(client, "deals", deal.data?.properties.pipeline as string),
-        { enabled: !!deal.data?.properties.pipeline }
+    const dealPropertiesMeta = useQueryWithClient(
+        [QueryKey.PROPERTIES_META, "deals"],
+        (client) => getPropertiesMetaService(client, "deals"),
     );
 
     const accountInfo = useQueryWithClient(
         [QueryKey.ACCOUNT_INFO],
         getAccountInfoService,
     );
-
-    const owner = useQueryWithClient(
-        [QueryKey.OWNERS, get(deal, ["data", "properties", "hubspot_owner_id"], 0)],
-        (client) =>  getOwnerService(client, get(deal, ["data", "properties", "hubspot_owner_id"], "0")),
-        {
-            enabled: !!get(deal, ["data", "properties", "hubspot_owner_id"], 0),
-            useErrorBoundary: false,
-        }
-    );
-
-    const dealTypes = useQueryWithClient([QueryKey.DEALS, "types"], getDealTypesService);
 
     // ToDo: rewrite to search api (getAssocEntitiesByContactId)
     const contactIds = useQueryWithClient(
@@ -82,20 +67,23 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
     return {
         isLoading: [
             deal,
-            owner,
-            pipeline,
-            dealTypes,
             accountInfo,
+            dealPropertiesMeta,
             ...contacts,
             ...companies,
         ].some(({ isLoading }) => Boolean(isLoading)),
         deal: get(deal, ["data", "properties"], {}) as Deal["properties"],
-        owner: get(owner, ["data"], {}) as Owner,
-        pipeline: get(pipeline, ["data"], {}) as Pipeline,
         contacts: filterEntities(contacts) as Array<Contact["properties"]>,
         companies: filterEntities(companies) as Array<Company["properties"]>,
-        dealTypes: get(dealTypes, ["data"], {}) as DealTypes,
         accountInfo: get(accountInfo, ["data"], {}) as AccountInto,
+        dealMetaMap: useMemo(() => {
+            return (dealPropertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
+                if (!acc[meta.name]) {
+                    acc[meta.name] = meta;
+                }
+                return acc;
+            }, {});
+        }, [dealPropertiesMeta.data?.results]),
     };
 };
 
