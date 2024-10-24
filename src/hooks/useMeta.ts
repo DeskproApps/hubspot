@@ -14,7 +14,7 @@ const useMeta: UseMeta = (entity) => {
     const { settings } = useAppContext();
 
     const propertiesMeta = useQueryWithClient(
-        [QueryKey.PROPERTIES_META, "contact"],
+        [QueryKey.PROPERTIES_META, entity],
         (client) => getPropertiesMetaService(client, entity, { settings } as { settings: Settings }),
         { enabled: Boolean(settings), cacheTime: 0 },
     );

@@ -8,7 +8,7 @@ import {
     getAccountInfoService,
     getDealPrioritiesService,
 } from "../services/hubspot";
-import { useQueryWithClient } from "../hooks";
+import { useQueryWithClient, useMeta } from "../hooks";
 import { QueryKey } from "../query";
 import { getOption, noOwnerOption, getSymbolFromCurrency, getFullName } from "../utils";
 import type {
@@ -21,6 +21,7 @@ import type {
     DealPriorityOption,
 } from "../services/hubspot/types";
 import type { Option } from "../types";
+import type { MetaMap } from "../components/common/Builder";
 
 type UseLoadUpdateDealDeps = (dealId?: Deal["id"]) => {
     isLoading: boolean,
@@ -32,6 +33,7 @@ type UseLoadUpdateDealDeps = (dealId?: Deal["id"]) => {
     priorityOptions: Array<Option<DealPriorityOption["value"]>>,
     contactOptions: Array<Option<Contact["id"]>>,
     companyOptions: Array<Option<Company["id"]>>,
+    dealMeta: MetaMap,
 };
 
 const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
@@ -119,17 +121,19 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         }
     );
 
+    const dealMeta = useMeta("deals");
+
     return {
-        isLoading: [
-            deal,
+        isLoading: (Boolean(dealId) && deal.isLoading) || [
             owners,
             contacts,
+            dealMeta,
             companies,
             pipelines,
             dealTypes,
             priorities,
             accountInfo,
-        ].some(({ isLoading }) => Boolean(isLoading)),
+        ].some(({ isLoading }) => isLoading),
         deal: (deal.data?.properties ?? []) as Deal["properties"],
         pipelines: pipelines.data?.results || [],
         currency: getSymbolFromCurrency(undefined, accountInfo.data),
@@ -138,6 +142,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         priorityOptions: priorities.data || [],
         contactOptions: contacts.data || [],
         companyOptions: companies.data || [],
+        dealMeta: dealMeta.metaMap,
     };
 };
 

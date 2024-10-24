@@ -5,15 +5,14 @@ import {
     useDeskproElements,
     useDeskproAppClient,
 } from "@deskpro/app-sdk";
-import { createDealService, setEntityAssocService } from "../services/hubspot";
-import { isValidationError } from "../services/hubspot/utils";
-import { useSetAppTitle, useLoadUpdateDealDeps } from "../hooks";
-import { queryClient, QueryKey } from "../query";
-import { ErrorBlock } from "../components/common";
-import { DealForm } from "../components";
-import { getDealValues } from "../components/DealForm/utils";
-import type { HubSpotError } from "../services/hubspot/types";
-import type { Values } from "../components/DealForm/types";
+import { createDealService, setEntityAssocService } from "../../services/hubspot";
+import { isValidationError } from "../../services/hubspot/utils";
+import { useSetAppTitle, useLoadUpdateDealDeps } from "../../hooks";
+import { queryClient, QueryKey } from "../../query";
+import { CreateDeal } from "../../components";
+import { getDealValues } from "../../components/DealForm/utils";
+import type { HubSpotError } from "../../services/hubspot/types";
+import type { Values } from "../../components/DealForm/types";
 
 const CreateDealPage: FC = () => {
     const navigate = useNavigate();
@@ -28,6 +27,7 @@ const CreateDealPage: FC = () => {
         pipelines,
         dealTypeOptions,
         priorityOptions,
+        dealMeta,
     } = useLoadUpdateDealDeps();
 
     const [error, setError] = useState<string|null>(null);
@@ -89,21 +89,20 @@ const CreateDealPage: FC = () => {
     }
 
     return (
-        <>
-            {error && <ErrorBlock texts={[error]}/>}
-            <DealForm
-                initValues={{ contactId, companyId }}
-                onSubmit={onSubmit}
-                onCancel={onCancel}
-                pipelines={pipelines}
-                currency={currency}
-                ownerOptions={ownerOptions}
-                dealTypeOptions={dealTypeOptions}
-                priorityOptions={priorityOptions}
-                contactOptions={contactOptions}
-                companyOptions={companyOptions}
-            />
-        </>
+        <CreateDeal
+            dealMeta={dealMeta}
+            error={error}
+            initValues={{ contactId, companyId }}
+            onSubmit={onSubmit}
+            onCancel={onCancel}
+            pipelines={pipelines}
+            currency={currency}
+            ownerOptions={ownerOptions}
+            dealTypeOptions={dealTypeOptions}
+            priorityOptions={priorityOptions}
+            contactOptions={contactOptions}
+            companyOptions={companyOptions}
+        />
     );
 };
 
