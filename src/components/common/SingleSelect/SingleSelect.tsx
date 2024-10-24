@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
     faCheck,
     faCaretDown,
@@ -6,33 +6,48 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {
     Dropdown,
+    DropdownProps,
     DropdownValueType,
+    DropdownHeaderType,
     DropdownTargetProps,
     DivAsInputWithDisplay,
 } from "@deskpro/deskpro-ui";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SingleSelect: FC<any> = ({
+type Props<T> = Omit<
+    DropdownProps<T, HTMLElement>,
+    "fetchMoreText"|"autoscrollText"|"selectedIcon"|"externalLinkIcon"|"options"|"children"
+> & {
+    id: string;
+    onChange: (o: DropdownValueType<T>) => void;
+    value: DropdownValueType<T>;
+    options: Array<DropdownValueType<T> | DropdownHeaderType>;
+    error?: boolean;
+    placeholder?: string;
+};
+
+const SingleSelect = <T,>({
     id,
-    label,
     error,
     value,
     options,
     onChange,
-    required,
     placeholder,
-    showInternalSearch,
+    showInternalSearch, 
     ...props
-}) => {
+}: Props<T>) => {
     const [input, setInput] = useState<string>("");
     const [dirtyInput, setDirtyInput] = useState<boolean>(false);
 
     const selectedValue = useMemo(() => {
-        return options.filter((o: DropdownValueType<string|number>) => o.value === value?.value)[0]?.label ?? "";
+        const filtered = options.filter((o) => {
+            return (o?.type === "value") && (o.value === value?.value);
+        }) as Array<DropdownValueType<T>>;
+        const firstOption = filtered[0];
+        return firstOption?.label || "";
     }, [value, options]);
 
     useEffect(() => {
-        setInput(value?.label || "Select Value");
+        setInput(`${value.label as string}` || "Select Value");
     }, [value]);
 
     return (
@@ -57,10 +72,10 @@ const SingleSelect: FC<any> = ({
                     setInput(value);
                 }
             }}
-            options={options.filter((option: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+            options={options.filter((option) => {
                 return !dirtyInput
                     ? true
-                    : option.label.toLowerCase().includes(input.toLowerCase());
+                    : `${option?.label as string || ""}`.toLowerCase().includes(input.toLowerCase());
             })}
             {...props}
         >

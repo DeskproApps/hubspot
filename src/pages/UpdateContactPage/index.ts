@@ -1,0 +1,1 @@
+export { UpdateContactPage } from "./UpdateContactPage";

@@ -21,6 +21,7 @@ import {
     getEmailActivityValues,
 } from "../../components/ActivityForm";
 import { ErrorBlock, BaseContainer } from "../../components/common";
+import type { HubSpotError } from "../../services/hubspot/types";
 import type { Values } from "../../components/ActivityForm/types";
 
 const CreateActivityPage: FC = () => {
@@ -55,7 +56,7 @@ const CreateActivityPage: FC = () => {
 
     const onSubmit = (values: Values) => {
         if (!client || !contactId) {
-            return;
+            return Promise.resolve();
         }
 
         setError(null);
@@ -87,11 +88,11 @@ const CreateActivityPage: FC = () => {
             ]))
             .then(() => queryClient.invalidateQueries())
             .then(() => navigate("/home"))
-            .catch((err) => {
+            .catch((err: HubSpotError) => {
                 if (isValidationError(err)) {
                     setError(err.message);
                 } else {
-                    throw new Error(err);
+                    throw err;
                 }
             });
     };
@@ -108,7 +109,7 @@ const CreateActivityPage: FC = () => {
         <>
             {error && (
                 <BaseContainer>
-                    <ErrorBlock text={error}/>
+                    <ErrorBlock texts={[error]}/>
                 </BaseContainer>
             )}
             <ActivityForm

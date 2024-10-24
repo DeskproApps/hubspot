@@ -1,5 +1,3 @@
-import get from "lodash/get";
-import concat from "lodash/concat";
 import {
     getDealService,
     getOwnersService,
@@ -10,7 +8,7 @@ import {
     getAccountInfoService,
     getDealPrioritiesService,
 } from "../services/hubspot";
-import { useQueryWithClient } from "../hooks";
+import { useQueryWithClient, useMeta } from "../hooks";
 import { QueryKey } from "../query";
 import { getOption, noOwnerOption, getSymbolFromCurrency, getFullName } from "../utils";
 import type {
@@ -23,6 +21,7 @@ import type {
     DealPriorityOption,
 } from "../services/hubspot/types";
 import type { Option } from "../types";
+import type { MetaMap } from "../components/common/Builder";
 
 type UseLoadUpdateDealDeps = (dealId?: Deal["id"]) => {
     isLoading: boolean,
@@ -34,6 +33,7 @@ type UseLoadUpdateDealDeps = (dealId?: Deal["id"]) => {
     priorityOptions: Array<Option<DealPriorityOption["value"]>>,
     contactOptions: Array<Option<Contact["id"]>>,
     companyOptions: Array<Option<Company["id"]>>,
+    dealMeta: MetaMap,
 };
 
 const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
@@ -60,14 +60,14 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getOwnersService,
         {
             select: (data) => {
-                const owners: Owner[] = get(data, ["results"], []);
+                const owners: Owner[] = data?.results ?? [];
                 let options = [noOwnerOption];
 
                 if (Array.isArray(owners) && owners.length > 0) {
-                    options = concat(
-                        options,
-                        owners.map((owner) => getOption(owner.id, getFullName(owner))),
-                    );
+                    options = [
+                        ...options,
+                        ...owners.map((owner) => getOption(owner.id, getFullName(owner))),
+                    ];
                 }
 
                 return options;
@@ -80,7 +80,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getDealTypesService,
         {
             select: (data) => {
-                return (get(data, ["options"], []) as DealTypeOption[])
+                return (data?.options ?? [] as DealTypeOption[])
                     .map(({ value, label }) => getOption(value, label));
             },
         }
@@ -91,7 +91,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getDealPrioritiesService,
         {
             select: (data) => {
-                return (get(data, ["options"], []) as DealPriorityOption[])
+                return (data?.options ?? [] as DealPriorityOption[])
                     .map(({ value, label }) => getOption(value, label));
             },
         }
@@ -102,14 +102,8 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getContactsService,
         {
             select: (data) => {
-                return (get(data, ["results"], []) as Contact[]).map(({
-                    id: contactId,
-                    properties: {
-                        firstname: firstName,
-                        lastname: lastName
-                    },
-                }) => {
-                    return getOption(contactId, getFullName({ firstName, lastName }));
+                return (data?.results ?? [] as Contact[]).map((c) => {
+                    return getOption(c.id, getFullName(c.properties));
                 });
             },
         },
@@ -120,32 +114,35 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         getCompaniesService,
         {
             select: (data) => {
-                return (get(data, ["results"], []) as Company[]).map(({ id, properties: { name } }) => {
+                return (data?.results ?? [] as Company[]).map(({ id, properties: { name } }) => {
                     return getOption(id, name);
                 });
             }
         }
     );
 
+    const dealMeta = useMeta("deals");
+
     return {
-        isLoading: [
-            deal,
+        isLoading: (Boolean(dealId) && deal.isLoading) || [
             owners,
             contacts,
+            dealMeta,
             companies,
             pipelines,
             dealTypes,
             priorities,
             accountInfo,
-        ].every(({ isLoading }) => Boolean(isLoading)),
-        deal: get(deal, ["data", "properties"]) as Deal["properties"],
-        pipelines: get(pipelines, ["data", "results"], []) || [],
+        ].some(({ isLoading }) => isLoading),
+        deal: (deal.data?.properties ?? []) as Deal["properties"],
+        pipelines: pipelines.data?.results || [],
         currency: getSymbolFromCurrency(undefined, accountInfo.data),
         ownerOptions: owners.data || [],
         dealTypeOptions: dealTypes.data || [],
         priorityOptions: priorities.data || [],
         contactOptions: contacts.data || [],
         companyOptions: companies.data || [],
+        dealMeta: dealMeta.metaMap,
     };
 };
 

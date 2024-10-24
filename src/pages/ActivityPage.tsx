@@ -19,7 +19,7 @@ import {
     getEntityAssocService, getOwnerService,
 } from "../services/hubspot";
 import { Activity } from "../components/Activity";
-import {CallActivity, Contact, EmailActivity, Owner} from "../services/hubspot/types";
+import type { Contact } from "../services/hubspot/types";
 
 const getActivityQueryKey = (type: string | null): string | undefined => {
     if (!type) {
@@ -45,7 +45,7 @@ const ActivityPage: FC = () => {
 
     const contactIds = useQueryWithClient(
         [activityKey, type, activityId, "contact"],
-        (client) => getEntityAssocService<CallActivity["id"]|EmailActivity["id"], "call_to_contact">(
+        (client) => getEntityAssocService<string, "call_to_contact">(
             client, type as "emails"|"calls", activityId as string, "contacts"
         ),
         { enabled: !!activityId },
@@ -85,7 +85,7 @@ const ActivityPage: FC = () => {
     return (
         <Activity
             type={type}
-            owner={owner.data as Owner|undefined}
+            owner={owner.data}
             activity={data.properties}
             contacts={filterEntities(contacts) as Array<Contact["properties"]>}
         />

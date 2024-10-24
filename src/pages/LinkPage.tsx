@@ -100,13 +100,10 @@ const LinkPage: FC = () => {
             .then((data) => {
                 return setEntityContact(client, deskproUser.id, selectedContactId, getEntityMetadata(data));
             })
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            .then((isSuccess: boolean) => {
-                if (isSuccess) {
-                    linkContactFn(selectedContactId).then(() => navigate("/home"));
-                }
+            .then(() => {
+                return linkContactFn(selectedContactId).then(() => navigate("/home"));
             })
+            .catch(() => ({}))
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [client, deskproUser, selectedContactId]);
 

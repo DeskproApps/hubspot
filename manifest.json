@@ -32,6 +32,32 @@
       "isRequired": false,
       "isBackendOnly": false,
       "order": 20
+    },
+    "mapping_contact": {
+      "title": "Contact Field Mapping",
+      "type": "app_modal",
+      "options": {
+        "entrypoint": "#/admin/mapping/contact",
+        "label": "Edit Mapping",
+        "icon": "edit",
+        "height": "500"
+      },
+      "isRequired": false,
+      "isBackendOnly": false,
+      "order": 30
+    },
+    "mapping_deal": {
+      "title": "Deal Field Mapping",
+      "type": "app_modal",
+      "options": {
+        "entrypoint": "#/admin/mapping/deal",
+        "label": "Edit Mapping",
+        "icon": "edit",
+        "height": "500"
+      },
+      "isRequired": false,
+      "isBackendOnly": false,
+      "order": 40
     }
   },
   "proxy": {
