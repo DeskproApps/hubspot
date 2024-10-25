@@ -5,11 +5,10 @@ import { Title } from "@deskpro/app-sdk";
 import { BaseContainer, TextBlockWithLabel } from "../common";
 import { getFullName, getSymbolFromCurrency } from "../../utils";
 import { format } from "../../utils/date";
-import type { PipelineStage } from "../../services/hubspot/types";
 import type { Props } from "./types";
 
 const DealInfo: FC<Props> = ({ deal, pipeline, accountInfo, owner, dealTypes }) => {
-    const stage = pipeline.stages?.find(({ id }) => id === deal.dealstage) || {} as PipelineStage;
+    const stage = pipeline.stages?.find(({ id }) => id === deal.dealstage);
     const dealType = dealTypes?.options?.find(({ value }) => value === deal.dealtype);
     const amount = deal.amount ? `${getSymbolFromCurrency(deal, accountInfo)} ${deal.amount}` : "-";
 

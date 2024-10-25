@@ -17,7 +17,7 @@ const ContactMappingPage: FC = () => {
     const { contactMetaMap, isLoading: isLoadingMeta } = useContactMeta();
     const isLoading = isLoadingContext || isLoadingProperties || isLoadingMeta;
     
-    const structure: { home: string[][], view: string[][] } = useMemo(() => {
+    const structure: ContactLayout = useMemo(() => {
       return settings?.mapping_contact
         ? JSON.parse(settings.mapping_contact) as ContactLayout
         : STRUCTURE.CONTACT

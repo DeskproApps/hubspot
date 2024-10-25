@@ -1,4 +1,3 @@
-import { isPrimitive } from "../../../../utils";
 import type { DropdownItemType, DropdownValueType } from "@deskpro/deskpro-ui";
 
 const NOT_FOUND = "No item(s) found";
@@ -17,7 +16,9 @@ const getFilteredOptions = <T,>(
     .filter((o) => {
       const label = o?.label;
       const description = o?.description;
-      const search = isPrimitive(label) ? `${label}` : description || "";
+      const search = ((typeof label === "string") && (typeof label === "number" && !isNaN(label)))
+        ? label
+        : description || "";
 
       return !search
         ? true
@@ -31,4 +32,4 @@ const getFilteredOptions = <T,>(
   }
 };
 
-export { getFilteredOptions, isPrimitive };
+export { getFilteredOptions };

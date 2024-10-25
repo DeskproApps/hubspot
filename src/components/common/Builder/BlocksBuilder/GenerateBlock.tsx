@@ -6,7 +6,7 @@ import type { FC } from "react";
 type Props = {
   meta: PropertyMeta;
   Component: FC<BlockProps>;
-  value: unknown;
+  value: string;
 };
 
 const GenerateBlock = ({ meta, Component, value }: Props) => {

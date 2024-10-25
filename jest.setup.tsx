@@ -2,12 +2,9 @@ import "regenerator-runtime/runtime";
 import "@testing-library/jest-dom";
 // for tests in Jest, because these observers arn't available in the Node environment
 import "intersection-observer";
-// todo: check after the removal `iframe-resizer` if it is still needed
 // for tests in Jest, because these observers arn't available in the Node environment
 import ResizeObserver from "resize-observer-polyfill";
 import { useQuery } from "@tanstack/react-query";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { TextDecoder, TextEncoder } from "util";
 import * as React from "react";
 import { lightTheme } from "@deskpro/deskpro-ui";
@@ -15,18 +12,9 @@ import { mockClient, mockUserContext } from "@deskpro/app-testing-utils";
 import type { IDeskproClient, DeskproAppEventHooks } from "@deskpro/app-sdk";
 import type { UserContext } from "./src/types";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
 global.TextEncoder = TextEncoder;
-//for some reason the types are wrong, but this works
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
 global.TextDecoder = TextDecoder;
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
 global.React = React;
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
 global.ResizeObserver = ResizeObserver;
 
 let currentContext = mockUserContext as UserContext;

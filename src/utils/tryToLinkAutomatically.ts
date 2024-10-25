@@ -14,10 +14,12 @@ const tryToLinkAutomatically = async (
     try {
         const contactIds = await getEntityContactList(client, dpUser.id);
 
+        // contact already linked
         if (contactIds?.length === 1) {
             return;
         }
         
+        // If more than one is linked, it means something went wrong, so we delete all of them.
         if (contactIds?.length > 1) {
             await Promise.all(contactIds.map((contactId) => {
                 return deleteEntityContact(client, dpUser.id, contactId);

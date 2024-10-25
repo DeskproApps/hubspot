@@ -30,12 +30,10 @@ import type {
     Note,
     Deal,
     Owner,
-    Contact,
     Company,
     CallActivity,
     EmailActivity,
     PropertyMeta,
-    Pipeline,
 } from "../../services/hubspot/types";
 
 const useLoadHomeDeps = () => {
@@ -158,10 +156,10 @@ const useLoadHomeDeps = () => {
 
     return {
         isLoading: [linkedContactIds, contact, propertiesMeta].some(({ isLoading }) => isLoading),
-        contact: get(contact, ["data", "properties"], {}) as Contact["properties"],
+        contact: contact.data?.properties,
         companies: filterEntities(companies) as Array<Company["properties"]>,
         deals: deals.data || [],
-        dealPipelines: dealPipelinesData as Record<Pipeline["id"], Pipeline>,
+        dealPipelines: dealPipelinesData,
         notes: notes.data || [],
         emailActivities: emailActivities.data as Array<EmailActivity["properties"]>,
         callActivities: callActivities.data as Array<CallActivity["properties"]>,

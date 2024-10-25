@@ -13,7 +13,7 @@ import type { ContextData, Settings } from "../../types";
 import type { AccountInto, Contact, PropertyMeta } from "../../services/hubspot/types";
 
 type Props = {
-    contact: Contact["properties"],
+    contact?: Contact["properties"],
     accountInfo?: AccountInto,
     contactMetaMap: Record<PropertyMeta["name"], PropertyMeta>,
 };
@@ -31,11 +31,11 @@ const ContactInfo: FC<Props> = ({
             <BaseContainer>
                 <Title
                     title={(
-                        <Link as={RouterLink} to={`/contacts/${contact.hs_object_id}`}>
+                        <Link as={RouterLink} to={`/contacts/${contact?.hs_object_id}`}>
                             {getFullName(contact) || "Contact"}
                         </Link>
                     )}
-                    link={(portalId && contact.hs_object_id)
+                    link={(portalId && contact?.hs_object_id)
                         ? `https://app.hubspot.com/contacts/${portalId}/contact/${contact.hs_object_id}`
                         : ""
                     }

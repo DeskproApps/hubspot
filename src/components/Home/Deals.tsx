@@ -32,7 +32,7 @@ type Props = {
     accountInfo?: AccountInto,
     owners: Record<Owner["id"], Owner>,
     dealPipelines?: Record<Pipeline["id"], Pipeline>,
-    contact: Contact["properties"],
+    contact?: Contact["properties"],
     companies: Array<Company["properties"]>,
 };
 
@@ -90,8 +90,8 @@ const Deals: FC<Props> = ({
     owners,
     accountInfo,
     dealPipelines,
-    contact: { hs_object_id: contactId },
     companies,
+    contact: { hs_object_id: contactId } = {},
 }) => {
     const navigate = useNavigate();
     const companyId = get(companies, [0, "hs_object_id"], null);
@@ -111,7 +111,7 @@ const Deals: FC<Props> = ({
                     onClick={() => navigate({
                         pathname: `/deal/create`,
                         search: `?${createSearchParams({
-                            contactId,
+                            ...(!contactId ? {} : { contactId }),
                             ...(!companyId ? {} : { companyId }),
                         }).toString()}`
                     })}
