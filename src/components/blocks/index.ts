@@ -6,7 +6,6 @@ import { DatePickerBlock } from "./DatePickerBlock";
 import { MultipleCheckboxesBlock } from "./MultipleCheckboxesBlock";
 import { BooleanBlock } from "./BooleanBlock";
 import { RadioBlock } from "./RadioBlock";
-import type { BlocksMap } from "../common/Builder/BlocksBuilder/types";
 
 export const blocksMap = {
     text: TextBlock,
@@ -19,7 +18,7 @@ export const blocksMap = {
     checkbox: MultipleCheckboxesBlock,
     select: SelectBlock,
     booleancheckbox: BooleanBlock,
-} as const as BlocksMap;
+} as const;
 
 export {
     TextBlock,

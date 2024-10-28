@@ -7,7 +7,7 @@ import type { FieldProps } from "./types";
 
 type Props = {
     meta: PropertyMeta;
-    control: Control<Record<string, unknown>>,
+    control: Control<Record<string, string>>,
     Component: FC<FieldProps>;
 };
 

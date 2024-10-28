@@ -3,7 +3,7 @@ import { P5, Toggle } from "@deskpro/deskpro-ui";
 import type { FC } from "react";
 import type { BlockProps } from "../../common/Builder";
 
-type Props = BlockProps<"true"|"false">;
+type Props = BlockProps<string>; // "true"|"false"
 
 const BooleanBlock: FC<Props> = ({ meta, value }) => {
     const selected = useMemo(() => {

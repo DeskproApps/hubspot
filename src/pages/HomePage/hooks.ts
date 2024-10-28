@@ -28,7 +28,6 @@ import type {
     Note,
     Deal,
     Owner,
-    Contact,
     Company,
     CallActivity,
     EmailActivity,
@@ -146,7 +145,7 @@ const useLoadHomeDeps = () => {
 
     return {
         isLoading: [linkedContactIds, contact, deals, contactPropertiesMeta].some(({ isLoading }) => isLoading),
-        contact: get(contact, ["data", "properties"], {}) as Contact["properties"],
+        contact: contact.data?.properties,
         companies: filterEntities(companies) as Array<Company["properties"]>,
         deals: deals.data || [],
         notes: notes.data || [],

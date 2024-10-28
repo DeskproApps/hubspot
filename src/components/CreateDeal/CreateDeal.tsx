@@ -1,7 +1,7 @@
 import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import { getScreenStructure } from "../../utils";
 import { fieldsMap } from "../fields";
-import { DealForm } from "../DealForm";
+// import { DealForm } from "../DealForm";
 import { ErrorBlock, FormBuilder, BaseContainer } from "../common";
 import type { FC } from "react";
 import type { ContextData, Settings } from "../../types";
@@ -17,7 +17,7 @@ const CreateDeal: FC<Props> = ({ error, ...props }) => {
     const { context } = useDeskproLatestAppContext<ContextData, Settings>();
     const structure = getScreenStructure(context?.settings, "deal", "view");
 
-    console.log(">>> deal:", props);
+    // console.log(">>> deal:", props);
 
     return (
         <>
@@ -27,8 +27,8 @@ const CreateDeal: FC<Props> = ({ error, ...props }) => {
                 <FormBuilder
                     config={{ structure, metaMap: props.dealMeta }}
                     fieldsMap={fieldsMap}
-                    onSubmit={(value) => {
-                        console.log(">>> onSubmit:", value);
+                    onSubmit={() => {
+                        // console.log(">>> onSubmit:", value);
                     }}
                 />
             </BaseContainer>

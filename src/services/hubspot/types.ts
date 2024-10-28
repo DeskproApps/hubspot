@@ -53,7 +53,7 @@ export type Contact = {
         lastmodifieddate: DateTime,
         jobtitle: string,
         lifecyclestage: string,
-        hubspot_owner_id: string|null,
+        hubspot_owner_id: string,
     },
     archived: boolean,
     createdAt: DateTime,

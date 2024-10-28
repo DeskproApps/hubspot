@@ -28,7 +28,7 @@ export type FormBuilderProps = {
     isEditMode?: boolean;
 };
 
-export type FieldProps<T = unknown> = {
+export type FieldProps<T = string> = {
     meta: PropertyMeta,
     formControl: {
       field: ControllerRenderProps<Record<PropertyMeta["name"], T>>,

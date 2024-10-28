@@ -27,7 +27,7 @@ import type {
 type Props = {
     deals: Array<DealType["properties"]>;
     accountInfo?: AccountInto;
-    contact: Contact["properties"];
+    contact?: Contact["properties"];
     companies: Array<Company["properties"]>;
     dealMetaMap: Record<PropertyMeta["name"], PropertyMeta>;
 };
@@ -82,9 +82,9 @@ const Deal: FC<DealProps> = ({ deal, dealMetaMap, isLast, accountInfo }) => {
 const Deals: FC<Props> = ({
     deals,
     accountInfo,
-    contact: { hs_object_id: contactId },
     companies,
     dealMetaMap,
+    contact: { hs_object_id: contactId } = {},
 }) => {
     const navigate = useNavigate();
     const portalId = accountInfo?.portalId;
@@ -105,7 +105,7 @@ const Deals: FC<Props> = ({
                     onClick={() => navigate({
                         pathname: `/deal/create`,
                         search: `?${createSearchParams({
-                            contactId,
+                            ...(!contactId ? {} : { contactId }),
                             ...(!companyId ? {} : { companyId }),
                         }).toString()}`
                     })}

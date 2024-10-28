@@ -16,7 +16,7 @@ import type {
 } from "../../services/hubspot/types";
 
 type Props = {
-    contact: Contact["properties"],
+    contact: Contact["properties"]|undefined,
     owners: Record<Owner["id"], Owner>,
     companies: Array<Company["properties"]>,
     deals: Array<Deal["properties"]>,

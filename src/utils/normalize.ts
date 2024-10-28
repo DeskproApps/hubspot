@@ -1,20 +1,12 @@
-type DataItem = {
-    [key: string]: unknown;
-};
-
-type SourceItem = {
-    data?: DataItem;
-};
-
-const normalize = (
-    source: SourceItem[] | undefined,
-    fieldName: string = "id",
-): Record<string, DataItem> => {
+const normalize = <T extends { id: string }>(
+    source: Array<{ data?: T }> | undefined,
+    fieldName: keyof T = "id",
+): Record<string, T> => {
     if (!Array.isArray(source)) {
         return {};
     }
 
-    return source.reduce<Record<string, DataItem>>((acc, { data } = {}) => {
+    return source.reduce<Record<string, T>>((acc, { data } = {}) => {
         if (data && data[fieldName]) {
             const key = String(data[fieldName]);
             acc[key] = data;

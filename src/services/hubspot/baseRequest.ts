@@ -11,7 +11,7 @@ type ErrorData = {
     url: string,
     method: ApiRequestMethod,
     code: number,
-    json?: HubSpotError|null,
+    json: HubSpotError|null|undefined,
     entity?: string,
 };
 

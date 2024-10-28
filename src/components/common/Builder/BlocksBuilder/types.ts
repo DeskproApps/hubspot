@@ -9,7 +9,7 @@ export type Config = {
   metaMap: Record<PropertyMeta["fieldType"], PropertyMeta>;
 };
 
-export type Values = Record<PropertyMeta["name"], unknown>;
+export type Values = Record<PropertyMeta["name"], string>;
 
 export type BlocksBuilderProps = {
     type: "contacts"|"deals";
@@ -18,7 +18,7 @@ export type BlocksBuilderProps = {
     values?: Values;
 };
 
-export type BlockProps<Value = unknown> = {
+export type BlockProps<Value = string> = {
     meta: PropertyMeta;
     value: Value;
 };

@@ -4,7 +4,6 @@ import { NumberField } from "./NumberField";
 import { TextAreaField } from "./TextAreaField";
 import { DatePickerField } from "./DatePickerField";
 import { MultipleCheckboxesField } from "./MultipleCheckboxesField";
-import type { FieldsMap } from "../common/Builder";
 
 export const fieldsMap = {
     text: TextField,
@@ -17,7 +16,7 @@ export const fieldsMap = {
     booleancheckbox: SelectField,
     radio: SelectField,
     checkbox: MultipleCheckboxesField,
-} as const as FieldsMap;
+} as const;
 
 export {
     TextField,
