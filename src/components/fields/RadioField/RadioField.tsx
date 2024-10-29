@@ -1,10 +1,10 @@
 import { Select } from "@deskpro/app-sdk";
-import { useSelectField } from "./hooks";
+import { useRadioField } from "./hooks";
 import type { FC } from "react";
 import type { FieldProps } from "../../common/Builder";
 
-const SelectField: FC<FieldProps<string>> = ({ meta, formControl }) => {
-    const { options } = useSelectField(meta);
+const RadioField: FC<FieldProps<string>> = ({ meta, formControl }) => {
+    const { options } = useRadioField(meta);
 
     return (
         <Select
@@ -13,7 +13,7 @@ const SelectField: FC<FieldProps<string>> = ({ meta, formControl }) => {
             options={options}
             onChange={formControl.field.onChange}
         />
-    );
+    )
 };
 
-export { SelectField };
+export { RadioField };

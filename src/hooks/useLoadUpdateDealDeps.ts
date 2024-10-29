@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
     getDealService,
     getOwnersService,
@@ -7,8 +8,9 @@ import {
     getCompaniesService,
     getAccountInfoService,
     getDealPrioritiesService,
+    getPropertiesMetaService,
 } from "../services/hubspot";
-import { useQueryWithClient, useMeta } from "../hooks";
+import { useQueryWithClient } from "../hooks";
 import { QueryKey } from "../query";
 import { getOption, noOwnerOption, getSymbolFromCurrency, getFullName } from "../utils";
 import type {
@@ -17,6 +19,7 @@ import type {
     Contact,
     Company,
     Pipeline,
+    PropertyMeta,
     DealTypeOption,
     DealPriorityOption,
 } from "../services/hubspot/types";
@@ -40,9 +43,7 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
     const deal = useQueryWithClient(
         [QueryKey.DEALS, dealId],
         (client) => getDealService(client, dealId as Deal["id"]),
-        {
-            enabled: !!dealId,
-        }
+        { enabled: !!dealId },
     );
 
     const pipelines = useQueryWithClient(
@@ -121,7 +122,10 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         }
     );
 
-    const dealMeta = useMeta("deals");
+    const dealMeta = useQueryWithClient(
+        [QueryKey.PROPERTIES_META, "deals"],
+        (client) => getPropertiesMetaService(client, "deals"),
+    );
 
     return {
         isLoading: (Boolean(dealId) && deal.isLoading) || [
@@ -142,7 +146,14 @@ const useLoadUpdateDealDeps: UseLoadUpdateDealDeps = (dealId) => {
         priorityOptions: priorities.data || [],
         contactOptions: contacts.data || [],
         companyOptions: companies.data || [],
-        dealMeta: dealMeta.metaMap,
+        dealMeta: useMemo(() => {
+            return (dealMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
+                if (!acc[meta.name]) {
+                    acc[meta.name] = meta;
+                }
+                return acc;
+            }, {});
+        }, [dealMeta.data?.results]),
     };
 };
 

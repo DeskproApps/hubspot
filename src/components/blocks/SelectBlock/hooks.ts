@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQueryWithClient } from "../../../hooks";
-import { useBlocksBuilder } from "../../common/Builder/BlocksBuilder";
+import { useBuilder } from "../../common/Builder";
 import { getOwnersService, getPipelinesService } from "../../../services/hubspot";
 import { QueryKey } from "../../../query";
 import type { Owner, PropertyMeta, PipelineTypes } from "../../../services/hubspot/types";
@@ -13,7 +13,7 @@ type UseSelectBlock = (meta: PropertyMeta, value: string) => {
 };
 
 const useSelectBlock: UseSelectBlock = (meta, value) => {
-    const { type } = useBlocksBuilder();
+    const { type } = useBuilder();
     const isOwner = meta.referencedObjectType === "OWNER";
     const isPipeline = meta.name === "pipeline";
 

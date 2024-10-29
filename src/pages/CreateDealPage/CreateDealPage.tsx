@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
     LoadingSpinner,
@@ -8,27 +8,17 @@ import {
 import { createDealService, setEntityAssocService } from "../../services/hubspot";
 import { isValidationError } from "../../services/hubspot/utils";
 import { useSetAppTitle, useLoadUpdateDealDeps } from "../../hooks";
-import { queryClient, QueryKey } from "../../query";
+import { queryClient } from "../../query";
 import { CreateDeal } from "../../components";
-import { getDealValues } from "../../components/DealForm/utils";
+import type { FC } from "react";
 import type { HubSpotError } from "../../services/hubspot/types";
-import type { Values } from "../../components/DealForm/types";
+import type { FormValues } from "../../components/common/Builder";
 
 const CreateDealPage: FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { client } = useDeskproAppClient();
-    const {
-        ownerOptions,
-        currency,
-        contactOptions,
-        companyOptions,
-        isLoading,
-        pipelines,
-        dealTypeOptions,
-        priorityOptions,
-        dealMeta,
-    } = useLoadUpdateDealDeps();
+    const { isLoading, dealMeta } = useLoadUpdateDealDeps();
 
     const [error, setError] = useState<string|null>(null);
 
@@ -49,25 +39,23 @@ const CreateDealPage: FC = () => {
         });
     });
 
-    const onSubmit = async (values: Values) => {
+    const onSubmit = useCallback((values: FormValues) => {
         if (!client) {
             return;
         }
 
         setError(null);
 
-        return createDealService(client, getDealValues(values))
-            .then((deal) => {
-                return Promise.all([
-                    values.contact.value
-                        ? setEntityAssocService(client, "deals", deal.id, "contacts", values.contact.value, "deal_to_contact")
-                        : Promise.resolve(),
-                    values.company.value
-                        ? setEntityAssocService(client, "deals", deal.id, "companies", values.company.value, "deal_to_company")
-                        : Promise.resolve(),
-                ]);
-            })
-            .then(() => queryClient.refetchQueries([QueryKey.DEALS_BY_CONTACT_ID, contactId]))
+        return createDealService(client, values)
+            .then((deal) => Promise.all([
+                contactId
+                    ? setEntityAssocService(client, "deals", deal.id, "contacts", contactId, "deal_to_contact")
+                    : Promise.resolve(),
+                companyId
+                    ? setEntityAssocService(client, "deals", deal.id, "companies", companyId, "deal_to_company")
+                    : Promise.resolve(),
+            ]))
+            .then(() => queryClient.invalidateQueries())
             .then(() => navigate("/home"))
             .catch((err: HubSpotError) => {
                 if (isValidationError(err)) {
@@ -76,11 +64,9 @@ const CreateDealPage: FC = () => {
                     throw err;
                 }
             });
-    };
+    }, [client, contactId, companyId, navigate]);
 
-    const onCancel = useCallback(() => {
-        navigate("/home");
-    }, [navigate]);
+    const onCancel = useCallback(() => navigate("/home"), [navigate]);
 
     if (isLoading) {
         return (
@@ -92,16 +78,8 @@ const CreateDealPage: FC = () => {
         <CreateDeal
             dealMeta={dealMeta}
             error={error}
-            initValues={{ contactId, companyId }}
             onSubmit={onSubmit}
             onCancel={onCancel}
-            pipelines={pipelines}
-            currency={currency}
-            ownerOptions={ownerOptions}
-            dealTypeOptions={dealTypeOptions}
-            priorityOptions={priorityOptions}
-            contactOptions={contactOptions}
-            companyOptions={companyOptions}
         />
     );
 };

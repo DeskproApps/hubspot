@@ -4,7 +4,7 @@ import { useQueryWithClient } from "../../../hooks";
 import { getPipelinesService } from "../../../services/hubspot";
 import { QueryKey } from "../../../query";
 import { flatten } from "../../../utils";
-import { useBlocksBuilder } from "../../common/Builder/BlocksBuilder";
+import { useBuilder } from "../../common/Builder";
 import type { FC } from "react";
 import type { BlockProps } from "../../common/Builder";
 
@@ -12,7 +12,7 @@ type Props = BlockProps<string>;
 
 const RadioBlock: FC<Props> = ({ meta, value }) => {
     let label = value;
-    const { type } = useBlocksBuilder();
+    const { type } = useBuilder();
 
     const pipelines = useQueryWithClient(
         [QueryKey.PIPELINES],

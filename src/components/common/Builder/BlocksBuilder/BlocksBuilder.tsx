@@ -1,4 +1,4 @@
-import { BlocksBuildeProvider } from "./hooks";
+import { BuilderProvider } from "../hooks";
 import { validateConfig } from "./utils";
 import { RenderRow } from "./RenderRow";
 import type { BlocksBuilderProps } from "./types";
@@ -19,7 +19,7 @@ const BlocksBuilder = ({
   }
 
   return (
-    <BlocksBuildeProvider type={type}>
+    <BuilderProvider type={type}>
       <div style={{ marginTop: 8, marginBottom: 8 }}>
         {structure.map((row, idx) => (
           <RenderRow
@@ -31,7 +31,7 @@ const BlocksBuilder = ({
           />
         ))}
       </div>
-    </BlocksBuildeProvider>
+    </BuilderProvider>
   );
 };
 

@@ -11,7 +11,7 @@ const UpdateContact: FC<Props> = ({ errors, ...props }) => {
     return (
         <BaseContainer>
             {(errors.length > 0) && <ErrorBlock texts={errors}/>}
-            <FormBuilder isEditMode fieldsMap={fieldsMap} {...props} />
+            <FormBuilder isEditMode type="contacts" fieldsMap={fieldsMap} {...props} />
         </BaseContainer>
     );
 };
