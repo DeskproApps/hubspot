@@ -9,7 +9,7 @@ const RadioField: FC<FieldProps<string>> = ({ meta, formControl }) => {
     return (
         <Select
             id={meta.name}
-            initValue={`${formControl.field.value}` || ""}
+            value={`${formControl.field.value}` || ""}
             options={options}
             onChange={formControl.field.onChange}
         />
