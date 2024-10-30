@@ -1,25 +1,22 @@
 import { FC } from "react";
 import get from "lodash/get";
 import capitalize from "lodash/capitalize";
-import {
-    Title,
-    BaseContainer,
-    TextBlockWithLabel,
-} from "../common";
+import { Title } from "@deskpro/app-sdk";
+import { BaseContainer, TextBlockWithLabel } from "../common";
 import { getFullName, getSymbolFromCurrency } from "../../utils";
 import { format } from "../../utils/date";
-import { Props } from "./types";
+import type { Props } from "./types";
 
 const DealInfo: FC<Props> = ({ deal, pipeline, accountInfo, owner, dealTypes }) => {
-    const stage = pipeline.stages.find(({ id }) => id === deal.dealstage) || {};
-    const dealType = dealTypes?.options.find(({ value }) => value === deal.dealtype);
+    const stage = pipeline.stages?.find(({ id }) => id === deal.dealstage);
+    const dealType = dealTypes?.options?.find(({ value }) => value === deal.dealtype);
     const amount = deal.amount ? `${getSymbolFromCurrency(deal, accountInfo)} ${deal.amount}` : "-";
 
     return (
         <BaseContainer>
             <Title title={deal?.dealname} />
             <TextBlockWithLabel label="Pipeline" text={pipeline.label} />
-            <TextBlockWithLabel label="Deal stage" text={get(stage, ["label"], deal.dealstage)} />
+            <TextBlockWithLabel label="Deal stage" text={stage?.label || deal?.dealstage} />
             <TextBlockWithLabel label="Amount" text={amount} />
             <TextBlockWithLabel label="Close date" text={format(deal.closedate)} />
             <TextBlockWithLabel label="Deal owner" text={getFullName(owner)}/>

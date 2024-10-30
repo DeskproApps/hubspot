@@ -4,17 +4,18 @@ import styled from "styled-components";
 import get from "lodash/get";
 import capitalize from "lodash/capitalize";
 import { P5, H3 } from "@deskpro/deskpro-ui";
-import { HorizontalDivider } from "@deskpro/app-sdk";
+import { Title, HorizontalDivider } from "@deskpro/app-sdk";
 import { getFullName, getSymbolFromCurrency } from "../../utils";
 import { format } from "../../utils/date";
 import {
     Link,
-    Title,
     TwoColumn,
+    HubSpotLogo,
     OverflowText,
     BaseContainer,
 } from "../common";
 import type {
+    Owner,
     Contact,
     Pipeline,
     AccountInto,
@@ -26,25 +27,19 @@ const DealContainer = styled.div`
     margin-bottom: 14px;
 `;
 
-type DealOwner = {
-    id: string,
-    firstName: string,
-    lastName: string,
-};
-
 type Props = {
     deals: Array<DealType["properties"]>,
     accountInfo?: AccountInto,
-    owners: Record<DealOwner["id"], DealOwner>,
+    owners: Record<Owner["id"], Owner>,
     dealPipelines?: Record<Pipeline["id"], Pipeline>,
-    contact: Contact["properties"],
+    contact?: Contact["properties"],
     companies: Array<Company["properties"]>,
 };
 
 const Deal: FC<{
     deal: DealType["properties"],
-    owner: DealOwner,
     dealPipelines: Props["dealPipelines"],
+    owner?: Owner,
     accountInfo?: AccountInto,
 }> = ({ deal, dealPipelines, owner, accountInfo }) => {
     const { amount, dealname, pipeline, dealstage, closedate, hs_object_id: dealId } = deal;
@@ -61,10 +56,13 @@ const Deal: FC<{
                 title={(
                     <Link to={`/deal/${dealId}`}>{dealname}</Link>
                 )}
-                link={(portalId && dealId)
-                    ? `https://app.hubspot.com/contacts/${portalId}/deal/${dealId}`
-                    : ""
-                }
+                {...((portalId && dealId)
+                    ? {
+                        link: `https://app.hubspot.com/contacts/${portalId}/deal/${dealId}`,
+                        icon: <HubSpotLogo/>
+                    }
+                    : {}
+                )}
                 marginBottom={7}
             />
             <TwoColumn
@@ -92,8 +90,8 @@ const Deals: FC<Props> = ({
     owners,
     accountInfo,
     dealPipelines,
-    contact: { hs_object_id: contactId },
     companies,
+    contact: { hs_object_id: contactId } = {},
 }) => {
     const navigate = useNavigate();
     const companyId = get(companies, [0, "hs_object_id"], null);
@@ -103,16 +101,19 @@ const Deals: FC<Props> = ({
             <BaseContainer>
                 <Title
                     title={`Deals (${deals.length})`}
-                    link={accountInfo?.portalId
-                        ? `https://app.hubspot.com/contacts/${accountInfo?.portalId}/deals`
-                        : ""
-                    }
+                    {...(accountInfo?.portalId
+                        ? {
+                            link: `https://app.hubspot.com/contacts/${accountInfo?.portalId}/deals`,
+                            icon: <HubSpotLogo/>
+                        }
+                        : {}
+                    )}
                     onClick={() => navigate({
                         pathname: `/deal/create`,
                         search: `?${createSearchParams({
-                            contactId,
+                            ...(!contactId ? {} : { contactId }),
                             ...(!companyId ? {} : { companyId }),
-                        })}`
+                        }).toString()}`
                     })}
                 />
                 {deals.map((deal) => (

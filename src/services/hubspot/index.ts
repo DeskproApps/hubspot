@@ -1,6 +1,4 @@
-export { getAccessTokenInfoService } from "./getAccessTokenInfoService";
 export { checkAuthService } from "./checkAuthService";
-export { refreshTokenService } from "./refreshTokenService";
 export {
     searchContactsByService,
     getContactsByEmailService,
@@ -41,4 +39,6 @@ export {
     getEmailsByContactId,
     getCompaniesByContactId,
 } from "./getAssocEntitiesByContactId";
+export { getPropertiesService } from "./getPropertiesService";
+export { getPropertiesMetaService } from "./getPropertiesMetaService";
 export { DeskproError } from "./baseRequest";

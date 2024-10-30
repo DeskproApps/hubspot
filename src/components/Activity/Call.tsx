@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { P5 } from "@deskpro/deskpro-ui";
-import { Title, BaseContainer, TextBlockWithLabel } from "../common";
+import { Title } from "@deskpro/app-sdk";
+import { BaseContainer, TextBlockWithLabel } from "../common";
 import { getFullName } from "../../utils";
 import { format, msToDuration } from "../../utils/date";
 import type { CallActivity, Contact, Owner } from "../../services/hubspot/types";
@@ -32,12 +33,7 @@ const Call: FC<Props> = ({
             <TextBlockWithLabel label="Call by" text={getFullName(owner)} />
             <TextBlockWithLabel
                 label="Direction"
-                text={contacts
-                    .map(({ firstname, lastname }) => getFullName({
-                        firstName: firstname,
-                        lastName: lastname,
-                    }))
-                    .join(", ")}
+                text={contacts.map(getFullName).join(", ")}
             />
             <TextBlockWithLabel
                 label="Duration"
@@ -45,7 +41,7 @@ const Call: FC<Props> = ({
             />
             <TextBlockWithLabel
                 label="Date/time"
-                text={`${format(hs_timestamp)} at ${format(hs_timestamp, "HH:mm")}`}
+                text={`${format(hs_timestamp)} at ${format(hs_timestamp, { date: false, time: true })}`}
             />
         </BaseContainer>
     )

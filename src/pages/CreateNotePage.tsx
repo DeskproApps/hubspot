@@ -9,6 +9,7 @@ import { queryClient, QueryKey } from "../query";
 import { NoteForm, getNoteValues, isEmptyForm, getFileData } from "../components/NoteForm";
 import { BaseContainer, ErrorBlock } from "../components/common";
 import type { FC } from "react";
+import type { HubSpotError } from "../services/hubspot/types";
 import type { Values } from "../components/NoteForm/types";
 
 const CreateNotePage: FC = () => {
@@ -57,11 +58,11 @@ const CreateNotePage: FC = () => {
                 queryKey: [QueryKey.NOTES_BY_CONTACT_ID, contactId],
             }))
             .then(() => navigate("/home"))
-            .catch((err) => {
+            .catch((err: HubSpotError) => {
                 if (isValidationError(err)) {
                     setError(err.message);
                 } else {
-                    throw new Error(err);
+                    throw err;
                 }
             })
     };
@@ -72,7 +73,7 @@ const CreateNotePage: FC = () => {
 
     return (
         <BaseContainer>
-            {error && <ErrorBlock text={error}/>}
+            {error && <ErrorBlock texts={[error]}/>}
             <NoteForm onSubmit={onSubmit} onCancel={onCancel} />
         </BaseContainer>
     );

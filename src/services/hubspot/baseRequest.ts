@@ -1,17 +1,17 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import { proxyFetch } from "@deskpro/app-sdk";
+import { proxyFetch, adminGenericProxyFetch } from "@deskpro/app-sdk";
 import { BASE_URL, placeholders } from "./constants";
-// import { refreshTokenService } from "./refreshTokenService";
 import { getQueryParams } from "../../utils";
+import type { IDeskproClient } from "@deskpro/app-sdk";
 import type { HubSpotError } from "./types";
-import type { Request, ApiRequestMethod } from "../../types";
+import type { Request, ApiRequestMethod, RequestParams } from "../../types";
 
 type ErrorData = {
     url: string,
     method: ApiRequestMethod,
     code: number,
-    json?: HubSpotError,
+    json: HubSpotError|null|undefined,
     entity?: string,
 };
 
@@ -30,23 +30,28 @@ export class DeskproError extends Error {
     }
 }
 
-const baseRequest: Request = async (client, {
-    url,
-    entity,
-    data = {},
-    method = "GET",
-    queryParams = {},
-    headers: customHeaders
-}) => {
-    const dpFetch = await proxyFetch(client);
 
+const baseRequest: Request = async <T = unknown>(
+    client: IDeskproClient,
+    {
+        url,
+        entity,
+        data = {},
+        method = "GET",
+        queryParams = {},
+        headers: customHeaders,
+        settings,
+    }: RequestParams,
+): Promise<T> => {
+    const isAdmin = Boolean(settings);
+    const dpFetch = await (isAdmin ? adminGenericProxyFetch : proxyFetch)(client);
     const baseUrl = `${BASE_URL}${url}`;
     const params = `${isEmpty(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
     const requestUrl = `${baseUrl}${params}`;
     const options: RequestInit = {
         method,
         headers: {
-            "Authorization": `Bearer ${placeholders.API_TOKEN}`,
+            "Authorization": `Bearer ${settings?.api_token ?? placeholders.API_TOKEN}`,
             ...customHeaders,
         },
     };
@@ -56,33 +61,12 @@ const baseRequest: Request = async (client, {
     } else if (data) {
         options.body = JSON.stringify(data);
         options.headers = {
-            ...options.headers,
             "Content-Type": "application/json",
+            ...options.headers,
         };
     }
 
     const res = await dpFetch(requestUrl, options);
-
-    /** ToDo: Uncomment when we'll back to the OAuth2
-    if ([401].includes(res.status)) {
-        options.headers = {
-            ...options.headers,
-            "Authorization": `Bearer ${placeholders.TOKEN_IN_STATE}`,
-        };
-        res = await dpFetch(requestUrl, options);
-
-        if ([401].includes(res.status)) {
-            const isRefresh = await refreshTokenService(client);
-
-            if (isRefresh) {
-                options.headers = {
-                    ...options.headers,
-                    "Authorization": `Bearer ${placeholders.TOKEN_IN_STATE}`,
-                };
-                res = await dpFetch(requestUrl, options);
-            }
-        }
-    }*/
 
     if (res.status < 200 || res.status > 399) {
         throw new DeskproError({
@@ -90,11 +74,20 @@ const baseRequest: Request = async (client, {
             method,
             entity,
             code: res.status,
-            json: (res.status === 404) ? null : await res.json(),
+            json: (res.status === 404) ? null : await res.json() as HubSpotError,
         });
     }
 
-    return await res.json();
+    let result = {} as T;
+
+    try {
+        result = await res.json() as T;
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn("Failed to parse response as JSON. Returning empty result");
+    }
+  
+    return result;
 };
 
 export { baseRequest };

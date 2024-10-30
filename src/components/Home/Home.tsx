@@ -13,10 +13,11 @@ import type {
     AccountInto,
     CallActivity,
     EmailActivity,
+    PropertyMeta,
 } from "../../services/hubspot/types";
 
 type Props = {
-    contact: Contact["properties"],
+    contact: Contact["properties"]|undefined,
     owners: Record<Owner["id"], Owner>,
     companies: Array<Company["properties"]>,
     deals: Array<Deal["properties"]>,
@@ -27,6 +28,7 @@ type Props = {
     dealPipelines: Record<Pipeline["id"], Pipeline>,
     onCreateNote: () => void,
     onCreateActivity: () => void,
+    contactMetaMap: Record<PropertyMeta["name"], PropertyMeta>,
 }
 
 const Home: FC<Props> = ({
@@ -41,14 +43,14 @@ const Home: FC<Props> = ({
     dealPipelines,
     onCreateNote,
     onCreateActivity,
+    contactMetaMap,
 }) => {
     return (
         <>
             <ContactInfo
                 contact={contact}
-                companies={companies}
-                owners={owners}
                 accountInfo={accountInfo}
+                contactMetaMap={contactMetaMap}
             />
             <Deals
                 deals={deals}

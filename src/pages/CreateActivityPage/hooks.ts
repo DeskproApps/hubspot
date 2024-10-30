@@ -1,5 +1,4 @@
-import get from "lodash/get";
-import has from "lodash/has";
+import { useMemo } from "react";
 import { useQueryWithClient, useQueriesWithClient } from "../../hooks";
 import { QueryKey } from "../../query";
 import {
@@ -9,9 +8,14 @@ import {
     getActivityCallDispositionsServices, getCompanyService, getDealService,
 } from "../../services/hubspot";
 import { getFullName, getOption } from "../../utils";
-import type { Contact, CallDispositions, CallDirectionOption } from "../../services/hubspot/types";
 import type { Option } from "../../types";
-import type { Company, Deal } from "../../services/hubspot/types";
+import type {
+    Deal,
+    Contact,
+    Company,
+    CallDispositions,
+    CallDirectionOption,
+} from "../../services/hubspot/types";
 
 type UseLoadActivityDeps = (contactId?: Contact["id"]) => {
     isLoading: boolean,
@@ -22,8 +26,6 @@ type UseLoadActivityDeps = (contactId?: Contact["id"]) => {
     callDirectionOptions: Array<Option<CallDirectionOption["value"]>>,
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
     const contact = useQueryWithClient(
         [QueryKey.CONTACT, contactId],
@@ -32,10 +34,7 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
             enabled: !!contactId,
             select: (data) => {
                 return [{
-                    ...getOption(data.id, getFullName({
-                        firstName: get(data, ["properties", "firstname"]),
-                        lastName: get(data, ["properties", "lastname"]),
-                    })),
+                    ...getOption(data.id, getFullName(data.properties)),
                     selected: true,
                 }];
             }
@@ -72,21 +71,20 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         { enabled: !!contactId },
     );
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const companies = useQueriesWithClient(companyIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.COMPANY, id],
         queryFn: (client) => getCompanyService(client, id),
         enabled: (companyIds.data?.results.length > 0),
-        select: (data) => {
-            return (has(data, ["id"]) && has(data, ["properties", "name"]))
-                ? {
-                    ...getOption(get(data, ["id"]), get(data, ["properties", "name"])),
-                    selected: true,
-                }
-                : undefined;
-        },
     })) ?? []);
+
+    const companyOptions = useMemo(() => {
+        return companies?.map(({ data }) => {
+            return !data ? null : {
+                ...getOption(data.id, data.properties.name),
+                selected: true,
+            };
+        }).filter(Boolean) || [];
+    }, [companies]) as Array<Option<Company["id"]>>;
 
     // ToDo: rewrite to search api (getAssocEntitiesByContactId)
     const dealIds = useQueryWithClient(
@@ -95,18 +93,19 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
         { enabled: !!contactId },
     );
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const deals = useQueriesWithClient(dealIds.data?.results?.map(({ id }) => ({
         queryKey: [QueryKey.DEALS, id],
         queryFn: (client) => getDealService(client, id),
         enabled: (dealIds.data?.results.length > 0),
-        select: (data) => {
-            return (has(data, ["id"]) && has(data, ["properties", "dealname"]))
-                ? getOption(get(data, ["id"]), get(data, ["properties", "dealname"]))
-                : undefined;
-        },
     })) ?? []);
+
+    const dealOptions = useMemo(() => {
+        return deals?.map(({ data }) => {
+            return (data?.id && data?.properties?.dealname)
+                ? getOption<Deal["id"]>(data.id, data.properties.dealname)
+                : null;
+        }).filter(Boolean) || [];
+    }, [deals]) as Array<Option<Deal["id"]>>;
 
     return {
         isLoading: [
@@ -116,8 +115,8 @@ const useLoadActivityDeps: UseLoadActivityDeps = (contactId) => {
             ...companies,
         ].every(({ isLoading }) => isLoading),
         contactOptions: contact.data || [],
-        companyOptions: companies?.filter(({ data }) => Boolean(data))?.map(({ data }) => data) || [],
-        dealOptions: deals?.filter(({ data }) => Boolean(data)).map(({ data }) => data) || [],
+        companyOptions,
+        dealOptions,
         callDispositionOptions: callDispositions.data || [],
         callDirectionOptions: callDirections.data || [],
     };

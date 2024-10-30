@@ -1,16 +1,18 @@
-import { ReactElement } from "react";
-import { Option } from "../types";
+import type { DropdownValueType } from "@deskpro/deskpro-ui";
+import type { Option } from "../types";
 
-const getOption = <Value, >(
+const getOption = <Value extends string, >(
     value: Value,
-    label: string|ReactElement,
+    label?: DropdownValueType<Value>["label"],
+    description?: DropdownValueType<Value>["description"],
 ): Option<Value> => ({
-    label,
     value,
-    key: value,
+    label: label || `${value}`,
+    key: `${value}`,
     type: "value",
+    ...(description ? { description } : {}),
 });
 
-const noOwnerOption = getOption("", "No owner");
+const noOwnerOption = getOption<string>("", "No owner");
 
 export { getOption, noOwnerOption };

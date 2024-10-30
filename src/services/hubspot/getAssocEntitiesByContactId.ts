@@ -1,13 +1,14 @@
 import { baseRequest } from "./baseRequest";
 import { PROPERTIES } from "./constants";
 import type { IDeskproClient } from "@deskpro/app-sdk";
+import type { Deal, Note, Company, EmailActivity, CallActivity } from "./types";
 
-const getAssocEntitiesByContactId = (
+const getAssocEntitiesByContactId = <T>(
     client: IDeskproClient,
     entity: keyof typeof PROPERTIES,
     contactId: string,
 ) => {
-    return baseRequest(client, {
+    return baseRequest<{ total: number, results: T[] }>(client, {
         url: `/crm/v3/objects/${entity}/search`,
         method: "POST",
         data: {
@@ -30,35 +31,35 @@ const getDealsByContactId = (
     client: IDeskproClient,
     contactId: string,
 ) => {
-    return getAssocEntitiesByContactId(client, "deals", contactId);
+    return getAssocEntitiesByContactId<Deal>(client, "deals", contactId);
 };
 
 const getNotesByContactId = (
     client: IDeskproClient,
     contactId: string,
 ) => {
-    return getAssocEntitiesByContactId(client, "notes", contactId);
+    return getAssocEntitiesByContactId<Note>(client, "notes", contactId);
 };
 
 const getCallsByContactId = (
     client: IDeskproClient,
     contactId: string,
 ) => {
-    return getAssocEntitiesByContactId(client, "calls", contactId);
+    return getAssocEntitiesByContactId<CallActivity>(client, "calls", contactId);
 };
 
 const getEmailsByContactId = (
     client: IDeskproClient,
     contactId: string,
 ) => {
-    return getAssocEntitiesByContactId(client, "emails", contactId);
+    return getAssocEntitiesByContactId<EmailActivity>(client, "emails", contactId);
 };
 
 const getCompaniesByContactId = (
     client: IDeskproClient,
     contactId: string,
 ) => {
-    return getAssocEntitiesByContactId(client, "companies", contactId);
+    return getAssocEntitiesByContactId<Company>(client, "companies", contactId);
 };
 
 export {
