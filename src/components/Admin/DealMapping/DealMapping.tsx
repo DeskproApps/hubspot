@@ -16,7 +16,7 @@ type Props = {
 };
 
 const tabs: TabBarItemType[] = [
-    { label: "List of Deals on the Screens" },
+    { label: "Contact Home Screen" },
     { label: "Deal View Screen" },
 ];
 

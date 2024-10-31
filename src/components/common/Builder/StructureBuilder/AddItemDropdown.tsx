@@ -32,7 +32,7 @@ const AddItemDropdown: FC<Props> = ({ items, onAddItem, meta }) => {
             autoscrollText={"Autoscroll"}
             selectedIcon={faCheck}
             externalLinkIcon={faExternalLinkAlt}
-            placement="bottom-start"
+            placement="auto-end"
             inputValue={searchInput}
             onInputChange={setSearchInput}
             options={currentOptions}

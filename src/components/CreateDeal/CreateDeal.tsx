@@ -18,18 +18,16 @@ const CreateDeal: FC<Props> = ({ error, ...props }) => {
     const structure = getScreenStructure(context?.settings, "deal", "view");
 
     return (
-        <>
+        <BaseContainer>
             {error && <ErrorBlock texts={[error]}/>}
-            <BaseContainer>
-                <FormBuilder
-                    type="deals"
-                    config={{ structure, metaMap: props.dealMeta }}
-                    fieldsMap={fieldsMap}
-                    onCancel={props.onCancel}
-                    onSubmit={props.onSubmit}
-                />
-            </BaseContainer>
-        </>
+            <FormBuilder
+                type="deals"
+                config={{ structure, metaMap: props.dealMeta }}
+                fieldsMap={fieldsMap}
+                onCancel={props.onCancel}
+                onSubmit={props.onSubmit}
+            />
+        </BaseContainer>
     );
 };
 

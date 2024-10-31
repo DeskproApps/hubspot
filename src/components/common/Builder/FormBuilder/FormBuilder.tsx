@@ -43,8 +43,6 @@ const RenderForm: FC<FormBuilderProps> = ({
                     const fieldType = meta.fieldType;
                     const Component = fieldsMap[fieldType];
 
-                    // console.log(`>>> ${meta.label}:${meta.name}:`, fieldType);
-
                     if (!meta) {
                         // eslint-disable-next-line no-console
                         console.error("FormBuilder: wrong config - block config not found");
