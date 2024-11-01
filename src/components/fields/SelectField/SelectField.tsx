@@ -1,28 +1,10 @@
-import { useMemo } from "react";
-import { Select, Member } from "@deskpro/app-sdk";
-import { useQueryWithClient } from "../../../hooks";
-import { getOwnersService } from "../../../services/hubspot";
-import { QueryKey } from "../../../query";
-import { getOption, getFullName } from "../../../utils";
+import { Select } from "@deskpro/app-sdk";
+import { useSelectField } from "./hooks";
 import type { FC } from "react";
 import type { FieldProps } from "../../common/Builder";
 
 const SelectField: FC<FieldProps<string>> = ({ meta, formControl }) => {
-    const isOwner = meta.referencedObjectType === "OWNER"; 
-
-    const owners = useQueryWithClient(
-        [QueryKey.OWNERS],
-        getOwnersService,
-        { enabled: isOwner },
-    );
-
-    const options = useMemo(() => {
-        return isOwner
-            ? (owners.data?.results ?? []).map((owmer) => {
-                return getOption(owmer.id, <Member name={getFullName(owmer)} />, getFullName(owmer));
-            })
-            : meta.options?.map((o) => getOption(o.value, o.label));
-    }, [isOwner, owners.data?.results, meta.options]);
+    const { options } = useSelectField(meta);
 
     return (
         <Select

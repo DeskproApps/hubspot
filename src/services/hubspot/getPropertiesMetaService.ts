@@ -5,7 +5,7 @@ import type { PropertyMeta } from "./types";
 
 const getPropertiesMetaService = (
     client: IDeskproClient,
-    type: "contacts",
+    type: "contacts"|"deals",
     params?: Partial<RequestParams>,
 ) => {
     return baseRequest<{ results: PropertyMeta[] }>(client, {

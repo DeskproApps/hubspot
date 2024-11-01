@@ -1,0 +1,1 @@
+export { UpdateDealPage } from "./UpdateDealPage";

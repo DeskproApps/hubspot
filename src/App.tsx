@@ -20,6 +20,7 @@ import {
     UpdateDealPage,
     LoadingAppPage,
     ViewContactPage,
+    DealMappingPage,
     UpdateContactPage,
     CreateContactPage,
     CreateActivityPage,
@@ -59,6 +60,7 @@ function App() {
                     <ErrorBoundary onReset={reset} FallbackComponent={ErrorFallback}>
                         <Routes>
                             <Route path="/admin/mapping/contact" element={<ContactMappingPage/>} />
+                            <Route path="/admin/mapping/deal" element={<DealMappingPage/>} />
                             <Route path="/home" element={<HomePage/>} />
                             <Route path="/link" element={<LinkPage/>} />
                             <Route path="/deal/create" element={<CreateDealPage/>} />

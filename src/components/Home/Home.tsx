@@ -9,7 +9,6 @@ import type {
     Owner,
     Contact,
     Company,
-    Pipeline,
     AccountInto,
     CallActivity,
     EmailActivity,
@@ -25,10 +24,10 @@ type Props = {
     callActivities: Array<CallActivity["properties"]>,
     emailActivities: Array<EmailActivity["properties"]>,
     accountInfo?: AccountInto,
-    dealPipelines: Record<Pipeline["id"], Pipeline>,
     onCreateNote: () => void,
     onCreateActivity: () => void,
     contactMetaMap: Record<PropertyMeta["name"], PropertyMeta>,
+    dealMetaMap: Record<PropertyMeta["name"], PropertyMeta>,
 }
 
 const Home: FC<Props> = ({
@@ -40,10 +39,10 @@ const Home: FC<Props> = ({
     accountInfo,
     callActivities,
     emailActivities,
-    dealPipelines,
     onCreateNote,
     onCreateActivity,
     contactMetaMap,
+    dealMetaMap,
 }) => {
     return (
         <>
@@ -54,11 +53,10 @@ const Home: FC<Props> = ({
             />
             <Deals
                 deals={deals}
-                owners={owners}
                 accountInfo={accountInfo}
-                dealPipelines={dealPipelines}
                 contact={contact}
                 companies={companies}
+                dealMetaMap={dealMetaMap}
             />
             <Notes notes={notes} owners={owners} onCreateNote={onCreateNote} />
             <Activities

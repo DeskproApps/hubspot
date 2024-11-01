@@ -13,7 +13,7 @@ const CreateContact: FC<Props> = ({ onNavigateToLink, errors, ...props }) => {
         <BaseContainer>
             <Navigation onNavigateToLink={onNavigateToLink} />
             {(errors.length > 0) && <ErrorBlock texts={errors}/>}
-            <FormBuilder fieldsMap={fieldsMap} {...props} />
+            <FormBuilder type="contacts" fieldsMap={fieldsMap} {...props} />
         </BaseContainer>
     );
 };

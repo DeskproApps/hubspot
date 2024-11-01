@@ -1,0 +1,1 @@
+export { UpdateDeal } from "./UpdateDeal";

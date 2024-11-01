@@ -20,6 +20,7 @@ export type Config = {
 export type FieldsMap = Record<PropertyMeta["fieldType"], FC<FieldProps>>;
 
 export type FormBuilderProps = {
+    type: "contacts"|"deals";
     config: Config;
     fieldsMap: FieldsMap;
     onSubmit: SubmitHandler<FormValues>;

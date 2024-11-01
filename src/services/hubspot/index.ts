@@ -39,6 +39,7 @@ export {
     getEmailsByContactId,
     getCompaniesByContactId,
 } from "./getAssocEntitiesByContactId";
+export { getPropertyService } from "./getPropertyService";
 export { getPropertiesService } from "./getPropertiesService";
 export { getPropertiesMetaService } from "./getPropertiesMetaService";
 export { DeskproError } from "./baseRequest";

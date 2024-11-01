@@ -16,7 +16,7 @@ const getFilteredOptions = <T,>(
     .filter((o) => {
       const label = o?.label;
       const description = o?.description;
-      const search = ((typeof label === "string") && (typeof label === "number" && !isNaN(label)))
+      const search = ((typeof label === "string") || (typeof label === "number" && !isNaN(label)))
         ? label
         : description || "";
 

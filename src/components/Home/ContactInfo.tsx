@@ -41,12 +41,13 @@ const ContactInfo: FC<Props> = ({
                     }
                     icon={<HubSpotLogo/>}
                 />
+                <BlocksBuilder
+                    type="contacts"
+                    config={{ structure, metaMap: contactMetaMap }}
+                    blocksMap={blocksMap}
+                    values={contact}
+                />
             </BaseContainer>
-            <BlocksBuilder
-                config={{ structure, metaMap: contactMetaMap }}
-                blocksMap={blocksMap}
-                values={contact}
-            />
             <HorizontalDivider/>
         </>
     );

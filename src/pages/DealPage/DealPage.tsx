@@ -10,13 +10,11 @@ const DealPage: FC = () => {
     const { dealId } = useParams();
     const {
         deal,
-        owner,
-        pipeline,
         contacts,
         companies,
-        dealTypes,
         isLoading,
         accountInfo,
+        dealMetaMap,
     } = useLoadDealDeps(dealId);
     const { portalId } = accountInfo;
 
@@ -28,11 +26,6 @@ const DealPage: FC = () => {
         deRegisterElement("edit");
         deRegisterElement("externalLink");
 
-        registerElement("externalLink", {
-            type: "cta_external_link",
-            hasIcon: true,
-            url: `https://app.hubspot.com/contacts/${portalId}/deal/${dealId}`,
-        });
         registerElement("home", { type: "home_button", payload: { type: "changePage", path: `/home` }});
         registerElement("edit", { type: "edit_button", payload: { type: "changePage", path: `/deal/update/${dealId}` }});
     }, [dealId, portalId]);
@@ -48,12 +41,10 @@ const DealPage: FC = () => {
     return (
         <Deal
             accountInfo={accountInfo}
-            dealTypes={dealTypes}
             deal={deal}
-            pipeline={pipeline}
-            owner={owner}
             contacts={contacts}
             companies={companies}
+            dealMetaMap={dealMetaMap}
         />
     );
 };

@@ -18,7 +18,7 @@ const RenderRow: FC<Props> = ({
   values,
 }) => {
   return (
-    <PropertyRow marginBottom={10} style={{ boxSizing: "border-box", padding: "0 8px" }}>
+    <PropertyRow marginBottom={10} style={{ boxSizing: "border-box" }}>
       {row.map((name) => {
         const meta = metaMap[name];
         const blockType = meta.fieldType;

@@ -1,6 +1,11 @@
+import { useMemo } from "react";
 import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
-import { useQueryWithClient, useContactMeta } from "../hooks";
-import { getContactService, getAccountInfoService } from "../services/hubspot";
+import { useQueryWithClient } from "../hooks";
+import {
+    getContactService,
+    getAccountInfoService,
+    getPropertiesMetaService,
+} from "../services/hubspot";
 import { QueryKey } from "../query";
 import { getScreenStructure, flatten } from "../utils";
 import type { ContextData, Settings } from "../types";
@@ -12,13 +17,12 @@ type UseContact = (contactId?: Contact["id"]) => {
     accountInfo: AccountInto;
     contact: Contact["properties"];
     structure: Layout;
-    contactMetaMap: Record<PropertyMeta["name"], PropertyMeta>;
+    contactMetaMap: Record<PropertyMeta["fieldType"], PropertyMeta>;
 };
 
 const useContact: UseContact = (contactId) => {
     const { context } = useDeskproLatestAppContext<ContextData, Settings>();
     const structure = getScreenStructure(context?.settings, "contact", "view");
-    const meta = useContactMeta();
 
     const contact = useQueryWithClient(
         [QueryKey.CONTACT, contactId],
@@ -31,11 +35,25 @@ const useContact: UseContact = (contactId) => {
         getAccountInfoService,
     );
 
+    const contactPropertiesMeta = useQueryWithClient(
+        [QueryKey.PROPERTIES_META, "contact"],
+        (client) => getPropertiesMetaService(client, "contacts"),
+    );
+
+    const contactMetaMap = useMemo(() => {
+        return (contactPropertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
+            if (!acc[meta.name]) {
+                acc[meta.name] = meta;
+            }
+            return acc;
+        }, {});
+    }, [contactPropertiesMeta.data?.results]);
+
     return {
-        isLoading: !context && [contact, meta, accountInfo].some(({ isLoading }) => isLoading),
+        isLoading: !context && [contact, contactPropertiesMeta, accountInfo].some(({ isLoading }) => isLoading),
         accountInfo: accountInfo.data as AccountInto,
         contact: contact.data?.properties as Contact["properties"],
-        contactMetaMap: meta.contactMetaMap,
+        contactMetaMap,
         structure,
     };
 };

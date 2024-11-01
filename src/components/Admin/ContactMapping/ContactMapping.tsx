@@ -5,13 +5,13 @@ import { BaseContainer, StructureBuilder } from "../../common";
 import type { FC } from "react";
 import type { TabBarItemType } from "@deskpro/deskpro-ui";
 import type { ContactLayout } from "../../../types";
-import type { PropertyMeta } from "../../../services/hubspot/types";
+import type { MetaMap } from "../../../components/common/Builder/StructureBuilder";
 
 type Props = {
     properties: string[];
     onChangeStructure: (structure: { home: string[][], view: string[][] }) => void;
     structure: ContactLayout;
-    meta?: Record<PropertyMeta["name"], PropertyMeta>;
+    meta?: MetaMap;
 };
 
 const tabs: TabBarItemType[] = [
@@ -23,7 +23,7 @@ const ContactMapping: FC<Props> = ({
     meta,
     structure,
     properties,
-    onChangeStructure
+    onChangeStructure,
 }) => {
     const [activeTab, setActiveTab] = useState<number>(TABS.HOME);
 

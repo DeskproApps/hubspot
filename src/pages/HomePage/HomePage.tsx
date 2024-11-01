@@ -15,13 +15,13 @@ const HomePage = () => {
         contact,
         companies,
         deals,
-        dealPipelines,
         notes,
         emailActivities,
         callActivities,
         accountInfo,
         owners,
         contactMetaMap,
+        dealMetaMap,
     } = useLoadHomeDeps();
     const contactId = contact?.hs_object_id;
 
@@ -70,7 +70,6 @@ const HomePage = () => {
             contact={contact}
             companies={companies}
             deals={deals}
-            dealPipelines={dealPipelines}
             notes={notes}
             emailActivities={emailActivities}
             callActivities={callActivities}
@@ -78,6 +77,7 @@ const HomePage = () => {
             onCreateNote={onCreateNote}
             onCreateActivity={onCreateActivity}
             contactMetaMap={contactMetaMap}
+            dealMetaMap={dealMetaMap}
         />
     );
 };
