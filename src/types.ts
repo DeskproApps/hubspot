@@ -60,6 +60,13 @@ export type DeskproUser = {
     name: string,
     primaryEmail: string,
     titlePrefix: string,
+    phoneNumbers?: {
+        ext: string,
+        guessedType: string,
+        id: string
+        label: string,
+        number: string,
+    }[],
 };
 
 export type ContextData = {
