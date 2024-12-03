@@ -78,6 +78,7 @@ const CreateContactPage: FC = () => {
                 email: dpUser?.primaryEmail || "",
                 firstname: dpUser?.firstName || "",
                 lastname: dpUser?.lastName || "",
+                phone: dpUser?.phoneNumbers?.[0]?.number || "",
             }}
         />
     );
