@@ -18,6 +18,7 @@ export const DndTypes = {
 export const STRUCTURE = {
     CONTACT: {
         home: [
+            ["firstname", "lastname"],
             ["jobtitle"],
             ["email"],
             ["phone"],
@@ -25,6 +26,7 @@ export const STRUCTURE = {
             ["lifecyclestage"],
         ],
         view: [
+            ["firstname", "lastname"],
             ["jobtitle"],
             ["email"],
             ["phone"],

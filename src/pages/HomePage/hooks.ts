@@ -128,8 +128,8 @@ const useLoadHomeDeps = () => {
         getAccountInfoService,
     );
 
-    const owners = useQueryWithClient([
-        QueryKey.OWNERS],
+    const owners = useQueryWithClient(
+        [QueryKey.OWNERS],
         getOwnersService,
         {
             select: (data) => {
