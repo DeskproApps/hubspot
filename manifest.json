@@ -40,7 +40,7 @@
         "entrypoint": "#/admin/mapping/contact",
         "label": "Edit Mapping",
         "icon": "edit",
-        "height": "500"
+        "height": 500
       },
       "isRequired": false,
       "isBackendOnly": false,
@@ -53,7 +53,7 @@
         "entrypoint": "#/admin/mapping/deal",
         "label": "Edit Mapping",
         "icon": "edit",
-        "height": "500"
+        "height": 500
       },
       "isRequired": false,
       "isBackendOnly": false,
