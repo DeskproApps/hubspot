@@ -64,7 +64,8 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
     <>
         {title && (
             <Title
-                as={H3}
+                // type-casting below as a temporary fix
+                as={H3 as string}
                 title={(
                     <Link
                         to={`/contacts/activities?type=${type}&activityId=${id}`}
@@ -79,7 +80,8 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
         )}
         {(!title && body) && (
             <Title
-                as={H3}
+                // type-casting below as a temporary fix
+                as={H3 as string}
                 title={(
                     <TitleLink to={`/contacts/activities?type=${type}&activityId=${id}`}>
                         <OverflowText dangerouslySetInnerHTML={{ __html: body }}/>
