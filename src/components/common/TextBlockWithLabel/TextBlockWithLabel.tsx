@@ -1,5 +1,5 @@
 import { FC, ReactElement, isValidElement } from "react";
-import styled from "styled-components";
+import styled, { DefaultTheme } from "styled-components";
 import { P8, P5 } from "@deskpro/deskpro-ui";
 
 export type Props = {
@@ -12,8 +12,9 @@ const Container = styled.div<Props>`
     margin-bottom: ${({ marginBottom }) => `${marginBottom}px`};
 `;
 
+// type-casting below as a temporary fix
 const Label = styled(P8)`
-    color: ${({ theme }) => (theme.colors.grey80)};
+    color: ${({ theme }) => (theme as DefaultTheme).colors.grey80};
 `;
 
 const TextBlockWithLabel: FC<Props> = ({ text, label, marginBottom = 10 }) => {

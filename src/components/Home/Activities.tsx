@@ -64,7 +64,7 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
     <>
         {title && (
             <Title
-                as={H3}
+                as={H3} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
                 title={(
                     <Link
                         to={`/contacts/activities?type=${type}&activityId=${id}`}
@@ -79,7 +79,7 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
         )}
         {(!title && body) && (
             <Title
-                as={H3}
+                as={H3} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
                 title={(
                     <TitleLink to={`/contacts/activities?type=${type}&activityId=${id}`}>
                         <OverflowText dangerouslySetInnerHTML={{ __html: body }}/>
