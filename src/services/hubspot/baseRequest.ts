@@ -11,7 +11,7 @@ type ErrorData = {
     url: string,
     method: ApiRequestMethod,
     code: number,
-    json: HubSpotError|null|undefined,
+    json: HubSpotError | null | undefined,
     entity?: string,
 };
 
@@ -48,10 +48,13 @@ const baseRequest: Request = async <T = unknown>(
     const baseUrl = `${BASE_URL}${url}`;
     const params = `${isEmpty(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
     const requestUrl = `${baseUrl}${params}`;
+
+    const isUsingOAuth2 = (await client.getUserState<boolean>("isUsingOAuth"))[0]?.data
+
     const options: RequestInit = {
         method,
         headers: {
-            "Authorization": `Bearer ${settings?.api_token ?? placeholders.API_TOKEN}`,
+            "Authorization": `Bearer ${settings?.api_token ?? (isUsingOAuth2 ? `[user[${placeholders.OAUTH2_ACCESS_TOKEN_PATH}]]` : placeholders.API_TOKEN)}`,
             ...customHeaders,
         },
     };
@@ -86,7 +89,7 @@ const baseRequest: Request = async <T = unknown>(
         // eslint-disable-next-line no-console
         console.warn("Failed to parse response as JSON. Returning empty result");
     }
-  
+
     return result;
 };
 
