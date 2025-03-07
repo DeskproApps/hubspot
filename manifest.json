@@ -17,13 +17,59 @@
     }
   },
   "settings": {
+    "use_deskpro_saas": {
+      "title": "One-Click Installation",
+      "type": "boolean",
+      "default": true,
+      "isRequired": false,
+      "isBackendOnly": false,
+      "order": 5
+    },
+    "use_api_token": {
+      "title": "Use API Token",
+      "type": "boolean",
+      "isRequired": false,
+      "isBackendOnly": false,
+      "default": false,
+      "condition": "settings.use_deskpro_saas != true",
+      "order": 10
+    },
     "api_token": {
       "title": "API Token",
       "description": "Token provided when you set up the private app in HubSpot",
       "type": "string",
-      "isRequired": true,
+      "isRequired": false,
       "isBackendOnly": true,
-      "order": 10
+      "condition": "settings.use_deskpro_saas != true && settings.use_api_token == true",
+      "order": 20
+    },
+    "client_id": {
+      "title": "Client ID",
+      "type": "string",
+      "isRequired": false,
+      "isBackendOnly": false,
+      "condition": "settings.use_deskpro_saas != true && settings.use_access_token != true",
+      "order": 30
+    },
+    "client_secret": {
+      "title": "Client Secret",
+      "type": "string",
+      "isRequired": false,
+      "isBackendOnly": true,
+      "condition": "settings.use_deskpro_saas != true && settings.use_access_token != true",
+      "order": 40
+    },
+    "callback_url": {
+      "title": "Callback URL",
+      "type": "app_embedded",
+      "options": {
+        "entrypoint": "#/admin/callback",
+        "height": 80
+      },
+      "isRequired": false,
+      "isBackendOnly": true,
+      "condition": "settings.use_deskpro_saas != true && settings.use_access_token != true",
+      "order": 50
     },
     "default_dont_add_note_when_linking_contact": {
       "title": "Don't leave a note on the contact profile in HubSpot when it is linked to a user in Deskpro",
@@ -31,7 +77,7 @@
       "type": "boolean",
       "isRequired": false,
       "isBackendOnly": false,
-      "order": 20
+      "order": 60
     },
     "mapping_contact": {
       "title": "Contact Field Mapping",
@@ -44,7 +90,7 @@
       },
       "isRequired": false,
       "isBackendOnly": false,
-      "order": 30
+      "order": 70
     },
     "mapping_deal": {
       "title": "Deal Field Mapping",
@@ -57,7 +103,7 @@
       },
       "isRequired": false,
       "isBackendOnly": false,
-      "order": 40
+      "order": 80
     }
   },
   "proxy": {
