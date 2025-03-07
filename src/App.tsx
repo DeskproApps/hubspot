@@ -6,7 +6,7 @@ import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
 import { useUnlinkContact } from "./hooks";
-import { ActivityPage, AdminCallbackPage, ContactMappingPage, CreateActivityPage, CreateContactPage, CreateDealPage, CreateNotePage, DealMappingPage, DealPage, HomePage, LinkPage, LoadingAppPage, UpdateContactPage, UpdateDealPage, ViewContactPage } from "./pages";
+import { ActivityPage, AdminCallbackPage, ContactMappingPage, CreateActivityPage, CreateContactPage, CreateDealPage, CreateNotePage, DealMappingPage, DealPage, HomePage, LinkPage, LoadingAppPage, LoginPage, UpdateContactPage, UpdateDealPage, ViewContactPage } from "./pages";
 import { LoadingSpinner, useDeskproAppClient, useDeskproAppEvents } from "@deskpro/app-sdk";
 import type { EventPayload } from "./types";
 
@@ -44,6 +44,7 @@ function App() {
                             <Route path="/admin/mapping/deal" element={<DealMappingPage />} />
                             <Route path="/admin/callback" element={<AdminCallbackPage />} />
                             <Route path="/home" element={<HomePage />} />
+                            <Route path="/login" element={<LoginPage />} />
                             <Route path="/link" element={<LinkPage />} />
                             <Route path="/deal/create" element={<CreateDealPage />} />
                             <Route path="/deal/update/:dealId" element={<UpdateDealPage />} />
