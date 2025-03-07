@@ -8,6 +8,7 @@ export { default as AdminCallbackPage } from "./admin/callback";
 export { HomePage } from "./HomePage";
 export { LinkPage } from "./LinkPage";
 export { LoadingAppPage } from "./LoadingAppPage";
+export { LoginPage } from "./login";
 export { UpdateContactPage } from "./UpdateContactPage";
 export { UpdateDealPage } from "./UpdateDealPage";
 export { ViewContactPage } from "./ViewContactPage";
