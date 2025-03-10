@@ -82,7 +82,7 @@ export default function useLogin(): UseLogin {
                 }
             )
             // Global Proxy Service
-            : await client.startOauth2Global("TW2mwcHyQwCmkrzNjgdMAQ");
+            : await client.startOauth2Global("190b8eca-21a8-4753-aa6e-c32b55078c72");
 
         setAuthUrl(oauth2.authorizationUrl)
         setIsLoading(false)

@@ -9,6 +9,7 @@
   "hasDevMode": true,
   "targets": [{ "target": "user_sidebar", "entrypoint": "index.html" }],
   "serveUrl": "https://apps-cdn.deskpro-service.com/__name__/__version__",
+  "secrets": "F+ZyEzlVCNk9qKAmb2qw59VqcXKE+HiOebBRTJb9aVfUitD+TAEgw3w0CSJ0h9ofHk1UjG3MvJg+t/Iyn5uio2sq6tZpzQx90Dn5ZFrp3MlrLCqKgYtBUHRsl/YBmwGmfFgy4uAWBBf1kbavfQdt+nxNdbp/5J85BeeuPZaem7ohbwr4XwCbOOSHNAOnK1xypf99b438Q0vm3S6C4/TBz8fDD8P5/ldrhYgyGhjNiqCeoZsK8advNv5IiPAGmDSszzp8T12lxERB/nuLUir1UQoc/xKfAXHAslcTJFPzXOF23YVQcKnbBch/x4qYtasXyJaAqRUvl0sEj5PEH9Bj/SBQ/LdiU20TrK2HulXklWrqaWnoONJspoXiSBqOy9Sge7Wwv4cKgElZIF9MabIyCV+/7TKY4VB6JBqX1ad6YPkuVtQ12u1Fn069j5eeLpMAQWikrrWQWzOSV84Tmyz8worppEFhtccFuQhYr97VZjqyFZpG4XLW9cJ5v6+KIXYad1PFkTaOJvSBRlEkHTdvrj9+dKVSRZd1Kgs5k0IbIVvgjS27UWHg7qRJmWrPkiLb0ET1ViSfifJtz1bWdJmOGCMtsWiv7vOkZPhdbfwIvh2VMqr+gV4GQsci6hFvjD7Q6zRE8JBo20A3SpDF5rESdwoyxNpSo8Xgm4fhy/6U7ZhYNvk3J/9JnHv+cRc775QLhSQH9JPcrSRSQ1Zc/6WIZ58RvILB4FyXDw2AJAUpa5EN5tqVcof0gRbJ4HWFf3mNJWMmvWDje2I+H+sDbLGxT+frFaTyHughzwaRi5oR7qpg5aUZziHHDnTfe0SaM6bZbTjQmmJM8v/lBm66K8Rq9SKev2rvlOgB3RvoJVhaID1ArB1NbHSWjtI/T9GU8CHLNU93ZO4WP1yWfzKDLo8AI2Dx4wtwZNmhxtUGI4nSkSOjNapWxypZqkApDYmVv43Y/jPHSVvHFFyToP8y4Zl3g5eNcfGubwTy95kvQA0bDCDQ5xIjlXCvNJSotzV8Z4SeT9h4gJi4lOPiZEKYDYVUhLrVGY083kzNQ/sTPwVbB8BI1Co8BZP8EAkkQcjVUtxSMmXPxSv8f9chNdZ2huG2ft7SQ43z2bmffJ2XcsbAKiv+3IccFoygWesG/0V+xR0HWlQLq5JY+aUnhvhR5wE39863VTetwPY4naIEHDuX05IYnPp56LsKRC6tn4g71Yn34o8/xrApgQHEoGt0phYpd8u3YS9P0DUZIbWVL1axjQAzhy+dYmnsI6Kf1jefgjl38I9MTD7zbOgrG/9UyRi/sp61WOIQMxo7bBF9VTJ4AcOpAZbV7SxGnz14L6A5j629bRPh72bD/qqT/Ygjns/DSR+f+NlRt3pfw9jmXNuUDes=",
   "entityAssociations": {
     "linkedHubspotContacts": {
       "title": "Linked HubSpot Contact",
@@ -76,6 +77,7 @@
       "description": "",
       "type": "boolean",
       "isRequired": false,
+      "condition": "settings.use_deskpro_saas != true && settings.use_api_token == true",
       "isBackendOnly": false,
       "order": 60
     },
@@ -89,6 +91,7 @@
         "height": 500
       },
       "isRequired": false,
+      "condition": "settings.use_deskpro_saas != true && settings.use_api_token == true",
       "isBackendOnly": false,
       "order": 70
     },
@@ -102,6 +105,7 @@
         "height": 500
       },
       "isRequired": false,
+      "condition": "settings.use_deskpro_saas != true && settings.use_api_token == true",
       "isBackendOnly": false,
       "order": 80
     }
