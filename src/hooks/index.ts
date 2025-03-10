@@ -4,6 +4,7 @@ export { useContact } from "./useContact";
 export { useLinkContact } from "./useLinkContact";
 export { useLinkUnlinkNote } from "./useLinkUnlinkNote";
 export { useLoadUpdateDealDeps } from "./useLoadUpdateDealDeps";
+export { useLogout } from "./useLogout";
 export { useMeta } from "./useMeta";
 export { useOwnerOptions } from "./useOwnerOptions";
 export { useProperties } from "./useProperties";

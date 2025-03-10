@@ -98,10 +98,13 @@ export type NavigateToChangePage = { type: "changePage", path: To };
 
 export type UnlinkPayload = { type: "unlink", contactId: Contact["id"] };
 
+export type LogoutPayload = { type: "logout" };
+
 export type EventPayload =
-    | NavigateToChangePage
-    | UnlinkPayload
-    ;
+  | NavigateToChangePage
+  | UnlinkPayload
+  | LogoutPayload
+  ;
 
 /** HubSpot */
 export type EntityMetadata = {

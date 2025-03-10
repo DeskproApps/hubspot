@@ -1,19 +1,26 @@
+import { ActivityPage, AdminCallbackPage, ContactMappingPage, CreateActivityPage, CreateContactPage, CreateDealPage, CreateNotePage, DealMappingPage, DealPage, HomePage, LinkPage, LoadingAppPage, LoginPage, UpdateContactPage, UpdateDealPage, ViewContactPage } from "./pages";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "./components/common";
 import { isNavigatePayload, isUnlinkPayload } from "./utils";
+import { LoadingSpinner, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import { match } from "ts-pattern";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
-import { useUnlinkContact } from "./hooks";
-import { ActivityPage, AdminCallbackPage, ContactMappingPage, CreateActivityPage, CreateContactPage, CreateDealPage, CreateNotePage, DealMappingPage, DealPage, HomePage, LinkPage, LoadingAppPage, LoginPage, UpdateContactPage, UpdateDealPage, ViewContactPage } from "./pages";
-import { LoadingSpinner, useDeskproAppClient, useDeskproAppEvents } from "@deskpro/app-sdk";
-import type { EventPayload } from "./types";
+import { useLogout, useUnlinkContact } from "./hooks";
+import type { EventPayload, Settings } from "./types";
 
 function App() {
-    const navigate = useNavigate();
     const { client } = useDeskproAppClient();
+    const { context } = useDeskproLatestAppContext<unknown, Settings>()
     const { unlinkContact, isLoading } = useUnlinkContact();
+    const navigate = useNavigate();
+    const { logoutActiveUser } = useLogout()
+
+
+    const isUsingOAuth = context?.settings?.use_api_token !== true
+
+
 
     useDeskproAppEvents({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -25,6 +32,11 @@ function App() {
                 })
                 .with("unlink", () => {
                     isUnlinkPayload(payload) && unlinkContact(payload.contactId);
+                })
+                .with("logout", () => {
+                    if (isUsingOAuth) {
+                        logoutActiveUser()
+                    }
                 })
                 .otherwise(() => { });
         },
