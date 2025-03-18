@@ -10,6 +10,8 @@ export const placeholders = {
     TOKEN_IN_STATE: `[[${ACCESS_TOKEN_PATH}]]`,
     REFRESH_TOKEN_IN_STATE: `[[${REFRESH_TOKEN_PATH}]]`,
     API_TOKEN: "__api_token__",
+    OAUTH2_ACCESS_TOKEN_PATH: "oauth2/access_token",
+    OAUTH2_REFRESH_TOKEN_PATH: "oauth2/refresh_token"
 };
 
 export const BASE_URL = "https://api.hubapi.com";

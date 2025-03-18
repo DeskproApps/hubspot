@@ -1,12 +1,10 @@
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-    LoadingSpinner,
-    useDeskproElements,
-} from "@deskpro/app-sdk";
-import { useLoadHomeDeps } from "./hooks";
-import { useSetAppTitle } from "../../hooks";
 import { Home } from "../../components/Home";
+import { Settings } from "../../types";
+import { useCallback } from "react";
+import { useLoadHomeDeps } from "./hooks";
+import { useNavigate } from "react-router-dom";
+import { useSetAppTitle } from "../../hooks";
+import { LoadingSpinner, useDeskproElements, useDeskproLatestAppContext } from "@deskpro/app-sdk";
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -23,7 +21,11 @@ const HomePage = () => {
         contactMetaMap,
         dealMetaMap,
     } = useLoadHomeDeps();
+    const { context } = useDeskproLatestAppContext<unknown, Settings>()
+
     const contactId = contact?.hs_object_id;
+    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_deskpro_saas === true
+
 
     useSetAppTitle("Contact");
 
@@ -38,7 +40,14 @@ const HomePage = () => {
             items: [{
                 title: "Unlink contact",
                 payload: { type: "unlink", contactId },
-            }],
+            }, ...(isUsingOAuth
+                ? [
+                    {
+                        title: "Logout",
+                        payload: { type: "logout" },
+                    },
+                ]
+                : [])],
         });
     }, [contactId]);
 
@@ -61,7 +70,7 @@ const HomePage = () => {
     }, [navigate, contactId]);
 
     if (isLoading) {
-        return <LoadingSpinner/>
+        return <LoadingSpinner />
     }
 
     return (

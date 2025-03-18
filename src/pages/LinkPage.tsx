@@ -1,36 +1,24 @@
-import { useState, useCallback } from "react";
-import type { FC, ChangeEvent } from "react";
-import { useDebouncedCallback } from "use-debounce";
-import { useNavigate } from "react-router-dom";
-import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { Stack, Button } from "@deskpro/deskpro-ui";
-import {
-    Context,
-    TwoButtonGroup,
-    HorizontalDivider,
-    useDeskproElements,
-    useDeskproAppClient,
-    useDeskproLatestAppContext,
-} from "@deskpro/app-sdk";
-import { setEntityContact } from "../services/entityAssociation";
-import { searchContactsByService } from "../services/hubspot";
-import { useSetAppTitle, useLinkUnlinkNote } from "../hooks";
-import {
-    NoFound,
-    Loading,
-    InputSearch,
-    BaseContainer,
-} from "../components/common";
 import { ContactItem } from "../components/Link";
-import { useLinkContact } from "../hooks";
+import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { getEntityMetadata } from "../utils";
+import { searchContactsByService } from "../services/hubspot";
+import { setEntityContact } from "../services/entityAssociation";
+import { Stack, Button } from "@deskpro/deskpro-ui";
+import { useDebouncedCallback } from "use-debounce";
+import { useLinkContact } from "../hooks";
+import { useNavigate } from "react-router-dom";
+import { useSetAppTitle, useLinkUnlinkNote } from "../hooks";
+import { useState, useCallback } from "react";
+import { BaseContainer, InputSearch, Loading, NoFound } from "../components/common";
+import { HorizontalDivider, TwoButtonGroup, useDeskproAppClient, useDeskproElements, useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import type { Contact } from "../services/hubspot/types";
-import type { ContextData } from "../types";
+import type { ContextData, Settings } from "../types";
+import type { FC, ChangeEvent } from "react";
 
 const LinkPage: FC = () => {
     const navigate = useNavigate();
     const { client } = useDeskproAppClient();
-    const { context } = useDeskproLatestAppContext();
+    const { context } = useDeskproLatestAppContext<ContextData, Settings>();
     const { isLoading, linkContactFn } = useLinkUnlinkNote();
     const { getContactInfo } = useLinkContact();
 
@@ -39,15 +27,27 @@ const LinkPage: FC = () => {
     const [selectedContactId, setSelectedContactId] = useState<Contact['id']>('');
     const [loading, setLoading] = useState<boolean>(false);
 
-    const deskproUser = (context as Context<ContextData>)?.data?.user;
+    const deskproUser = context?.data?.user;
+    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_deskpro_saas === true
+
 
     useSetAppTitle("Add contact");
 
-    useDeskproElements(({ deRegisterElement }) => {
+    useDeskproElements(({ deRegisterElement, registerElement }) => {
         deRegisterElement("home");
         deRegisterElement("menu");
         deRegisterElement("edit");
         deRegisterElement("externalLink");
+
+        if (isUsingOAuth) {
+            registerElement("menu", {
+                type: "menu",
+                items: [{
+                    title: "Logout",
+                    payload: { type: "logout" },
+                }],
+            });
+        }
     });
 
     const onNavigateToCreateContact = useCallback(() => {
@@ -68,7 +68,7 @@ const LinkPage: FC = () => {
 
         searchContactsByService(client, q)
             .then(({ results }) => setContacts(results))
-            .catch(() => {})
+            .catch(() => { })
             .finally(() => setLoading(false));
     }, 500);
 
@@ -77,7 +77,7 @@ const LinkPage: FC = () => {
         setContacts([]);
     };
 
-    const onChangeSearch = ({ target: { value: q }}: ChangeEvent<HTMLInputElement>) => {
+    const onChangeSearch = ({ target: { value: q } }: ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(q);
         searchInHubspot(q);
     };
@@ -104,7 +104,7 @@ const LinkPage: FC = () => {
                 return linkContactFn(selectedContactId).then(() => navigate("/home"));
             })
             .catch(() => ({}))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [client, deskproUser, selectedContactId]);
 
     return (
@@ -113,7 +113,7 @@ const LinkPage: FC = () => {
                 selected="one"
                 oneLabel="Find contact"
                 oneIcon={faSearch}
-                oneOnClick={() => {}}
+                oneOnClick={() => { }}
                 twoLabel="Create contact"
                 twoIcon={faPlus}
                 twoOnClick={onNavigateToCreateContact}
@@ -124,16 +124,16 @@ const LinkPage: FC = () => {
                 onClear={onClearSearch}
             />
             {loading
-                ? (<Loading/>)
+                ? (<Loading />)
                 : (
                     <>
                         {!!contacts.length && contacts.map((contact) => (
-                           <ContactItem
-                               key={contact.id}
-                               checked={selectedContactId === contact.id}
-                               onChange={onChangeSelectedCustomer}
-                               {...contact}
-                           />
+                            <ContactItem
+                                key={contact.id}
+                                checked={selectedContactId === contact.id}
+                                onChange={onChangeSelectedCustomer}
+                                {...contact}
+                            />
                         ))}
                         <HorizontalDivider style={{ margin: "10px 0" }} />
                         {!contacts.length && (

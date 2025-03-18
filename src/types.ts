@@ -1,9 +1,9 @@
+import type { Contact, Deal, Company } from "./services/hubspot/types";
 import type { Dispatch, SetStateAction } from "react";
-import type { To } from "react-router-dom";
 import type { DropdownValueType } from "@deskpro/deskpro-ui";
 import type { IDeskproClient, Context } from "@deskpro/app-sdk";
-import type { Contact, Deal, Company } from "./services/hubspot/types";
 import type { Layout } from "./components/common/Builder";
+import type { To } from "react-router-dom";
 
 /** Common types */
 
@@ -18,7 +18,7 @@ export type RequestParams = {
     method?: ApiRequestMethod,
     data?: object,
     headers?: Record<string, string>,
-    queryParams?: Record<string, string|number|boolean>,
+    queryParams?: Record<string, string | number | boolean>,
     entity?: string,
     settings?: Settings;
 };
@@ -47,6 +47,9 @@ export type Settings = {
     default_dont_add_note_when_linking_contact?: boolean;
     mapping_contact?: string;
     mapping_deal?: string;
+    use_deskpro_saas?: boolean,
+    use_api_token?: boolean,
+    client_id?: string,
 };
 
 export type DeskproUser = {
@@ -89,16 +92,19 @@ export type DealLayout = {
     view: Layout;
 };
 
-export type LayoutType = ContactLayout|DealLayout;
+export type LayoutType = ContactLayout | DealLayout;
 
 export type NavigateToChangePage = { type: "changePage", path: To };
 
 export type UnlinkPayload = { type: "unlink", contactId: Contact["id"] };
 
+export type LogoutPayload = { type: "logout" };
+
 export type EventPayload =
   | NavigateToChangePage
   | UnlinkPayload
-;
+  | LogoutPayload
+  ;
 
 /** HubSpot */
 export type EntityMetadata = {
