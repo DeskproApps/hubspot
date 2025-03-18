@@ -25,7 +25,7 @@ const LoadingAppPage = () => {
     const { getContactInfo } = useLinkContact();
 
     // Determine authentication method from settings
-    const isUsingOAuth = context?.settings.use_api_token !== true
+    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_deskpro_saas === true
     const user = context?.data?.user
 
     useInitialisedDeskproAppClient((client) => {

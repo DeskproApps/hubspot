@@ -24,6 +24,8 @@ const HomePage = () => {
     const { context } = useDeskproLatestAppContext<unknown, Settings>()
 
     const contactId = contact?.hs_object_id;
+    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_deskpro_saas === true
+
 
     useSetAppTitle("Contact");
 
@@ -38,7 +40,7 @@ const HomePage = () => {
             items: [{
                 title: "Unlink contact",
                 payload: { type: "unlink", contactId },
-            }, ...(context?.settings.use_api_token !== true
+            }, ...(isUsingOAuth
                 ? [
                     {
                         title: "Logout",
