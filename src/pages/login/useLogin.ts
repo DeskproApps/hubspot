@@ -31,16 +31,14 @@ export default function useLogin(): UseLogin {
     const { context } = useDeskproLatestAppContext<ContextData, Settings>()
 
     const user = context?.data?.user
-    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_deskpro_saas === true
-
-
+    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_advanced_connect === false
 
     // TODO: Update useInitialisedDeskproAppClient typing in the
     // App SDK to to properly handle both async and sync functions
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     useInitialisedDeskproAppClient(async (client) => {
-        if (context?.settings.use_deskpro_saas === undefined || !user) {
+        if (!user) {
             // Make sure settings have loaded.
             return
         }
@@ -51,7 +49,7 @@ export default function useLogin(): UseLogin {
             return
         }
 
-        const mode = context?.settings.use_deskpro_saas ? 'global' : 'local';
+        const mode = context?.settings.use_advanced_connect === false ? 'global' : 'local';
 
         const clientId = context?.settings.client_id;
         if (mode === 'local' && typeof clientId !== 'string') {
@@ -92,7 +90,7 @@ export default function useLogin(): UseLogin {
         setAuthUrl(oauth2Response.authorizationUrl)
         setOAuth2Context(oauth2Response)
 
-    }, [setAuthUrl, context?.settings.use_deskpro_saas])
+    }, [setAuthUrl, context?.settings.use_advanced_connect])
 
 
     useInitialisedDeskproAppClient((client) => {
