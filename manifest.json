@@ -3,7 +3,7 @@
   "title": "HubSpot",
   "description": "Connect with HubSpot and view and update information from your CRM while in Deskpro tickets",
   "appStoreUrl": "https://www.deskpro.com/product-embed/apps/hubspot",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,
@@ -63,10 +63,7 @@
     "callback_url": {
       "title": "Callback URL",
       "type": "app_embedded",
-      "options": {
-        "entrypoint": "#/admin/callback",
-        "height": 80
-      },
+      "options": { "entrypoint": "#/admin/callback", "height": 80 },
       "isRequired": false,
       "isBackendOnly": true,
       "condition": "settings.use_deskpro_saas != true && settings.use_api_token != true",
