@@ -47,7 +47,7 @@ export type Settings = {
     default_dont_add_note_when_linking_contact?: boolean;
     mapping_contact?: string;
     mapping_deal?: string;
-    use_deskpro_saas?: boolean,
+    use_advanced_connect?: boolean,
     use_api_token?: boolean,
     client_id?: string,
 };
