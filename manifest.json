@@ -77,7 +77,6 @@
       "description": "",
       "type": "boolean",
       "isRequired": false,
-      "condition": "settings.use_deskpro_saas != true && settings.use_api_token == true",
       "isBackendOnly": false,
       "order": 60
     },
