@@ -50,7 +50,7 @@
       "type": "string",
       "isRequired": false,
       "isBackendOnly": false,
-      "condition": "settings.use_advanced_connect = true && settings.use_api_token != true",
+      "condition": "settings.use_advanced_connect == true && settings.use_api_token != true",
       "order": 30
     },
     "client_secret": {
@@ -58,7 +58,7 @@
       "type": "string",
       "isRequired": false,
       "isBackendOnly": true,
-      "condition": "settings.use_advanced_connect = true && settings.use_api_token != true",
+      "condition": "settings.use_advanced_connect == true && settings.use_api_token != true",
       "order": 40
     },
     "callback_url": {
@@ -67,7 +67,7 @@
       "options": { "entrypoint": "#/admin/callback", "height": 80 },
       "isRequired": false,
       "isBackendOnly": true,
-      "condition": "settings.use_advanced_connect = true && settings.use_api_token != true",
+      "condition": "settings.use_advanced_connect == true && settings.use_api_token != true",
       "order": 50
     },
     "default_dont_add_note_when_linking_contact": {
