@@ -31,7 +31,7 @@ export default function useLogin(): UseLogin {
     const { context } = useDeskproLatestAppContext<ContextData, Settings>()
 
     const user = context?.data?.user
-    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_advanced_connect === false
+    const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
 
     // TODO: Update useInitialisedDeskproAppClient typing in the
     // App SDK to to properly handle both async and sync functions
