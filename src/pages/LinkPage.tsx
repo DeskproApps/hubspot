@@ -28,8 +28,7 @@ const LinkPage: FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const deskproUser = context?.data?.user;
-    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_advanced_connect === false
-
+    const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
 
     useSetAppTitle("Add contact");
 

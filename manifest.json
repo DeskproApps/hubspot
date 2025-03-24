@@ -42,7 +42,7 @@
       "type": "string",
       "isRequired": false,
       "isBackendOnly": true,
-      "condition": "settings.use_advanced_connect != false && settings.use_api_token == true",
+      "condition": "settings.use_advanced_connect != false && settings.use_api_token != false",
       "order": 20
     },
     "client_id": {
@@ -50,7 +50,7 @@
       "type": "string",
       "isRequired": false,
       "isBackendOnly": false,
-      "condition": "settings.use_advanced_connect != false && settings.use_api_token != true",
+      "condition": "settings.use_advanced_connect == true && settings.use_api_token == false",
       "order": 30
     },
     "client_secret": {
@@ -58,7 +58,7 @@
       "type": "string",
       "isRequired": false,
       "isBackendOnly": true,
-      "condition": "settings.use_advanced_connect != false && settings.use_api_token != true",
+      "condition": "settings.use_advanced_connect == true && settings.use_api_token == false",
       "order": 40
     },
     "callback_url": {
@@ -67,7 +67,7 @@
       "options": { "entrypoint": "#/admin/callback", "height": 80 },
       "isRequired": false,
       "isBackendOnly": true,
-      "condition": "settings.use_advanced_connect != false && settings.use_api_token != true",
+      "condition": "settings.use_advanced_connect == true && settings.use_api_token == false",
       "order": 50
     },
     "default_dont_add_note_when_linking_contact": {
@@ -88,7 +88,7 @@
         "height": 500
       },
       "isRequired": false,
-      "condition": "settings.use_advanced_connect != false && settings.use_api_token == true",
+      "condition": "settings.use_advanced_connect != false && settings.use_api_token != false",
       "isBackendOnly": false,
       "order": 70
     },
@@ -102,7 +102,7 @@
         "height": 500
       },
       "isRequired": false,
-      "condition": "settings.use_advanced_connect != false && settings.use_api_token == true",
+      "condition": "settings.use_advanced_connect != false && settings.use_api_token != false",
       "isBackendOnly": false,
       "order": 80
     }

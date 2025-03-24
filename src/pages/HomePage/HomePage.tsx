@@ -24,8 +24,7 @@ const HomePage = () => {
     const { context } = useDeskproLatestAppContext<unknown, Settings>()
 
     const contactId = contact?.hs_object_id;
-    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_advanced_connect === false
-
+    const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
 
     useSetAppTitle("Contact");
 

@@ -17,7 +17,7 @@ function App() {
     const navigate = useNavigate();
     const { logoutActiveUser } = useLogout()
 
-    const isUsingOAuth = context?.settings.use_api_token !== true || context.settings.use_advanced_connect === false
+    const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
 
     useDeskproAppEvents({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
