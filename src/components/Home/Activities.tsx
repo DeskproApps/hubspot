@@ -40,6 +40,15 @@ const TitleLink = styled(Link)`
     }
 `;
 
+const ClampedTitle = styled.div`
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+`;
+
 const normalizeCallFn = (call: CallActivity["properties"]): ActivityProps => ({
     id: call.hs_object_id,
     title: call.hs_call_title,
@@ -66,9 +75,11 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
             <Title
                 as={H3} // eslint-disable-line @typescript-eslint/no-unsafe-assignment
                 title={(
-                    <Link
-                        to={`/contacts/activities?type=${type}&activityId=${id}`}
-                    >{title}</Link>
+                    <ClampedTitle>
+                        <Link
+                            to={`/contacts/activities?type=${type}&activityId=${id}`}
+                        >{title}</Link>
+                    </ClampedTitle>
                 )}
                 marginBottom={7}
                 {...((!portalId || !contactId) ? {} : {
