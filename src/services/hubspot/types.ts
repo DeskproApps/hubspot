@@ -157,7 +157,7 @@ export type CallActivity = {
         hs_timestamp: DateTime,
         hs_call_duration?: number,
         hubspot_owner_id: string,
-        hs_call_direction: string,
+        hs_call_direction?: string,
         hs_call_disposition?: string
     },
 };

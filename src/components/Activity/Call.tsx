@@ -11,7 +11,6 @@ import { getActivityCallDispositionsServices } from "../../services/hubspot";
 
 type Props = CallActivity["properties"] & {
     contacts: Array<Contact["properties"]>,
-    owner?: Owner,
     portalId?: number
 };
 
@@ -20,7 +19,6 @@ const Call: FC<Props> = ({
     hs_call_body,
     hs_timestamp,
     contacts,
-    owner,
     portalId,
     hs_object_id,
     hs_call_direction,
@@ -35,6 +33,7 @@ const Call: FC<Props> = ({
 
         return fullName ? `${fullName} (${contact.email})` : contact.email;
     }).join('<br />');
+
     const callDispositions = useQueryWithClient(
         [QueryKey.CALL_ACTIVITIES, "dispositions"],
         getActivityCallDispositionsServices,
@@ -45,6 +44,7 @@ const Call: FC<Props> = ({
             },
         },
     );
+
     const disposition = callDispositions.data?.find(disposition => disposition.value === hs_call_disposition);
     const outcome = disposition?.label;
 
@@ -75,7 +75,7 @@ const Call: FC<Props> = ({
             />
             <TextBlockWithLabel
                 label="Direction"
-                text={hs_call_direction.charAt(0).toUpperCase() + hs_call_direction.slice(1).toLowerCase()}
+                text={hs_call_direction && (hs_call_direction.charAt(0).toUpperCase() + hs_call_direction.slice(1).toLowerCase())}
             />
             <TextBlockWithLabel
                 label="Date/time"

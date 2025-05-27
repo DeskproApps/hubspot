@@ -92,7 +92,6 @@ const ActivityPage: FC = () => {
     return (
         <Activity
             type={type}
-            owner={owner.data}
             activity={data.properties}
             contacts={filterEntities(contacts) as Array<Contact["properties"]>}
             portalId={accountInfo.data?.portalId}
