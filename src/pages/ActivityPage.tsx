@@ -1,7 +1,6 @@
 import { FC, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import capitalize from "lodash/capitalize";
-import get from "lodash/get";
 import {
     LoadingSpinner,
     useDeskproElements,
@@ -17,7 +16,6 @@ import {
     getContactService,
     getActivityService,
     getEntityAssocService,
-    getOwnerService,
     getAccountInfoService
 } from "../services/hubspot";
 import { Activity } from "../components/Activity";
@@ -60,15 +58,6 @@ const ActivityPage: FC = () => {
         useErrorBoundary: false,
     })) ?? []);
 
-    const owner = useQueryWithClient(
-        [QueryKey.OWNERS, data?.properties?.hubspot_owner_id],
-        (client) => getOwnerService(client, data?.properties?.hubspot_owner_id as string),
-        {
-            enabled: Boolean(get(data, ["properties", "hubspot_owner_id"])),
-            useErrorBoundary: false,
-        },
-    );
-
     const accountInfo = useQueryWithClient(
         [QueryKey.ACCOUNT_INFO],
         getAccountInfoService
@@ -92,7 +81,6 @@ const ActivityPage: FC = () => {
     return (
         <Activity
             type={type}
-            owner={owner.data}
             activity={data.properties}
             contacts={filterEntities(contacts) as Array<Contact["properties"]>}
             portalId={accountInfo.data?.portalId}
