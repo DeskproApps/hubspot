@@ -42,6 +42,8 @@ export const PROPERTIES = {
         "hs_timestamp",
         "hs_call_duration",
         "hubspot_owner_id",
+        "hs_call_direction",
+        "hs_call_disposition"
     ],
     emails: [
         "hs_object_id",

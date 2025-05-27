@@ -2,9 +2,12 @@ import { FC } from "react";
 import { P5 } from "@deskpro/deskpro-ui";
 import { Title } from "@deskpro/app-sdk";
 import { BaseContainer, HubSpotLogo, TextBlockWithLabel } from "../common";
-import { getFullName } from "../../utils";
-import { format, msToDuration } from "../../utils/date";
-import type { CallActivity, Contact, Owner } from "../../services/hubspot/types";
+import { getFullName, getOption } from "../../utils";
+import { format } from "../../utils/date";
+import type { CallActivity, CallDispositions, Contact, Owner } from "../../services/hubspot/types";
+import { useQueryWithClient } from "../../hooks";
+import { QueryKey } from "../../query";
+import { getActivityCallDispositionsServices } from "../../services/hubspot";
 
 type Props = CallActivity["properties"] & {
     contacts: Array<Contact["properties"]>,
@@ -15,14 +18,35 @@ type Props = CallActivity["properties"] & {
 const Call: FC<Props> = ({
     hs_call_title,
     hs_call_body,
-    hs_call_duration,
     hs_timestamp,
     contacts,
     owner,
     portalId,
-    hs_object_id
+    hs_object_id,
+    hs_call_direction,
+    hs_call_disposition
 }) => {
     const contactId = contacts[0]?.hs_object_id;
+    const contacted = contacts.map(contact => {
+        const fullName = getFullName({
+            firstName: contact.firstname,
+            lastName: contact.lastname
+        });
+
+        return fullName ? `${fullName} (${contact.email})` : contact.email;
+    }).join('<br />');
+    const callDispositions = useQueryWithClient(
+        [QueryKey.CALL_ACTIVITIES, "dispositions"],
+        getActivityCallDispositionsServices,
+        {
+            select: (data) => {
+                return data?.filter(({ deleted }) => !deleted)
+                    .map(({ id, label }) => getOption<CallDispositions["id"]>(id, label)) || [];
+            },
+        },
+    );
+    const disposition = callDispositions.data?.find(disposition => disposition.value === hs_call_disposition);
+    const outcome = disposition?.label;
 
     return (
         <BaseContainer>
@@ -41,14 +65,17 @@ const Call: FC<Props> = ({
                         : <P5 dangerouslySetInnerHTML={{ __html: hs_call_body }} />
                 }
             />
-            <TextBlockWithLabel label="Call by" text={getFullName(owner)} />
             <TextBlockWithLabel
-                label="Direction"
-                text={contacts.map(getFullName).join(", ")}
+                label="Contacted"
+                text={contacted}
             />
             <TextBlockWithLabel
-                label="Duration"
-                text={!hs_call_duration ? "-" : msToDuration(hs_call_duration)}
+                label='Outcome'
+                text={typeof outcome === 'string' || typeof outcome === 'number' ? outcome : '-'}
+            />
+            <TextBlockWithLabel
+                label="Direction"
+                text={hs_call_direction.charAt(0).toUpperCase() + hs_call_direction.slice(1).toLowerCase()}
             />
             <TextBlockWithLabel
                 label="Date/time"
