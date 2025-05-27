@@ -8,10 +8,11 @@ const Activity: FC<{
     type: "email"|"call",
     contacts: Array<Contact["properties"]>,
     owner?: Owner,
-}> = ({ type, activity, contacts, owner }) => {
+    portalId?: number
+}> = ({ type, activity, contacts, owner, portalId }) => {
     return  (type === "email")
-        ? (<Email {...activity} />)
-        : (<Call {...activity} contacts={contacts} owner={owner} />);
+        ? (<Email {...activity} contacts={contacts} portalId={portalId} />)
+        : (<Call {...activity} contacts={contacts} owner={owner} portalId={portalId} />);
 };
 
 export { Activity };

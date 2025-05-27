@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { P5 } from "@deskpro/deskpro-ui";
 import { Title } from "@deskpro/app-sdk";
-import { BaseContainer, TextBlockWithLabel } from "../common";
+import { BaseContainer, HubSpotLogo, TextBlockWithLabel } from "../common";
 import { getFullName } from "../../utils";
 import { format, msToDuration } from "../../utils/date";
 import type { CallActivity, Contact, Owner } from "../../services/hubspot/types";
@@ -9,7 +9,8 @@ import type { CallActivity, Contact, Owner } from "../../services/hubspot/types"
 type Props = CallActivity["properties"] & {
     contacts: Array<Contact["properties"]>,
     owner?: Owner,
-}
+    portalId?: number
+};
 
 const Call: FC<Props> = ({
     hs_call_title,
@@ -18,10 +19,20 @@ const Call: FC<Props> = ({
     hs_timestamp,
     contacts,
     owner,
+    portalId,
+    hs_object_id: id
 }) => {
+    const contactId = contacts[0].hs_object_id;
+
     return (
         <BaseContainer>
-            {hs_call_title && <Title title={hs_call_title} />}
+            {hs_call_title && (
+                <Title
+                    title={hs_call_title}
+                    icon={<HubSpotLogo />}
+                    link={`https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${id}`}
+                />
+            )}
             <TextBlockWithLabel
                 label="Description"
                 text={
