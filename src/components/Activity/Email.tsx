@@ -14,16 +14,20 @@ type Props = EmailActivity['properties'] & {
 const Email: FC<Props> = ({
     hs_email_subject,
     hs_email_html,
-    hs_email_to_firstname,
-    hs_email_to_lastname,
-    hs_email_from_firstname,
-    hs_email_from_lastname,
     hs_timestamp,
     contacts,
     portalId,
     hs_object_id
 }) => {
     const contactId = contacts[0]?.hs_object_id;
+    const contacted = contacts.map(contact => {
+        const fullName = getFullName({
+            firstName: contact.firstname,
+            lastName: contact.lastname
+        });
+
+        return fullName ? `${fullName} (${contact.email})` : contact.email;
+    }).join('<br />');
 
     return (
         <BaseContainer>
@@ -41,18 +45,8 @@ const Email: FC<Props> = ({
                 }
             />
             <TextBlockWithLabel
-                label="Sent by"
-                text={getFullName({
-                    firstName: hs_email_from_firstname,
-                    lastName: hs_email_from_lastname,
-                })}
-            />
-            <TextBlockWithLabel
                 label="Contacted"
-                text={getFullName({
-                    firstName: hs_email_to_firstname,
-                    lastName: hs_email_to_lastname,
-                })}
+                text={contacted}
             />
             <TextBlockWithLabel
                 label="Date/time"
