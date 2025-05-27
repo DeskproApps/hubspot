@@ -35,14 +35,15 @@ const Call: FC<Props> = ({
     }).join('<br />');
 
     const callDispositions = useQueryWithClient(
-        [QueryKey.CALL_ACTIVITIES, "dispositions"],
+        [QueryKey.CALL_ACTIVITIES, 'dispositions'],
         getActivityCallDispositionsServices,
         {
-            select: (data) => {
-                return data?.filter(({ deleted }) => !deleted)
-                    .map(({ id, label }) => getOption<CallDispositions["id"]>(id, label)) || [];
-            },
-        },
+            select: data => {
+                return data
+                    ?.filter(({ deleted }) => !deleted)
+                    .map(({ id, label }) => getOption<CallDispositions['id']>(id, label)) || [];
+            }
+        }
     );
 
     const disposition = callDispositions.data?.find(disposition => disposition.value === hs_call_disposition);
