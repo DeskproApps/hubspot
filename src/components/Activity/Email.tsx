@@ -1,12 +1,17 @@
 import { FC } from "react";
 import { P5 } from "@deskpro/deskpro-ui";
 import { Title } from "@deskpro/app-sdk";
-import { BaseContainer, TextBlockWithLabel } from "../common";
+import { BaseContainer, HubSpotLogo, TextBlockWithLabel } from "../common";
 import { getFullName } from "../../utils";
 import { format } from "../../utils/date";
-import type { EmailActivity } from "../../services/hubspot/types";
+import type { Contact, EmailActivity } from "../../services/hubspot/types";
 
-const Email: FC<EmailActivity["properties"]> = ({
+type Props = EmailActivity['properties'] & {
+    contacts: Array<Contact['properties']>,
+    portalId?: number;
+};
+
+const Email: FC<Props> = ({
     hs_email_subject,
     hs_email_html,
     hs_email_to_firstname,
@@ -14,10 +19,19 @@ const Email: FC<EmailActivity["properties"]> = ({
     hs_email_from_firstname,
     hs_email_from_lastname,
     hs_timestamp,
+    contacts,
+    portalId,
+    hs_object_id
 }) => {
+    const contactId = contacts[0]?.hs_object_id;
+
     return (
         <BaseContainer>
-            {hs_email_subject && <Title title={hs_email_subject} />}
+            <Title
+                title={hs_email_subject || 'Email (No Subject)'}
+                icon={<HubSpotLogo />}
+                link={`https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${hs_object_id}`}
+            />
             <TextBlockWithLabel
                 label="Description"
                 text={

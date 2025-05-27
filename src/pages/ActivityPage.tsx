@@ -16,7 +16,9 @@ import { QueryKey } from "../query";
 import {
     getContactService,
     getActivityService,
-    getEntityAssocService, getOwnerService,
+    getEntityAssocService,
+    getOwnerService,
+    getAccountInfoService
 } from "../services/hubspot";
 import { Activity } from "../components/Activity";
 import type { Contact } from "../services/hubspot/types";
@@ -67,6 +69,11 @@ const ActivityPage: FC = () => {
         },
     );
 
+    const accountInfo = useQueryWithClient(
+        [QueryKey.ACCOUNT_INFO],
+        getAccountInfoService
+    );
+
     useSetAppTitle(!type ? "" : `${capitalize(type)} details`);
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
@@ -88,6 +95,7 @@ const ActivityPage: FC = () => {
             owner={owner.data}
             activity={data.properties}
             contacts={filterEntities(contacts) as Array<Contact["properties"]>}
+            portalId={accountInfo.data?.portalId}
         />
     );
 };
