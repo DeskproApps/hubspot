@@ -21,7 +21,7 @@ const Email: FC<Props> = ({
     hs_timestamp,
     contacts,
     portalId,
-    hs_object_id: id
+    hs_object_id
 }) => {
     const contactId = contacts[0]?.hs_object_id;
 
@@ -30,7 +30,7 @@ const Email: FC<Props> = ({
             <Title
                 title={hs_email_subject || 'Email (No Subject)'}
                 icon={<HubSpotLogo />}
-                link={`https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${id}`}
+                link={`https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${hs_object_id}`}
             />
             <TextBlockWithLabel
                 label="Description"

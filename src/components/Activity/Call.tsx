@@ -20,17 +20,17 @@ const Call: FC<Props> = ({
     contacts,
     owner,
     portalId,
-    hs_object_id: id
+    hs_object_id
 }) => {
     const contactId = contacts[0]?.hs_object_id;
 
     return (
         <BaseContainer>
-            {hs_call_title && id && (
+            {hs_call_title && hs_object_id && (
                 <Title
                     title={hs_call_title}
                     icon={<HubSpotLogo />}
-                    link={`https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${id}`}
+                    link={`https://app.hubspot.com/contacts/${portalId}/contact/${contactId}/?engagement=${hs_object_id}`}
                 />
             )}
             <TextBlockWithLabel
