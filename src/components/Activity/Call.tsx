@@ -4,7 +4,7 @@ import { Title } from "@deskpro/app-sdk";
 import { BaseContainer, HubSpotLogo, TextBlockWithLabel } from "../common";
 import { getFullName, getOption } from "../../utils";
 import { format } from "../../utils/date";
-import type { CallActivity, CallDispositions, Contact, Owner } from "../../services/hubspot/types";
+import type { CallActivity, CallDispositions, Contact } from "../../services/hubspot/types";
 import { useQueryWithClient } from "../../hooks";
 import { QueryKey } from "../../query";
 import { getActivityCallDispositionsServices } from "../../services/hubspot";
