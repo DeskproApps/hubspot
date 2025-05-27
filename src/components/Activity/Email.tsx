@@ -23,7 +23,7 @@ const Email: FC<Props> = ({
     portalId,
     hs_object_id: id
 }) => {
-    const contactId = contacts[0].hs_object_id;
+    const contactId = contacts[0]?.hs_object_id;
 
     return (
         <BaseContainer>
