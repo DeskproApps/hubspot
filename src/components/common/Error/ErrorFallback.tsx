@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { match } from "ts-pattern";
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { Button, Stack } from "@deskpro/deskpro-ui";
