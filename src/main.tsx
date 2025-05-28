@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/react';
+import './instrument';
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { HashRouter } from "react-router-dom";
