@@ -1,3 +1,4 @@
+import './instrument';
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { HashRouter } from "react-router-dom";
@@ -20,24 +21,27 @@ import "@deskpro/deskpro-ui/dist/deskpro-custom-icons.css";
 import "@deskpro/deskpro-ui/dist/fonts/DpIcons/dp-icon-v2.css";
 import "./main.css";
 import "simplebar/dist/simplebar.min.css";
+import { reactErrorHandler } from '@sentry/react';
 
 TimeAgo.addDefaultLocale(en);
 
-const root = ReactDOM.createRoot(document.getElementById("root") as Element);
+const root = ReactDOM.createRoot(document.getElementById('root') as Element, {
+  onRecoverableError: reactErrorHandler(),
+});
 root.render((
-    <StrictMode>
-        <Scrollbar style={{ height: "100%", width: "100%" }}>
-            <DeskproAppProvider>
-                <AppProvider>
-                    <DndProvider backend={HTML5Backend}>
-                        <HashRouter>
-                            <QueryClientProvider client={queryClient}>
-                                <App/>
-                            </QueryClientProvider>
-                        </HashRouter>
-                    </DndProvider>
-                </AppProvider>
-            </DeskproAppProvider>
-        </Scrollbar>
-    </StrictMode>
+  <StrictMode>
+    <Scrollbar style={{ height: "100%", width: "100%" }}>
+      <DeskproAppProvider>
+        <AppProvider>
+          <DndProvider backend={HTML5Backend}>
+            <HashRouter>
+              <QueryClientProvider client={queryClient}>
+                <App/>
+              </QueryClientProvider>
+            </HashRouter>
+          </DndProvider>
+        </AppProvider>
+      </DeskproAppProvider>
+    </Scrollbar>
+  </StrictMode>
 ));
