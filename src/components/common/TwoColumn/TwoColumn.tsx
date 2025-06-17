@@ -1,13 +1,13 @@
 import { FC } from "react";
 import styled from "styled-components";
 import { TextBlockWithLabel } from "../TextBlockWithLabel";
-import type { Props as TextBlockWithLabelProps } from "../TextBlockWithLabel";
+import { ITextBlockWithLabel } from "../TextBlockWithLabel/TextBlockWithLabel";
 
 export type Props = {
-    leftLabel: TextBlockWithLabelProps["label"],
-    leftText: TextBlockWithLabelProps["text"],
-    rightLabel: TextBlockWithLabelProps["label"],
-    rightText: TextBlockWithLabelProps["text"],
+    leftLabel: ITextBlockWithLabel["label"],
+    leftText: ITextBlockWithLabel["text"],
+    rightLabel: ITextBlockWithLabel["label"],
+    rightText: ITextBlockWithLabel["text"],
 };
 
 const Container = styled.div`
