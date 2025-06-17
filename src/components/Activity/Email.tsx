@@ -47,6 +47,7 @@ const Email: FC<Props> = ({
             <TextBlockWithLabel
                 label="Contacted"
                 text={contacted}
+                isHTML
             />
             <TextBlockWithLabel
                 label="Date/time"
