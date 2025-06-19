@@ -50,6 +50,8 @@ export type Settings = {
     use_advanced_connect?: boolean,
     use_api_token?: boolean,
     client_id?: string,
+    log_email_as_hubspot_note?: boolean,
+    log_note_as_hubspot_note?: boolean
 };
 
 export type DeskproUser = {

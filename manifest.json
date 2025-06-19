@@ -25,7 +25,7 @@
       "default": false,
       "isRequired": false,
       "isBackendOnly": false,
-      "order": 5
+      "order": 1
     },
     "use_api_token": {
       "title": "Use API Token",
@@ -34,7 +34,7 @@
       "isBackendOnly": false,
       "default": false,
       "condition": "settings.use_advanced_connect != false",
-      "order": 10
+      "order": 2
     },
     "api_token": {
       "title": "API Token",
@@ -43,7 +43,7 @@
       "isRequired": false,
       "isBackendOnly": true,
       "condition": "settings.use_advanced_connect != false && settings.use_api_token != false",
-      "order": 20
+      "order": 3
     },
     "client_id": {
       "title": "Client ID",
@@ -51,7 +51,7 @@
       "isRequired": false,
       "isBackendOnly": false,
       "condition": "settings.use_advanced_connect == true && settings.use_api_token == false",
-      "order": 30
+      "order": 4
     },
     "client_secret": {
       "title": "Client Secret",
@@ -59,7 +59,7 @@
       "isRequired": false,
       "isBackendOnly": true,
       "condition": "settings.use_advanced_connect == true && settings.use_api_token == false",
-      "order": 40
+      "order": 5
     },
     "callback_url": {
       "title": "Callback URL",
@@ -68,29 +68,47 @@
       "isRequired": false,
       "isBackendOnly": true,
       "condition": "settings.use_advanced_connect == true && settings.use_api_token == false",
-      "order": 50
+      "order": 6
     },
     "default_dont_add_note_when_linking_contact": {
-      "title": "Don't leave a note on the contact profile in HubSpot when it is linked to a user in Deskpro",
-      "description": "",
+      "title": "Don't Add Note When Linking Contact",
+      "description": "Don't leave a note on the contact profile in HubSpot when it is linked to a user in Deskpro?",
       "type": "boolean",
       "isRequired": false,
       "isBackendOnly": false,
-      "order": 60
+      "order": 7
+    },
+    "log_email_as_hubspot_note": {
+      "title": "Log Email as HubSpot Note",
+      "description": "Log emails from Deskpro as notes in HubSpot?",
+      "type": "boolean",
+      "isRequired": false,
+      "isBackendOnly": false,
+      "default": false,
+      "order": 8
+    },
+    "log_note_as_hubspot_note": {
+      "title": "Log Note as HubSpot Note",
+      "description": "Log notes from Deskpro as notes in HubSpot?",
+      "type": "boolean",
+      "isRequired": false,
+      "isBackendOnly": false,
+      "default": false,
+      "order": 9
     },
     "mapping_contact": {
       "title": "Contact Field Mapping",
       "type": "app_modal",
       "options": {
-        "entrypoint": "#/admin/mapping/contact",
-        "label": "Edit Mapping",
-        "icon": "edit",
-        "height": 500
+      "entrypoint": "#/admin/mapping/contact",
+      "label": "Edit Mapping",
+      "icon": "edit",
+      "height": 500
       },
       "isRequired": false,
       "condition": "settings.use_advanced_connect != false && settings.use_api_token != false",
       "isBackendOnly": false,
-      "order": 70
+      "order": 10
     },
     "mapping_deal": {
       "title": "Deal Field Mapping",
@@ -104,7 +122,7 @@
       "isRequired": false,
       "condition": "settings.use_advanced_connect != false && settings.use_api_token != false",
       "isBackendOnly": false,
-      "order": 80
+      "order": 11
     }
   },
   "proxy": {
