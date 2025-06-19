@@ -42,6 +42,12 @@ export type PreInstalledRequest = <T>(
 ) => Promise<T>;
 
 /** Deskpro types */
+export type Data = {
+    ticket: {
+        id: string
+    };
+};
+
 export type Settings = {
     api_token?: string;
     default_dont_add_note_when_linking_contact?: boolean;
