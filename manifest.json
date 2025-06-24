@@ -7,7 +7,21 @@
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,
-  "targets": [{ "target": "user_sidebar", "entrypoint": "index.html" }],
+  "targets": [
+    {
+      "target": "user_sidebar",
+      "entrypoint": "index.html",
+      "options": {
+        "actions": {
+          "linkContact": {
+            "type": "ticket_addition",
+            "title": "HubSpot Contact",
+            "description": "Note Email/Note to HubSpot Contact"
+          }
+        }
+      }
+    }
+  ],
   "serveUrl": "https://apps-cdn.deskpro-service.com/__name__/__version__",
   "secrets": "2eduX4DiR/wvafh2Vesbv+ZQ9SF2o8ahBI1t8bDuswqD8JQ49UjryGhH/ENAbNSP6FGU8rRcl1EwDq8jKLLVZJS9HOTYTzFC4xMCCuozgh9WuKLzCHx15bb+1x9/Xo28cP6dvsSYBnan6CmSK90e9bEuqhzC5cAFF4gwPDTmzLpXrPZmTA1C31Br2n0OX/Kztsd2r5H0SnIwxLqSTPU5yEQheHS43g55qSA32p5HZeLEWb8iIzw7yjiTWIyAYMLTxF6ET//gac7DVOgDh3YDeVudPPrwDcEoQs+u342W6IGOiIrtAKtBkROg9R4ElyFCDmnl2bxMsWtUL5uYCLehq6yaX7Vhyw7gmVDo7qIlnmW2prdnGDR2CgXH6x7o7TlSMMI783hJ466HJt0CQtYTf+8OW2daT7LyDrICicl/Qeualu2H4Z+UmOVfJeAqfYIBWZdJoPJk+kxUgbpWm8QUC787CblKiXzMGXp8oHEE6MDuKvMpDVxUlML8e9xY+H7FMMRSdeCymgH+4OQfrB75di2mYNa7x9W5Ac5s/yy1bS/cIqmr1URDXPmJgixU0+oqaZB5AxLr/OPtdVSaQG6IyJaO3klnryvNyR17RDIQByyVv41VSin/HmfNqeR2ksO6VXK0pMxpyIbkDsn4CEprAHFnwsrIFfAfsEULeaY+eaMLDBoAwZPZR1yibNc1CqRFnqx2RO/JoALPR9O9dYU9lY8MPrT+ATPggefYDrNqdwFW0SATvCq5yXXubycPbgDcCrdYmbyiGki2QSr8iYM2/nOIa9QYQlfTSW+w4CmAki6Rp2OgpC2mvZt4vEKoPGGLe3qIR5Et85anoaSd+cmLGvfNC52gfnQGWhx5T7tN32w6DnsNxAgMjEw5U+2UmTm+tylgNCDEeAVYapK8ozWSj2Pa/3xRYjXrO/TceU0OPUa0ZFAuOcbvcUrK0mCCF8+cL0C2XpkPCclq0PMHL1j4bHkUhF6jg3qSRYpnzDAwVPQ8+kdkXoZT0JNiNewU0/Ygaolhc+1iWEV9c/SHBr5LL85+OoRfeKNQlh9aXV8qr/sN2aOoIgzs6v8OhVwb6/M6TDjvjL+xxuB9rwXOkckrBsoKsTPhoPAezLhTrh72L+79fFswtcwDSahS3KCikLFg47lqnB1MkCeYaQqcYTWorhM1e7DRXjGH5qpZOtCOrlYLhmFCVtk/7KuMh3Z+UeY3fBWpekHeZrUHTjCr9OLf5Ot4++2GFNuRjK/VCR4wLaZ7hRMpDN4SheHD3bSoAq4kwf0NbzHSEcf2q4WhA0R5Pey3NwtKclcJYNQAnva5LuyNHyl2A8/fLE76/KbWQlLJPPX0i8wjzJ8v60aercxP+jIvPeBi0Cc14jQFnLFOYwA=",
   "entityAssociations": {
