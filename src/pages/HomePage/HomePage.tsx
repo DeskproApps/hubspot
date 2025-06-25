@@ -1,10 +1,11 @@
 import { Home } from "../../components/Home";
 import { Settings } from "../../types";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useLoadHomeDeps } from "./hooks";
 import { useNavigate } from "react-router-dom";
 import { useSetAppTitle } from "../../hooks";
-import { LoadingSpinner, useDeskproElements, useDeskproLatestAppContext } from "@deskpro/app-sdk";
+import { LoadingSpinner, useDeskproAppClient, useDeskproElements, useDeskproLatestAppContext } from "@deskpro/app-sdk";
+import { useReplyBox } from "../../hooks/useReplyBox";
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -22,6 +23,7 @@ const HomePage = () => {
         dealMetaMap,
     } = useLoadHomeDeps();
     const { context } = useDeskproLatestAppContext<unknown, Settings>()
+    const { setSelectionState } = useReplyBox();
 
     const contactId = contact?.hs_object_id;
     const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
@@ -67,6 +69,12 @@ const HomePage = () => {
             });
         }
     }, [navigate, contactId]);
+
+    useEffect(() => {
+        if (contactId) {
+            setSelectionState(contactId, true, 'note');
+        };
+    }, [contactId]);
 
     if (isLoading) {
         return <LoadingSpinner />
