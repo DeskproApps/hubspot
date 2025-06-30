@@ -185,7 +185,10 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                     };
 
                     return Promise.all(
-                        contactIDs.map(() => createNoteService(client, getNoteValues({ note, files: []}, [])))
+                        contactIDs.map(() => createNoteService(client, getNoteValues({
+                            note: `Note Made in Deskpro: ${note}`,
+                            files: []
+                        }, [])))
                     )
                         .then(notes => {
                             notes.forEach(note => {
@@ -230,7 +233,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
                     return Promise.all(
                         contactIDs.map(() => createNoteService(client, getNoteValues({
-                            note: email,
+                            note: `Email Sent from Deskpro: ${email}`,
                             files: []
                         }, [])))
                     )
