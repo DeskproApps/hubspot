@@ -4,7 +4,7 @@ import { useCallback, useEffect } from "react";
 import { useLoadHomeDeps } from "./hooks";
 import { useNavigate } from "react-router-dom";
 import { useSetAppTitle } from "../../hooks";
-import { LoadingSpinner, useDeskproAppClient, useDeskproElements, useDeskproLatestAppContext } from "@deskpro/app-sdk";
+import { LoadingSpinner, useDeskproElements, useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import { useReplyBox } from "../../hooks/useReplyBox";
 
 const HomePage = () => {
@@ -74,10 +74,10 @@ const HomePage = () => {
         if (contactId) {
             const title = `${contact.firstname} ${contact.lastname}`;
 
-            setSelectionState(contactId, true, 'note', title);
-            setSelectionState(contactId, true, 'email', title);
+            void setSelectionState(contactId, true, 'note', title);
+            void setSelectionState(contactId, true, 'email', title);
         };
-    }, [contactId]);
+    }, [contactId, contact?.firstname, contact?.lastname, setSelectionState]);
 
     if (isLoading) {
         return <LoadingSpinner />

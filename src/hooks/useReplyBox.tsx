@@ -21,9 +21,9 @@ export type SetSelectionState = (contactID: Contact['id'], selected: boolean, ty
 
 export type DeleteSelectionState = (contactID: Contact['id'], type: ReplyBox) => void | Promise<boolean | void>;
 
-const noteKey = (contactID: Contact['id'] | '*') => `hubspot/notes/selection/${contactID}`;
+const noteKey = (contactID: Contact['id']) => `hubspot/notes/selection/${contactID}`;
 
-const emailKey = (contactID: Contact['id'] | '*') => `hubspot/emails/selection/${contactID}`;
+const emailKey = (contactID: Contact['id']) => `hubspot/emails/selection/${contactID}`;
 
 function registerReplyBoxNotesAdditionsTargetAction(
     client: IDeskproClient,
@@ -36,7 +36,7 @@ function registerReplyBoxNotesAdditionsTargetAction(
 
     return Promise.all([contactID].map(ID => client.getState<Selection>(noteKey(ID))))
         .then(flags => {
-            client.registerTargetAction('hubspotReplyBoxNoteAdditions', 'reply_box_note_item_selection', {
+            void client.registerTargetAction('hubspotReplyBoxNoteAdditions', 'reply_box_note_item_selection', {
                 title: 'Add to HubSpot',
                 payload: [contactID].map((ID, index) => ({
                     id: ID,
@@ -58,7 +58,7 @@ function registerReplyBoxEmailsAdditionsTargetAction(
 
     return Promise.all([contactID].map(ID => client.getState<Selection>(emailKey(ID))))
         .then(flags => {
-            client.registerTargetAction('hubspotReplyBoxEmailAdditions', 'reply_box_email_item_selection', {
+            void client.registerTargetAction('hubspotReplyBoxEmailAdditions', 'reply_box_email_item_selection', {
                 title: 'Add to HubSpot',
                 payload: [contactID].map((ID, index) => ({
                     id: ID,
@@ -66,7 +66,8 @@ function registerReplyBoxEmailsAdditionsTargetAction(
                     selected: flags[index][0]?.data?.selected ?? false
                 }))
             });
-        });
+        })
+        .catch(() => {});
 };
 
 interface IReplyBoxContext {
@@ -124,35 +125,37 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                     return registerReplyBoxEmailsAdditionsTargetAction(client, contactID);;
                 };
             });
-    }, [client, shouldLogNote, shouldLogEmail]);
+    }, [client]);
 
     useInitialisedDeskproAppClient(client => {
         if (shouldLogNote) {
-            client.registerTargetAction('hubspotOnReplyBoxNote', 'on_reply_box_note');
+            void client.registerTargetAction('hubspotOnReplyBoxNote', 'on_reply_box_note');
         };
 
         if (shouldLogEmail) {
-            client.registerTargetAction('hubspotOnReplyBoxEmail', 'on_reply_box_email');
+            void client.registerTargetAction('hubspotOnReplyBoxEmail', 'on_reply_box_email');
         };
     }, [shouldLogNote, shouldLogEmail]);
 
     const handleTargetAction = useCallback((action: TargetAction) => {
         match(action.name)
             .with('hubspotReplyBoxNoteAdditions', () => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                 action.payload.forEach((selection: Selection) => {
-                    client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
+                    void client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
                         .then(result => {
                             if (result.isSuccess) {
-                                registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
+                                void registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
                             };
                         });
                 });
             })
             .with('hubspotOnReplyBoxNote', () => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const { note } = action.payload;
 
-                client?.setBlocking(true);
-                client?.getState<Selection>(noteKey('*'))
+                void client?.setBlocking(true);
+                void client?.getState<Selection>(noteKey('*'))
                     .then(selections => {
                         const contactIDs = selections
                             .filter(({ data }) => data?.selected)
@@ -167,27 +170,29 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                             .then(note => Promise.all(
                                 contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
                             ))
-                            .then(() => {queryClient.invalidateQueries()});
+                            .then(() => {void queryClient.invalidateQueries()});
                     })
                     .finally(() => {
-                        client.setBlocking(false);
+                        void client.setBlocking(false);
                     });
             })
             .with('hubspotReplyBoxEmailAdditions', () => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                 action.payload.forEach((selection: Selection) => {
-                    client?.setState(emailKey(selection.id), { id: selection.id, selected: selection.selected })
+                    void client?.setState(emailKey(selection.id), { id: selection.id, selected: selection.selected })
                         .then(result => {
                             if (result.isSuccess) {
-                                registerReplyBoxEmailsAdditionsTargetAction(client, selection.id);
+                                void registerReplyBoxEmailsAdditionsTargetAction(client, selection.id);
                             };
                         });
                 });
             })
             .with('hubspotOnReplyBoxEmail', () => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const { email } = action.payload;
 
-                client?.setBlocking(true);
-                client?.getState<Selection>(emailKey('*'))
+                void client?.setBlocking(true);
+                void client?.getState<Selection>(emailKey('*'))
                     .then(selections => {
                         const contactIDs = selections
                             .filter(({ data }) => data?.selected)
@@ -202,14 +207,14 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                             .then(note => Promise.all(
                                 contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
                             ))
-                            .then(() => {queryClient.invalidateQueries()});
+                            .then(() => {void queryClient.invalidateQueries()});
                     })
                     .finally(() => {
-                        client.setBlocking(false);
+                        void client.setBlocking(false);
                     });
             })
             .run();
-    }, [client, shouldLogNote, shouldLogEmail]);
+    }, [client]);
 
     const debounceTargetAction = useDebouncedCallback(handleTargetAction, 200);
 
