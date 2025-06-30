@@ -91,6 +91,7 @@ interface IReplyBoxProvider {
 };
 
 export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
+    console.log("ReplyBoxProvider mounted");
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext<unknown, Settings>();
     const shouldLogNote = context?.settings.log_note_as_hubspot_note;
@@ -153,7 +154,10 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         };
     }, [shouldLogNote, shouldLogEmail]);
 
-    const debounceTargetAction = useDebouncedCallback<(action: TargetAction) => void>(action => match(action.name)
+    const handleTargetAction = useCallback((action: TargetAction) => {
+        console.log("Target action received", action);
+
+        match(action.name)
         .with('hubspotReplyBoxNoteAdditions', () => {
             action.payload.forEach((selection: { id: string; selected: boolean }) => {
 
@@ -248,13 +252,14 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                     client.setBlocking(false);
                 });
         })
-        .run(),
-        200
-    );
+        .run();
+    }, [client, shouldLogNote, shouldLogEmail]);
+
+    const debounceTargetAction = useDebouncedCallback(handleTargetAction, 200);
 
     useDeskproAppEvents({
         onTargetAction: debounceTargetAction
-    }, [context?.data]);
+    }, [debounceTargetAction]);
 
     return (
         <ReplyBoxContext.Provider value={{
