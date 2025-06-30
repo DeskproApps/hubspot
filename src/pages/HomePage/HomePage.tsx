@@ -73,6 +73,7 @@ const HomePage = () => {
     useEffect(() => {
         if (contactId) {
             setSelectionState(contactId, true, 'note');
+            setSelectionState(contactId, true, 'email');
         };
     }, [contactId]);
 

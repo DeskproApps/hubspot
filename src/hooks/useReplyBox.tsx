@@ -155,7 +155,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
     const debounceTargetAction = useDebouncedCallback<(action: TargetAction) => void>(action => match(action.name)
         .with('hubspotReplyBoxNoteAdditions', () => {
-            (action.payload ?? []).forEach((selection: { id: string; selected: boolean }) => {
+            action.payload.forEach((selection: { id: string; selected: boolean }) => {
 
                 client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
                     .then((result) => {
@@ -163,7 +163,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                             registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
                         }
                     });
-            })
+            });
         })
         .with('hubspotOnReplyBoxNote', () => {
             if (!client) {
@@ -192,17 +192,58 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                                 setEntityAssocService(client, 'notes', note.id, 'contact', contactID, 'note_to_contact');
                             });
                         })
-                        .then(() => {queryClient.invalidateQueries()})
+                        .then(() => {queryClient.invalidateQueries()});
                 })
                 .finally(() => {
                     client.setBlocking(false);
                 });
         })
         .with('hubspotReplyBoxEmailAdditions', () => {
+            action.payload.forEach((selection: { id: string; selected: boolean }) => {
 
+            client?.setState(emailKey(selection.id), { id: selection.id, selected: selection.selected })
+                .then((result) => {
+                    if (result.isSuccess) {
+                        registerReplyBoxEmailsAdditionsTargetAction(client, selection.id);
+                    }
+                });
+            });
         })
         .with('hubspotOnReplyBoxEmail', () => {
+            if (!client) {
+                return;
+            };
 
+            const { email } = action.payload;
+
+            client.setBlocking(true);
+            client.getState<{ id: string; selected: boolean }>(emailKey('*'))
+                .then(selections => {
+                    const contactIDs = selections
+                        .filter(({ data }) => data?.selected)
+                        .map(({ data }) => data?.id);
+                    const contactID = contactIDs[0];
+
+                    if (!contactID) {
+                        return;
+                    };
+
+                    return Promise.all(
+                        contactIDs.map(() => createNoteService(client, getNoteValues({
+                            note: email,
+                            files: []
+                        }, [])))
+                    )
+                        .then(notes => {
+                            notes.forEach(note => {
+                                setEntityAssocService(client, 'notes', note.id, 'contact', contactID, 'note_to_contact');
+                            });
+                        })
+                        .then(() => {queryClient.invalidateQueries()});
+                })
+                .finally(() => {
+                    client.setBlocking(false);
+                });
         })
         .run(),
         200
