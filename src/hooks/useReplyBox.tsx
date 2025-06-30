@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext } from 'react';
-import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext } from '@deskpro/app-sdk';
+import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
 import { Contact } from '../services/hubspot/types';
 import { Data, Settings } from '../types';
 import { useDebouncedCallback } from 'use-debounce';
@@ -139,6 +139,16 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                 };
             });
     }, [client, shouldLogNote, shouldLogEmail]);
+
+    useInitialisedDeskproAppClient(client => {
+        if (shouldLogNote) {
+            client.registerTargetAction('hubspotOnReplyBoxNote', 'on_reply_box_note');
+        };
+
+        if (shouldLogEmail) {
+            client.registerTargetAction('hubspotOnReplyBoxEmail', 'on_reply_box_email');
+        };
+    }, [shouldLogNote, shouldLogEmail]);
 
     const debounceTargetAction = useDebouncedCallback<(action: TargetAction) => void>(action => match(action.name)
         .with('hubspotOnReplyBoxNote', () => {
