@@ -154,6 +154,17 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     }, [shouldLogNote, shouldLogEmail]);
 
     const debounceTargetAction = useDebouncedCallback<(action: TargetAction) => void>(action => match(action.name)
+        .with('hubspotReplyBoxNoteAdditions', () => {
+            (action.payload ?? []).forEach((selection: { id: string; selected: boolean }) => {
+
+                client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
+                    .then((result) => {
+                        if (result.isSuccess) {
+                            registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
+                        }
+                    });
+            })
+        })
         .with('hubspotOnReplyBoxNote', () => {
             if (!client) {
                 return;
@@ -187,22 +198,10 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
                     client.setBlocking(false);
                 });
         })
-        .with('hubspotOnReplyBoxEmail', () => {
-
-        })
-        .with('hubspotReplyBoxNoteAdditions', () => {
-            console.log('ReplyBox note selection:', action);
-            (action.payload ?? []).forEach((selection: { id: string; selected: boolean; }) => {
-
-                client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
-                    .then((result) => {
-                        if (result.isSuccess) {
-                            registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
-                        }
-                    });
-            })
-        })
         .with('hubspotReplyBoxEmailAdditions', () => {
+
+        })
+        .with('hubspotOnReplyBoxEmail', () => {
 
         })
         .run(),
