@@ -12,7 +12,7 @@ export type ReplyBox = 'note' | 'email';
 
 export type GetSelectionState = (contactID: Contact['id'], type: ReplyBox) => void | Promise<Array<GetStateResponse<string>>>;
 
-export type SetSelectionState = (contactID: Contact['id'], selected: boolean, type: ReplyBox) => void | Promise<{ isSuccess: boolean } | void>;
+export type SetSelectionState = (contactID: Contact['id'], selected: boolean, type: ReplyBox, title: string) => void | Promise<{ isSuccess: boolean } | void>;
 
 export type DeleteSelectionState = (contactID: Contact['id'], type: ReplyBox) => void | Promise<boolean | void>;
 
@@ -22,7 +22,8 @@ const emailKey = (contactID: Contact['id'] | '*') => `hubspot/emails/selection/$
 
 function registerReplyBoxNotesAdditionsTargetAction(
     client: IDeskproClient,
-    contactID: Contact['id']
+    contactID: Contact['id'],
+    title?: string
 ) {
     if (!client) {
         return;
@@ -38,7 +39,7 @@ function registerReplyBoxNotesAdditionsTargetAction(
                 title: 'Add to HubSpot',
                 payload: [contactID].map((ID, index) => ({
                     id: ID,
-                    title: 'test title note',
+                    title: title ?? 'Add Note to HubSpot Contact',
                     selected: flags[index][0]?.data?.selected ?? false
                 }))
             });
@@ -47,7 +48,8 @@ function registerReplyBoxNotesAdditionsTargetAction(
 
 function registerReplyBoxEmailsAdditionsTargetAction(
     client: IDeskproClient,
-    contactID: Contact['id']
+    contactID: Contact['id'],
+    title?: string
 ) {
     if (!client) {
         return;
@@ -63,7 +65,7 @@ function registerReplyBoxEmailsAdditionsTargetAction(
                 title: 'Add to HubSpot',
                 payload: [contactID].map((ID, index) => ({
                     id: ID,
-                    title: 'test title email',
+                    title: title ?? 'Add Note to HubSpot Contact',
                     selected: flags[index][0]?.data?.selected ?? false
                 }))
             });
@@ -107,7 +109,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         return client.getState(key(contactID));
     }, [client]);
 
-    const setSelectionState: SetSelectionState = useCallback((contactID, selected, type) => {
+    const setSelectionState: SetSelectionState = useCallback((contactID, selected, type, title) => {
         if (!client) {
             return;
         };
@@ -117,13 +119,13 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         if (shouldLogNote && type === 'note') {
             console.log('Logging note selection:', contactID, selected);
             return client.setState(noteKey(contactID), { id: contactID, selected })
-                .then(() => registerReplyBoxNotesAdditionsTargetAction(client, contactID));
+                .then(() => registerReplyBoxNotesAdditionsTargetAction(client, contactID, title));
         };
 
         if (shouldLogEmail && type === 'email') {
             console.log('Logging email selection:', contactID, selected);
             return client.setState(emailKey(contactID), { id: contactID, selected })
-                .then(() => registerReplyBoxEmailsAdditionsTargetAction(client, contactID));
+                .then(() => registerReplyBoxEmailsAdditionsTargetAction(client, contactID, title));
         };
     }, [client, shouldLogNote, shouldLogEmail]);
 

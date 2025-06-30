@@ -72,8 +72,10 @@ const HomePage = () => {
 
     useEffect(() => {
         if (contactId) {
-            setSelectionState(contactId, true, 'note');
-            setSelectionState(contactId, true, 'email');
+            const title = `${contact.firstname} ${contact.lastname}`;
+
+            setSelectionState(contactId, true, 'note', title);
+            setSelectionState(contactId, true, 'email', title);
         };
     }, [contactId]);
 
