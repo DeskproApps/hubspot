@@ -170,36 +170,25 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
             });
         })
         .with('hubspotOnReplyBoxNote', () => {
-            if (!client) {
-                return;
-            };
-
             const { note } = action.payload;
 
-            client.setBlocking(true);
-            client.getState<{ id: string; selected: boolean }>(noteKey('*'))
+            client?.setBlocking(true);
+            client?.getState<{ id: string; selected: boolean }>(noteKey('*'))
                 .then(selections => {
                     const contactIDs = selections
                         .filter(({ data }) => data?.selected)
                         .map(({ data }) => data?.id);
-                    const contactID = contactIDs[0];
 
-                    if (!contactID) {
-                        return;
-                    };
+                    if (!contactIDs.length) return;
 
-                    return Promise.all(
-                        contactIDs.map(() => createNoteService(client, getNoteValues({
-                            note: `Note Made in Deskpro: ${note}`,
-                            files: []
-                        }, [])))
-                    )
-                        .then(notes => {
-                            notes.forEach(note => {
-                                setEntityAssocService(client, 'notes', note.id, 'contact', contactID, 'note_to_contact');
-                            });
-                        })
-                        .then(() => {queryClient.invalidateQueries()});
+                    return createNoteService(client, getNoteValues({
+                        note: `Note Made in Deskpro: ${note}`,
+                        files: []
+                    }, []))
+                        .then(note => Promise.all(
+                            contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
+                        ))
+                        .then(() => {queryClient.invalidateQueries()})
                 })
                 .finally(() => {
                     client.setBlocking(false);
@@ -217,36 +206,25 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
             });
         })
         .with('hubspotOnReplyBoxEmail', () => {
-            if (!client) {
-                return;
-            };
-
             const { email } = action.payload;
 
-            client.setBlocking(true);
-            client.getState<{ id: string; selected: boolean }>(emailKey('*'))
+            client?.setBlocking(true);
+            client?.getState<{ id: string; selected: boolean }>(emailKey('*'))
                 .then(selections => {
                     const contactIDs = selections
                         .filter(({ data }) => data?.selected)
                         .map(({ data }) => data?.id);
-                    const contactID = contactIDs[0];
 
-                    if (!contactID) {
-                        return;
-                    };
+                    if (!contactIDs.length) return;
 
-                    return Promise.all(
-                        contactIDs.map(() => createNoteService(client, getNoteValues({
-                            note: `Email Sent from Deskpro: ${email}`,
-                            files: []
-                        }, [])))
-                    )
-                        .then(notes => {
-                            notes.forEach(note => {
-                                setEntityAssocService(client, 'notes', note.id, 'contact', contactID, 'note_to_contact');
-                            });
-                        })
-                        .then(() => {queryClient.invalidateQueries()});
+                    return createNoteService(client, getNoteValues({
+                        note: `Email Sent from Deskpro: ${email}`,
+                        files: []
+                    }, []))
+                        .then(note => Promise.all(
+                            contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
+                        ))
+                        .then(() => {queryClient.invalidateQueries()})
                 })
                 .finally(() => {
                     client.setBlocking(false);
