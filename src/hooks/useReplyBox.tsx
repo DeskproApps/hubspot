@@ -1,9 +1,12 @@
 import { createContext, useCallback, useContext } from 'react';
 import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
 import { Contact } from '../services/hubspot/types';
-import { Data, Settings } from '../types';
+import { Settings } from '../types';
 import { useDebouncedCallback } from 'use-debounce';
 import { match } from 'ts-pattern';
+import { queryClient } from '../query';
+import { createNoteService, setEntityAssocService } from '../services/hubspot';
+import { getNoteValues } from '../components/NoteForm';
 
 export type ReplyBox = 'note' | 'email';
 
@@ -152,25 +155,33 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
     const debounceTargetAction = useDebouncedCallback<(action: TargetAction) => void>(action => match(action.name)
         .with('hubspotOnReplyBoxNote', () => {
-            const note = action.payload.note;
-
             if (!client) {
                 return;
             };
 
+            const { note } = action.payload;
+
             client.setBlocking(true);
             client.getState<{ id: string; selected: boolean }>(noteKey('*'))
                 .then(selections => {
-                    // const taskIds = selections
-                    //     .filter(({ data }) => data?.selected)
-                    //     .map(({ data }) => data?.id as Task["id"]);
+                    const contactIDs = selections
+                        .filter(({ data }) => data?.selected)
+                        .map(({ data }) => data?.id);
+                    const contactID = contactIDs[0];
 
-                    // return Promise
-                    //     .all(taskIds.map((taskId) => createTaskCommentService(client, taskId, { comment_text: note })))
-                    //     .then(() => queryClient.invalidateQueries());
+                    if (!contactID) {
+                        return;
+                    };
 
-                    console.log('Note added to HubSpot:', note, selections);
-
+                    return Promise.all(
+                        contactIDs.map(() => createNoteService(client, getNoteValues({ note, files: []}, [])))
+                    )
+                        .then(notes => {
+                            notes.forEach(note => {
+                                setEntityAssocService(client, 'notes', note.id, 'contact', contactID, 'note_to_contact');
+                            });
+                        })
+                        .then(() => {queryClient.invalidateQueries()})
                 })
                 .finally(() => {
                     client.setBlocking(false);
