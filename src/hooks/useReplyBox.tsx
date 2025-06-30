@@ -1,18 +1,23 @@
 import { createContext, useCallback, useContext } from 'react';
-import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
-import { Contact } from '../services/hubspot/types';
-import { Settings } from '../types';
-import { useDebouncedCallback } from 'use-debounce';
 import { match } from 'ts-pattern';
+import { useDebouncedCallback } from 'use-debounce';
+import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
+import { getNoteValues } from '../components/NoteForm';
 import { queryClient } from '../query';
 import { createNoteService, setEntityAssocService } from '../services/hubspot';
-import { getNoteValues } from '../components/NoteForm';
+import { Contact } from '../services/hubspot/types';
+import { Settings } from '../types';
 
 export type ReplyBox = 'note' | 'email';
 
+type Selection = {
+    id: Contact['id'];
+    selected: boolean;
+};
+
 export type GetSelectionState = (contactID: Contact['id'], type: ReplyBox) => void | Promise<Array<GetStateResponse<string>>>;
 
-export type SetSelectionState = (contactID: Contact['id'], selected: boolean, type: ReplyBox, title: string) => void | Promise<{ isSuccess: boolean } | void>;
+export type SetSelectionState = (contactID: Contact['id'], selected: boolean, type: ReplyBox, title: string) => void | Promise<Selection | void>;
 
 export type DeleteSelectionState = (contactID: Contact['id'], type: ReplyBox) => void | Promise<boolean | void>;
 
@@ -25,15 +30,11 @@ function registerReplyBoxNotesAdditionsTargetAction(
     contactID: Contact['id'],
     title?: string
 ) {
-    if (!client) {
-        return;
-    };
-
     if (!contactID) {
         return client.deregisterTargetAction('hubspotReplyBoxNoteAdditions');
     };
 
-    return Promise.all([contactID].map(ID => client.getState<{selected: boolean}>(noteKey(ID))))
+    return Promise.all([contactID].map(ID => client.getState<Selection>(noteKey(ID))))
         .then(flags => {
             client.registerTargetAction('hubspotReplyBoxNoteAdditions', 'reply_box_note_item_selection', {
                 title: 'Add to HubSpot',
@@ -51,15 +52,11 @@ function registerReplyBoxEmailsAdditionsTargetAction(
     contactID: Contact['id'],
     title?: string
 ) {
-    if (!client) {
-        return;
-    };
-
     if (!contactID) {
         return client.deregisterTargetAction('hubspotReplyBoxEmailAdditions');
     };
 
-    return Promise.all([contactID].map(ID => client.getState<{selected: boolean}>(emailKey(ID))))
+    return Promise.all([contactID].map(ID => client.getState<Selection>(emailKey(ID))))
         .then(flags => {
             client.registerTargetAction('hubspotReplyBoxEmailAdditions', 'reply_box_email_item_selection', {
                 title: 'Add to HubSpot',
@@ -93,50 +90,33 @@ interface IReplyBoxProvider {
 };
 
 export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
-    console.log("ReplyBoxProvider mounted");
     const { client } = useDeskproAppClient();
     const { context } = useDeskproLatestAppContext<unknown, Settings>();
     const shouldLogNote = context?.settings.log_note_as_hubspot_note;
     const shouldLogEmail = context?.settings.log_email_as_hubspot_note;
 
     const getSelectionState: GetSelectionState = useCallback((contactID, type) => {
-        if (!client) {
-            return;
-        };
-
         const key = type === 'note' ? noteKey : emailKey;
 
-        return client.getState(key(contactID));
+        return client?.getState(key(contactID));
     }, [client]);
 
     const setSelectionState: SetSelectionState = useCallback((contactID, selected, type, title) => {
-        if (!client) {
-            return;
-        };
-
-        console.log('Client is available:', shouldLogNote, shouldLogEmail, type, contactID);
-
         if (shouldLogNote && type === 'note') {
-            console.log('Logging note selection:', contactID, selected);
-            return client.setState(noteKey(contactID), { id: contactID, selected })
+            return client?.setState(noteKey(contactID), { id: contactID, selected })
                 .then(() => registerReplyBoxNotesAdditionsTargetAction(client, contactID, title));
         };
 
         if (shouldLogEmail && type === 'email') {
-            console.log('Logging email selection:', contactID, selected);
-            return client.setState(emailKey(contactID), { id: contactID, selected })
+            return client?.setState(emailKey(contactID), { id: contactID, selected })
                 .then(() => registerReplyBoxEmailsAdditionsTargetAction(client, contactID, title));
         };
     }, [client, shouldLogNote, shouldLogEmail]);
 
     const deleteSelectionState: DeleteSelectionState = useCallback((contactID, type) => {
-        if (!client) {
-            return;
-        };
-
         const key = type === 'note' ? noteKey : emailKey;
 
-        return client.deleteState(key(contactID))
+        return client?.deleteState(key(contactID))
             .then(() => {
                 if (type === 'note') {
                     return registerReplyBoxNotesAdditionsTargetAction(client, contactID);
@@ -157,82 +137,78 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     }, [shouldLogNote, shouldLogEmail]);
 
     const handleTargetAction = useCallback((action: TargetAction) => {
-        console.log("Target action received", action);
-
         match(action.name)
-        .with('hubspotReplyBoxNoteAdditions', () => {
-            action.payload.forEach((selection: { id: string; selected: boolean }) => {
+            .with('hubspotReplyBoxNoteAdditions', () => {
+                action.payload.forEach((selection: Selection) => {
+                    client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
+                        .then(result => {
+                            if (result.isSuccess) {
+                                registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
+                            };
+                        });
+                });
+            })
+            .with('hubspotOnReplyBoxNote', () => {
+                const { note } = action.payload;
 
-                client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
-                    .then((result) => {
-                        if (result.isSuccess) {
-                            registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
-                        }
+                client?.setBlocking(true);
+                client?.getState<Selection>(noteKey('*'))
+                    .then(selections => {
+                        const contactIDs = selections
+                            .filter(({ data }) => data?.selected)
+                            .map(({ data }) => data?.id);
+
+                        if (!contactIDs.length) return;
+
+                        return createNoteService(client, getNoteValues({
+                            note: `Note Made in Deskpro: ${note}`,
+                            files: []
+                        }, []))
+                            .then(note => Promise.all(
+                                contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
+                            ))
+                            .then(() => {queryClient.invalidateQueries()});
+                    })
+                    .finally(() => {
+                        client.setBlocking(false);
                     });
-            });
-        })
-        .with('hubspotOnReplyBoxNote', () => {
-            const { note } = action.payload;
-
-            client?.setBlocking(true);
-            client?.getState<{ id: string; selected: boolean }>(noteKey('*'))
-                .then(selections => {
-                    const contactIDs = selections
-                        .filter(({ data }) => data?.selected)
-                        .map(({ data }) => data?.id);
-
-                    if (!contactIDs.length) return;
-
-                    return createNoteService(client, getNoteValues({
-                        note: `Note Made in Deskpro: ${note}`,
-                        files: []
-                    }, []))
-                        .then(note => Promise.all(
-                            contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
-                        ))
-                        .then(() => {queryClient.invalidateQueries()})
-                })
-                .finally(() => {
-                    client.setBlocking(false);
+            })
+            .with('hubspotReplyBoxEmailAdditions', () => {
+                action.payload.forEach((selection: Selection) => {
+                    client?.setState(emailKey(selection.id), { id: selection.id, selected: selection.selected })
+                        .then(result => {
+                            if (result.isSuccess) {
+                                registerReplyBoxEmailsAdditionsTargetAction(client, selection.id);
+                            };
+                        });
                 });
-        })
-        .with('hubspotReplyBoxEmailAdditions', () => {
-            action.payload.forEach((selection: { id: string; selected: boolean }) => {
+            })
+            .with('hubspotOnReplyBoxEmail', () => {
+                const { email } = action.payload;
 
-            client?.setState(emailKey(selection.id), { id: selection.id, selected: selection.selected })
-                .then((result) => {
-                    if (result.isSuccess) {
-                        registerReplyBoxEmailsAdditionsTargetAction(client, selection.id);
-                    }
-                });
-            });
-        })
-        .with('hubspotOnReplyBoxEmail', () => {
-            const { email } = action.payload;
+                client?.setBlocking(true);
+                client?.getState<Selection>(emailKey('*'))
+                    .then(selections => {
+                        const contactIDs = selections
+                            .filter(({ data }) => data?.selected)
+                            .map(({ data }) => data?.id);
 
-            client?.setBlocking(true);
-            client?.getState<{ id: string; selected: boolean }>(emailKey('*'))
-                .then(selections => {
-                    const contactIDs = selections
-                        .filter(({ data }) => data?.selected)
-                        .map(({ data }) => data?.id);
+                        if (!contactIDs.length) return;
 
-                    if (!contactIDs.length) return;
-
-                    return createNoteService(client, getNoteValues({
-                        note: `Email Sent from Deskpro: ${email}`,
-                        files: []
-                    }, []))
-                        .then(note => Promise.all(
-                            contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
-                        ))
-                        .then(() => {queryClient.invalidateQueries()})
-                })
-                .finally(() => {
-                    client.setBlocking(false);
-                });
-        })
-        .run();
+                        return createNoteService(client, getNoteValues({
+                            note: `Email Sent from Deskpro: ${email}`,
+                            files: []
+                        }, []))
+                            .then(note => Promise.all(
+                                contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
+                            ))
+                            .then(() => {queryClient.invalidateQueries()});
+                    })
+                    .finally(() => {
+                        client.setBlocking(false);
+                    });
+            })
+            .run();
     }, [client, shouldLogNote, shouldLogEmail]);
 
     const debounceTargetAction = useDebouncedCallback(handleTargetAction, 200);
