@@ -4,7 +4,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
 import { getNoteValues } from '../components/NoteForm';
 import { queryClient } from '../query';
-import { createNoteService, setEntityAssocService } from '../services/hubspot';
+import { createNoteService, getContactService, setEntityAssocService } from '../services/hubspot';
 import { Contact } from '../services/hubspot/types';
 import { Settings } from '../types';
 
@@ -17,7 +17,7 @@ type Selection = {
 
 export type GetSelectionState = (contactID: Contact['id'], type: ReplyBox) => void | Promise<Array<GetStateResponse<string>>>;
 
-export type SetSelectionState = (contactID: Contact['id'], selected: boolean, type: ReplyBox, title: string) => void | Promise<Selection | void>;
+export type SetSelectionState = (contactID: Contact['id'], selected: boolean, type: ReplyBox) => void | Promise<Selection | void>;
 
 export type DeleteSelectionState = (contactID: Contact['id'], type: ReplyBox) => void | Promise<boolean | void>;
 
@@ -25,14 +25,21 @@ const noteKey = (contactID: Contact['id']) => `hubspot/notes/selection/${contact
 
 const emailKey = (contactID: Contact['id']) => `hubspot/emails/selection/${contactID}`;
 
-function registerReplyBoxNotesAdditionsTargetAction(
+async function getContactName(client: IDeskproClient, contactID: Contact['id']) {
+    const contact = await getContactService(client, contactID);
+
+    return `${contact.properties.firstname ?? ''} ${contact.properties.lastname ?? ''}` || 'Contact';
+};
+
+async function registerReplyBoxNotesAdditionsTargetAction(
     client: IDeskproClient,
-    contactID: Contact['id'],
-    title?: string
+    contactID: Contact['id']
 ) {
     if (!contactID) {
         return client.deregisterTargetAction('hubspotReplyBoxNoteAdditions');
     };
+
+    const contactName = await getContactName(client, contactID);
 
     return Promise.all([contactID].map(ID => client.getState<Selection>(noteKey(ID))))
         .then(flags => {
@@ -40,21 +47,22 @@ function registerReplyBoxNotesAdditionsTargetAction(
                 title: 'Add to HubSpot',
                 payload: [contactID].map((ID, index) => ({
                     id: ID,
-                    title: title ?? 'Add Note to HubSpot Contact',
+                    title: contactName,
                     selected: flags[index][0]?.data?.selected ?? false
                 }))
             });
         });
 };
 
-function registerReplyBoxEmailsAdditionsTargetAction(
+async function registerReplyBoxEmailsAdditionsTargetAction(
     client: IDeskproClient,
-    contactID: Contact['id'],
-    title?: string
+    contactID: Contact['id']
 ) {
     if (!contactID) {
         return client.deregisterTargetAction('hubspotReplyBoxEmailAdditions');
     };
+
+    const contactName = await getContactName(client, contactID);
 
     return Promise.all([contactID].map(ID => client.getState<Selection>(emailKey(ID))))
         .then(flags => {
@@ -62,7 +70,7 @@ function registerReplyBoxEmailsAdditionsTargetAction(
                 title: 'Add to HubSpot',
                 payload: [contactID].map((ID, index) => ({
                     id: ID,
-                    title: title ?? 'Add Note to HubSpot Contact',
+                    title: contactName,
                     selected: flags[index][0]?.data?.selected ?? false
                 }))
             });
@@ -102,15 +110,15 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         return client?.getState(key(contactID));
     }, [client]);
 
-    const setSelectionState: SetSelectionState = useCallback((contactID, selected, type, title) => {
+    const setSelectionState: SetSelectionState = useCallback((contactID, selected, type) => {
         if (shouldLogNote && type === 'note') {
             return client?.setState(noteKey(contactID), { id: contactID, selected })
-                .then(() => registerReplyBoxNotesAdditionsTargetAction(client, contactID, title));
+                .then(() => registerReplyBoxNotesAdditionsTargetAction(client, contactID));
         };
 
         if (shouldLogEmail && type === 'email') {
             return client?.setState(emailKey(contactID), { id: contactID, selected })
-                .then(() => registerReplyBoxEmailsAdditionsTargetAction(client, contactID, title));
+                .then(() => registerReplyBoxEmailsAdditionsTargetAction(client, contactID));
         };
     }, [client, shouldLogNote, shouldLogEmail]);
 

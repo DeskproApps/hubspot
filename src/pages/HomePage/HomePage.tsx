@@ -72,12 +72,10 @@ const HomePage = () => {
 
     useEffect(() => {
         if (contactId) {
-            const title = `${contact.firstname} ${contact.lastname}`;
-
-            void setSelectionState(contactId, true, 'note', title);
-            void setSelectionState(contactId, true, 'email', title);
+            void setSelectionState(contactId, true, 'note');
+            void setSelectionState(contactId, true, 'email');
         };
-    }, [contactId, contact?.firstname, contact?.lastname, setSelectionState]);
+    }, [contactId, setSelectionState]);
 
     if (isLoading) {
         return <LoadingSpinner />
