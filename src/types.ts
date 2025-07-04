@@ -42,6 +42,12 @@ export type PreInstalledRequest = <T>(
 ) => Promise<T>;
 
 /** Deskpro types */
+export type Data = {
+    ticket: {
+        id: string
+    };
+};
+
 export type Settings = {
     api_token?: string;
     default_dont_add_note_when_linking_contact?: boolean;
@@ -50,6 +56,8 @@ export type Settings = {
     use_advanced_connect?: boolean,
     use_api_token?: boolean,
     client_id?: string,
+    log_email_as_hubspot_note?: boolean,
+    log_note_as_hubspot_note?: boolean
 };
 
 export type DeskproUser = {

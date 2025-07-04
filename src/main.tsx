@@ -22,6 +22,7 @@ import "@deskpro/deskpro-ui/dist/fonts/DpIcons/dp-icon-v2.css";
 import "./main.css";
 import "simplebar/dist/simplebar.min.css";
 import { reactErrorHandler } from '@sentry/react';
+import { ReplyBoxProvider } from './hooks/useReplyBox';
 
 TimeAgo.addDefaultLocale(en);
 
@@ -36,7 +37,9 @@ root.render((
           <DndProvider backend={HTML5Backend}>
             <HashRouter>
               <QueryClientProvider client={queryClient}>
-                <App/>
+                <ReplyBoxProvider>
+                  <App/>
+                </ReplyBoxProvider>
               </QueryClientProvider>
             </HashRouter>
           </DndProvider>
