@@ -22,7 +22,7 @@
       }
     },
     {
-      "target": "organization_sidebar",
+      "target": "organisation_sidebar",
       "entrypoint": "index.html"
     }
   ],
