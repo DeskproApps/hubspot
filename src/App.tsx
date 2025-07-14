@@ -9,6 +9,9 @@ import { Suspense } from "react";
 import { useLogout, useUnlinkContact } from "./hooks";
 import type { EventPayload, Settings } from "./types";
 import { ErrorBoundary } from "@sentry/react";
+import ViewCompanyPage from "./pages/companies/ViewCompanyPage/ViewCompanyPage";
+import CompanyIndexPage from "./pages/companies/CompanyIndexPage/CompanyIndexPage";
+import LinkCompanyPage from "./pages/companies/LinkCompanyPage/LinkCompanyPage";
 
 function App() {
   const { client } = useDeskproAppClient();
@@ -64,6 +67,11 @@ function App() {
               <Route path="/contacts/activities" element={<ActivityPage />} />
               <Route path="/note/create" element={<CreateNotePage />} />
               <Route path="/activity/create" element={<CreateActivityPage />} />
+              <Route path="/companies">
+                <Route path="link" element={<LinkCompanyPage />} />
+                <Route path=":companyId" element={<ViewCompanyPage />} />
+                <Route index element={<CompanyIndexPage />} />
+              </Route>
               <Route index element={<LoadingAppPage />} />
             </Routes>
           </ErrorBoundary>

@@ -28,6 +28,8 @@ const LoadingAppPage = () => {
     const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
     const user = context?.data?.user
 
+    const isOrgView = Boolean(context?.data?.organisation);
+
     useInitialisedDeskproAppClient((client) => {
         client.setTitle("HubSpot")
 
@@ -47,6 +49,10 @@ const LoadingAppPage = () => {
                 setIsFetchingAuth(false)
             })
     }, [context, context?.settings])
+
+    if (isOrgView) {
+        navigate('/companies');
+    };
 
     if (!client || !user || isFetchingAuth) {
         return (<LoadingSpinner />)
