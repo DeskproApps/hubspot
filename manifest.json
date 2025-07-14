@@ -34,7 +34,7 @@
       "entity": "person",
       "type": "external_id"
     },
-    "linkedHubspotCompany": {
+    "linkedHubspotCompanies": {
       "title": "Linked HubSpot Company",
       "entity": "organization",
       "type": "external_id"

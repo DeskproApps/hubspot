@@ -80,8 +80,17 @@ export type DeskproUser = {
     }[],
 };
 
+export type DeskproOrganisation = {
+  id: string;
+  name: string;
+  summary: string;
+  dateCreated: string;
+  customFields: Record<string, unknown>;
+}
+
 export type ContextData = {
-    user: DeskproUser,
+    user: DeskproUser;
+    organisation: DeskproOrganisation;
 };
 
 export type UserContext = Context<ContextData, Settings>;
