@@ -115,11 +115,14 @@ export type NavigateToChangePage = { type: "changePage", path: To };
 
 export type UnlinkPayload = { type: "unlink", contactId: Contact["id"] };
 
+export type UnlinkCompanyPayload = { type: "unlink-company", companyID: Company["id"]};
+
 export type LogoutPayload = { type: "logout" };
 
 export type EventPayload =
   | NavigateToChangePage
   | UnlinkPayload
+  | UnlinkCompanyPayload
   | LogoutPayload
   ;
 

@@ -1,4 +1,4 @@
-import { HorizontalDivider, Search, useDeskproAppClient, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
+import { HorizontalDivider, Search, useDeskproAppClient, useDeskproElements, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
 import { Button, Stack } from '@deskpro/deskpro-ui';
 import { useState } from 'react';
 import { useDebounce } from 'use-debounce';
@@ -7,7 +7,7 @@ import { ErrorBlock } from '../../../components/common';
 import { Company } from '../../../services/hubspot/types';
 import CompaniesList from './CompaniesList';
 import { setEntityCompany } from '../../../services/entityAssociation';
-import { ContextData } from '../../../types';
+import { ContextData, Settings } from '../../../types';
 import { useNavigate } from 'react-router-dom';
 
 function LinkCompanyPage() {
@@ -19,13 +19,31 @@ function LinkCompanyPage() {
     const [selectedCompanyID, setSelectedCompanyID] = useState('');
     const [portalID, setPortalID] = useState(0);
     const { client } = useDeskproAppClient();
-    const { context } = useDeskproLatestAppContext<ContextData, unknown>();
+    const { context } = useDeskproLatestAppContext<ContextData, Settings>();
     const organisation = context?.data?.organisation;
     const navigate = useNavigate();
+    const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
 
     useInitialisedDeskproAppClient(client => {
         client.setTitle('Link Company');
     }, []);
+
+    useDeskproElements(({ clearElements, registerElement }) => {
+        clearElements();
+        registerElement('refresh', { type: 'refresh_button' });
+
+        if (isUsingOAuth) {
+            registerElement('menu', {
+                type: 'menu',
+                items: [
+                    {
+                        title: 'Log Out',
+                        payload: { type: 'logout' }
+                    }
+                ]
+            });
+        };
+    }, [isUsingOAuth]);
 
     useInitialisedDeskproAppClient(async client => {
         try {
