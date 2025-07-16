@@ -47,7 +47,6 @@ function CompaniesList({
                                     setSelectedCompanyID('');
                                 }}
                             />
-
                             <P3
                                 title={company.properties.name}
                                 style={{
@@ -61,11 +60,11 @@ function CompaniesList({
                                 {company.properties.name}
                             </P3>
                         </Stack>
-
                         <div>
                             <ExternalIconLink
                                 icon={<HubSpotLogo />}
-                                href={`https://app.hubspot.com/contacts/${portalID}/record/0-2/${company.id}`} />
+                                href={`https://app.hubspot.com/contacts/${portalID}/record/0-2/${company.id}`}
+                            />
                         </div>
                     </Stack>
                 );

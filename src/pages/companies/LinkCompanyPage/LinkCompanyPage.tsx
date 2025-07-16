@@ -50,6 +50,7 @@ function LinkCompanyPage() {
             setIsLoading(true);
 
             const accountInfo = await getAccountInfoService(client);
+            
             setPortalID(accountInfo.portalId);
         } catch (error) {
             setError(error instanceof Error ? error.message : 'error fetching account info');
