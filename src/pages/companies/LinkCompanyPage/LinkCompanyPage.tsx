@@ -45,6 +45,7 @@ function LinkCompanyPage() {
         };
     }, [isUsingOAuth]);
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     useInitialisedDeskproAppClient(async client => {
         try {
             setIsLoading(true);
@@ -59,6 +60,7 @@ function LinkCompanyPage() {
         };
     }, []);
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     useInitialisedDeskproAppClient(async client => {
         try {
             setIsLoading(true);

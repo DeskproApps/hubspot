@@ -46,6 +46,7 @@ function ViewCompanyPage() {
     };
   }, [isUsingOAuth]);
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   useInitialisedDeskproAppClient(async client => {
     if (!companyId) {
       return;

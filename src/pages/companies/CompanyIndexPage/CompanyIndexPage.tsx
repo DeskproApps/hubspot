@@ -1,5 +1,5 @@
 import { LoadingSpinner, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
-import { ContextData, Data, DeskproOrganisation, Settings } from '../../../types';
+import { ContextData, DeskproOrganisation, Settings } from '../../../types';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ErrorBlock } from '../../../components/common';
@@ -15,6 +15,7 @@ function CompanyIndexPage() {
         setOrganisation(context?.data?.organisation);
     }, [context?.data?.organisation]);
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     useInitialisedDeskproAppClient(async client => {
         if (!organisation) {
             return;
