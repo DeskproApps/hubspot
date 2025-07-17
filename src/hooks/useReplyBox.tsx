@@ -25,17 +25,12 @@ const noteKey = (contactID: Contact['id']) => `hubspot/notes/selection/${contact
 
 const emailKey = (contactID: Contact['id']) => `hubspot/emails/selection/${contactID}`;
 
-function truncateContactName(name: string) {
-  const max = name.includes(' ') ? 21 : 14;
-
-  return name.length > max ? name.slice(0, max - 3) + '...' : name;
-};
-
 async function getContactName(client: IDeskproClient, contactID: Contact['id']) {
   const contact = await getContactService(client, contactID);
   const name =  `${contact.properties.firstname ?? ''} ${contact.properties.lastname ?? ''}` || 'Contact';
+  const characterLimit = 14
 
-  return truncateContactName(name);
+  return name.length > characterLimit ? name.slice(0, characterLimit - 3) + '...' : name;
 };
 
 async function registerReplyBoxNotesAdditionsTargetAction(client: IDeskproClient, contactID: Contact['id']) {
