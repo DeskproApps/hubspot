@@ -27,8 +27,10 @@ const emailKey = (contactID: Contact['id']) => `hubspot/emails/selection/${conta
 
 async function getContactName(client: IDeskproClient, contactID: Contact['id']) {
   const contact = await getContactService(client, contactID);
+  const name =  `${contact.properties.firstname ?? ''} ${contact.properties.lastname ?? ''}` || 'Contact';
+  const characterLimit = 14
 
-  return `${contact.properties.firstname ?? ''} ${contact.properties.lastname ?? ''}` || 'Contact';
+  return name.length > characterLimit ? name.slice(0, characterLimit - 3) + '...' : name;
 };
 
 async function registerReplyBoxNotesAdditionsTargetAction(client: IDeskproClient, contactID: Contact['id']) {
