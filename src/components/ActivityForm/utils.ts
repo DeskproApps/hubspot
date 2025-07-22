@@ -1,6 +1,5 @@
 import * as yup from "yup";
 import isEmpty from "lodash/isEmpty";
-import find from "lodash/find";
 import { getOption, mdToHtml } from "../../utils";
 import { parseDateTime } from "../../utils/date";
 import type { Contact } from "../../services/hubspot/types";
@@ -26,7 +25,7 @@ const getInitValues = (
         contactOptions = [],
     }: InitValuesParams = {},
 ): Values => {
-    const contact = find(contactOptions, ["value", initValues?.contactId]);
+    const contact = contactOptions.find(option => option.value === initValues?.contactId);
 
     return {
         activityType: getOption<string>("call", "Call"),
