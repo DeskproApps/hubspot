@@ -1,5 +1,4 @@
 import { FC } from "react";
-import concat from "lodash/concat";
 import isBefore from "date-fns/isBefore";
 import styled from "styled-components";
 import { H3 } from "@deskpro/deskpro-ui";
@@ -115,7 +114,7 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
 const Activities: FC<Props> = ({ calls, emails, accountInfo, contactId, onCreateActivity }) => {
     const normalizeCall = calls?.map(normalizeCallFn) ?? [];
     const normalizeEmail = emails?.map(normalizeEmailFn) ?? [];
-    const activities = concat(normalizeCall, normalizeEmail).sort(sortDateFn);
+    const activities = normalizeCall.concat(normalizeEmail).sort(sortDateFn);
 
     return (
         <BaseContainer>
