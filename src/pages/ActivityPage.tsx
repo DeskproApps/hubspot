@@ -1,6 +1,5 @@
 import { FC, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import capitalize from "lodash/capitalize";
 import {
     LoadingSpinner,
     useDeskproElements,
@@ -10,7 +9,7 @@ import {
     useQueryWithClient,
     useQueriesWithClient,
 } from "../hooks";
-import { filterEntities } from "../utils";
+import { capitalise, filterEntities } from "../utils";
 import { QueryKey } from "../query";
 import {
     getContactService,
@@ -63,7 +62,7 @@ const ActivityPage: FC = () => {
         getAccountInfoService
     );
 
-    useSetAppTitle(!type ? "" : `${capitalize(type)} details`);
+    useSetAppTitle(!type ? "" : `${capitalise(type)} details`);
 
     useDeskproElements(({ registerElement, deRegisterElement }) => {
         deRegisterElement("home");

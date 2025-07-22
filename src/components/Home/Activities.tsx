@@ -1,6 +1,5 @@
 import { FC } from "react";
 import concat from "lodash/concat";
-import capitalize from "lodash/capitalize";
 import isBefore from "date-fns/isBefore";
 import styled from "styled-components";
 import { H3 } from "@deskpro/deskpro-ui";
@@ -15,6 +14,7 @@ import {
 import { format } from "../../utils/date";
 import type { DateTime } from "../../types";
 import type { EmailActivity, CallActivity, AccountInto, Contact } from "../../services/hubspot/types";
+import { capitalise } from "../../utils";
 
 type Props = {
     calls: Array<CallActivity["properties"]>,
@@ -104,7 +104,7 @@ const Activity: FC<ActivityProps> = ({ id, title, body, date, type, portalId, co
         )}
         <TwoColumn
             leftLabel="Type"
-            leftText={capitalize(type)}
+            leftText={capitalise(type)}
             rightLabel="Date"
             rightText={format(date, { time: true })}
         />
