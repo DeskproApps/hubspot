@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import isEmpty from "lodash/isEmpty";
 import { getOption, mdToHtml } from "../../utils";
 import { parseDateTime } from "../../utils/date";
 import type { Contact } from "../../services/hubspot/types";
@@ -55,8 +54,8 @@ const getCallActivityValues = ({ contact }: { contact?: Option<string> }) => (va
         ...(!values.description ? {} : { hs_call_body: mdToHtml(values.description) }),
         ...(!timestamp ? {} : { hs_timestamp: timestamp }),
         ...((typeof contact?.label !== "string") ? {} : { hs_call_title: `Call with ${contact.label}` }),
-        ...(isEmpty(values.callDisposition.value) ? {} : { hs_call_disposition: values.callDisposition.value}),
-        ...(isEmpty(values.callDirection.value) ? {} : { hs_call_direction: values.callDirection.value }),
+        ...(values.callDisposition.value === "" ? {} : { hs_call_disposition: values.callDisposition.value}),
+        ...(values.callDirection.value === "" ? {} : { hs_call_direction: values.callDirection.value }),
     };
 };
 

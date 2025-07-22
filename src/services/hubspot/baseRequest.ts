@@ -1,7 +1,6 @@
-import isEmpty from "lodash/isEmpty";
 import { proxyFetch, adminGenericProxyFetch } from "@deskpro/app-sdk";
 import { BASE_URL, placeholders } from "./constants";
-import { getQueryParams } from "../../utils";
+import { getQueryParams, isEmptyObject } from "../../utils";
 import type { IDeskproClient } from "@deskpro/app-sdk";
 import type { HubSpotError } from "./types";
 import type { Request, ApiRequestMethod, RequestParams } from "../../types";
@@ -45,7 +44,7 @@ const baseRequest: Request = async <T = unknown>(
     const isAdmin = Boolean(settings);
     const dpFetch = await (isAdmin ? adminGenericProxyFetch : proxyFetch)(client);
     const baseUrl = `${BASE_URL}${url}`;
-    const params = `${isEmpty(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
+    const params = `${isEmptyObject(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
     const requestUrl = `${baseUrl}${params}`;
 
     const isUsingOAuth2 = (await client.getUserState<boolean>("isUsingOAuth"))[0]?.data

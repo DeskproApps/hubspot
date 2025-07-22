@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import isEmpty from "lodash/isEmpty";
 import { useDeskproElements, useDeskproAppClient } from "@deskpro/app-sdk";
 import { useSetAppTitle } from "../hooks";
 import { createNoteService, setEntityAssocService, uploadFileService } from "../services/hubspot";
@@ -11,6 +10,7 @@ import { BaseContainer, ErrorBlock } from "../components/common";
 import type { FC } from "react";
 import type { HubSpotError } from "../services/hubspot/types";
 import type { Values } from "../components/NoteForm/types";
+import { isEmptyObject } from "../utils";
 
 const CreateNotePage: FC = () => {
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ const CreateNotePage: FC = () => {
         )
             .then((files) => {
                 const data = getNoteValues(values, files);
-                return (isEmpty(data))
+                return (isEmptyObject(data))
                     ? Promise.reject("Empty form")
                     : createNoteService(client, data)
             })
