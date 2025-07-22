@@ -1,7 +1,6 @@
 import { ChangeEvent, FC, useRef, useState } from "react";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import omit from "lodash/omit";
 import { AnyIcon, AttachmentTag, Button, Stack } from "@deskpro/deskpro-ui";
 
 export type AttachmentFile = {
@@ -61,7 +60,8 @@ const Attach: FC<AttachmentsFieldProps> = ({ onFiles, existing }: AttachmentsFie
             setFiles(files);
             onFiles && onFiles(Object.values(files));
         } else {
-            const remaining = omit(files, [name]);
+            const { [name]: _, ...remaining } = files;
+            
             setFiles(remaining);
             onFiles && onFiles(Object.values(remaining));
         }
