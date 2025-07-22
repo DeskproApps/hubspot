@@ -132,7 +132,7 @@ const useLoadHomeDeps = () => {
         {
             select: (data) => {
                 return (data?.results ?? []).reduce<Record<Owner["id"], Owner>>((acc, owner) => {
-                    if (!acc.hasOwnProperty(owner.id)) {
+                    if (!Object.prototype.hasOwnProperty.call(acc, owner.id)) {
                         acc[owner.id] = owner;
                     }
                     return acc;
