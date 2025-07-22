@@ -15,3 +15,4 @@ export { tryToLinkAutomatically } from "./tryToLinkAutomatically";
 export { isNavigatePayload } from "./isNavigatePayload";
 export { isUnlinkPayload } from "./isUnlinkPayload";
 export { capitalise } from "./capitalise";
+export { get } from "./get";

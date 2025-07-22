@@ -1,6 +1,5 @@
 import { FC } from "react";
 import styled from "styled-components";
-import get from "lodash/get";
 import ReactTimeAgo from "react-time-ago";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { P1, P11, Stack, Avatar } from "@deskpro/deskpro-ui";
@@ -70,7 +69,7 @@ const Notes: FC<Props> = ({ notes, owners, onCreateNote }) => (
         <BaseContainer>
             <Title title={`Notes (${notes.length})`} onClick={onCreateNote} />
             {notes.map((note) => (
-                <Note key={note.hs_object_id} {...note} owner={get(owners, [note?.hubspot_owner_id], undefined)} />
+                <Note key={note.hs_object_id} {...note} owner={owners[note?.hubspot_owner_id]} />
             ))}
         </BaseContainer>
         <HorizontalDivider/>

@@ -1,4 +1,3 @@
-import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { proxyFetch, adminGenericProxyFetch } from "@deskpro/app-sdk";
 import { BASE_URL, placeholders } from "./constants";
@@ -22,7 +21,7 @@ export class DeskproError extends Error {
     entity?: string;
 
     constructor({ url, method, json, code, entity }: ErrorData) {
-        super(get(json, ["message"], `${method} ${url}: Response Status [${JSON.stringify(json)}]`));
+        super(json?.message ?? `${method} ${url}: Response Status [${JSON.stringify(json)}]`);
         this.code = code;
         this.entity = entity;
         this.status = json?.status || "";

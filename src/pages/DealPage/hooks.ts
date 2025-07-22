@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import get from "lodash/get";
 import { useQueriesWithClient, useQueryWithClient } from "../../hooks";
 import {
     getDealService,
@@ -72,10 +71,10 @@ const useLoadDealDeps = (dealId?: Deal["id"]) => {
             ...contacts,
             ...companies,
         ].some(({ isLoading }) => Boolean(isLoading)),
-        deal: get(deal, ["data", "properties"], {}) as Deal["properties"],
+        deal: (deal?.data?.properties ?? {}) as Deal["properties"],
         contacts: filterEntities(contacts) as Array<Contact["properties"]>,
         companies: filterEntities(companies) as Array<Company["properties"]>,
-        accountInfo: get(accountInfo, ["data"], {}) as AccountInto,
+        accountInfo: (accountInfo?.data ?? {}) as AccountInto,
         dealMetaMap: useMemo(() => {
             return (dealPropertiesMeta.data?.results ?? []).reduce<Record<PropertyMeta["fieldType"], PropertyMeta>>((acc, meta) => {
                 if (!acc[meta.name]) {
