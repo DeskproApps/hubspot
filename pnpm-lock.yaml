@@ -53,9 +53,6 @@ importers:
       javascript-time-ago:
         specifier: ^2.5.11
         version: 2.5.11
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
       polished:
         specifier: ^4.3.1
         version: 4.3.1
@@ -138,9 +135,6 @@ importers:
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
-      '@types/lodash':
-        specifier: ^4.17.20
-        version: 4.17.20
       '@types/react':
         specifier: ^18.3.23
         version: 18.3.23
