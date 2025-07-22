@@ -1,8 +1,6 @@
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
 import { proxyFetch, adminGenericProxyFetch } from "@deskpro/app-sdk";
 import { BASE_URL, placeholders } from "./constants";
-import { getQueryParams } from "../../utils";
+import { getQueryParams, isEmptyObject } from "../../utils";
 import type { IDeskproClient } from "@deskpro/app-sdk";
 import type { HubSpotError } from "./types";
 import type { Request, ApiRequestMethod, RequestParams } from "../../types";
@@ -22,7 +20,7 @@ export class DeskproError extends Error {
     entity?: string;
 
     constructor({ url, method, json, code, entity }: ErrorData) {
-        super(get(json, ["message"], `${method} ${url}: Response Status [${JSON.stringify(json)}]`));
+        super(json?.message ?? `${method} ${url}: Response Status [${JSON.stringify(json)}]`);
         this.code = code;
         this.entity = entity;
         this.status = json?.status || "";
@@ -46,7 +44,7 @@ const baseRequest: Request = async <T = unknown>(
     const isAdmin = Boolean(settings);
     const dpFetch = await (isAdmin ? adminGenericProxyFetch : proxyFetch)(client);
     const baseUrl = `${BASE_URL}${url}`;
-    const params = `${isEmpty(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
+    const params = `${isEmptyObject(queryParams) ? "" : `?${getQueryParams(queryParams, true)}`}`;
     const requestUrl = `${baseUrl}${params}`;
 
     const isUsingOAuth2 = (await client.getUserState<boolean>("isUsingOAuth"))[0]?.data

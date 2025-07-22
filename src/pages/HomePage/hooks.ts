@@ -1,6 +1,4 @@
 import { useMemo } from "react";
-import get from "lodash/get";
-import has from "lodash/has";
 import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import { QueryKey } from "../../query";
 import { getEntityContactList } from "../../services/entityAssociation";
@@ -91,7 +89,7 @@ const useLoadHomeDeps = () => {
         {
             enabled: !!contactId,
             cacheTime: 0,
-            select: (data) => get(data, ["results"], []).map(({ properties }: Deal) => properties),
+            select: (data) => (data?.results ?? []).map(({ properties }: Deal) => properties),
         },
     );
 
@@ -110,7 +108,7 @@ const useLoadHomeDeps = () => {
         (client) => getEmailsByContactId(client, contactId),
         {
             enabled: !!contactId,
-            select: (data) => get(data, ["results"], []).map(({ properties }: EmailActivity) => properties),
+            select: (data) => (data?.results ?? []).map(({ properties }: EmailActivity) => properties),
         }
     );
 
@@ -119,7 +117,7 @@ const useLoadHomeDeps = () => {
         (client) => getCallsByContactId(client, contactId),
         {
             enabled: !!contactId,
-            select: (data) => get(data, ["results"], []).map(({ properties }: CallActivity) => properties),
+            select: (data) => (data?.results ?? []).map(({ properties }: CallActivity) => properties),
         },
     );
 
@@ -133,8 +131,8 @@ const useLoadHomeDeps = () => {
         getOwnersService,
         {
             select: (data) => {
-                return (get(data, ["results"]) || []).reduce<Record<Owner["id"], Owner>>((acc, owner) => {
-                    if (!has(acc, [owner.id])) {
+                return (data?.results ?? []).reduce<Record<Owner["id"], Owner>>((acc, owner) => {
+                    if (!Object.prototype.hasOwnProperty.call(acc, owner.id)) {
                         acc[owner.id] = owner;
                     }
                     return acc;

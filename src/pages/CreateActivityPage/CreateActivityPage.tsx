@@ -1,5 +1,4 @@
 import { FC, useState, useCallback } from "react";
-import isEmpty from "lodash/isEmpty";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
     LoadingSpinner,
@@ -70,17 +69,17 @@ const CreateActivityPage: FC = () => {
 
         return createActivityService(client, getActivityValues(values))
             .then(({ id: activityId }) => Promise.all([
-                ...(isEmpty(values.associateContact)
+                ...(values.associateContact.length === 0
                     ? [Promise.resolve()]
                     : values.associateContact.map(
                         (contactId) => setEntityAssocService(client, activityType, activityId, "contact", contactId, `${type}_to_contact`)
                     )),
-                ...(isEmpty(values.associateCompany)
+                ...(values.associateCompany.length === 0
                     ? [Promise.resolve()]
                     : values.associateCompany.map(
                         (companyId) => setEntityAssocService(client, activityType, activityId, "company", companyId, `${type}_to_company`)
                     )),
-                ...(isEmpty(values.associateDeal)
+                ...(values.associateDeal.length === 0
                     ? [Promise.resolve()]
                     : values.associateDeal.map(
                         (dealId) => setEntityAssocService(client, activityType, activityId, "deal", dealId, `${type}_to_deal`)

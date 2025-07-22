@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import concat from "lodash/concat";
 import { getFullName, getOption, noOwnerOption } from "../utils";
 import type { Option, UseSetStateFn } from "../types";
 import type { Owner } from "../services/hubspot/types";
@@ -14,8 +13,7 @@ const useOwnerOptions = (
         let options = [noOwnerOption];
 
         if (Array.isArray(owners) && owners.length > 0) {
-            options = concat(
-                options,
+            options = options.concat(
                 owners.map((owner) => getOption(owner.id, getFullName(owner))),
             );
         }

@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import isEmpty from "lodash/isEmpty";
 import { mdToHtml } from "../../utils";
 import { parseDateTime } from "../../utils/date";
 import type { AttachmentFile } from "../common/Attach";
@@ -41,22 +40,20 @@ const getNoteValues = (values: Values, files: UploadFile[]): {
     hs_timestamp?: DateTime,
     hs_attachment_ids?: string,
 } => {
-    const note = isEmpty(values.note) ? "" : values.note;
+    const note = values.note === "" ? "" : values.note;
     const uploadFiles = files.map(({ id }) => id).filter((fileId) => Boolean(fileId)).join(";");
 
     return (!note && !uploadFiles)
         ? {}
         : {
             hs_timestamp: parseDateTime(new Date()) as string,
-            ...(isEmpty(note) ? {} : { hs_note_body: mdToHtml(note) }),
-            ...(isEmpty(uploadFiles) ? {} : { hs_attachment_ids: uploadFiles }),
+            ...(note === "" ? {} : { hs_note_body: mdToHtml(note) }),
+            ...(uploadFiles === "" ? {} : { hs_attachment_ids: uploadFiles }),
         };
 }
 
 const isEmptyForm = (values: Values): boolean => {
-    return (Object.keys(values) as Array<keyof Values>).every((key) => {
-        return isEmpty(values[key]);
-    });
+    return values.note === "" && values.files.length === 0;
 };
 
 export {
