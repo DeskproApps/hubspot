@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import get from "lodash/get";
-import has from "lodash/has";
 import { useDeskproLatestAppContext } from "@deskpro/app-sdk";
 import { QueryKey } from "../../query";
 import { getEntityContactList } from "../../services/entityAssociation";
@@ -134,7 +133,7 @@ const useLoadHomeDeps = () => {
         {
             select: (data) => {
                 return (get(data, ["results"]) || []).reduce<Record<Owner["id"], Owner>>((acc, owner) => {
-                    if (!has(acc, [owner.id])) {
+                    if (!acc.hasOwnProperty(owner.id)) {
                         acc[owner.id] = owner;
                     }
                     return acc;
