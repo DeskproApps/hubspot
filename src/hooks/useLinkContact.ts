@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import get from "lodash/get";
 import { useDeskproAppClient } from "@deskpro/app-sdk";
 import {
     getContactService,
@@ -29,7 +28,7 @@ const useLinkContact: UseLinkContact = () => {
             .then(([contact, companies, deals]) => ({
                 contact: contact?.properties,
                 companies: (companies?.results ?? []).map(({ properties }) => properties),
-                deals: (get(deals, ["results"], []) || []).map(({ properties }: Deal) => properties),
+                deals: (deals?.results ?? []).map(({ properties }: Deal) => properties),
             }))
             .catch(() => ({}));
     }, [client]);
