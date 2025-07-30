@@ -4,9 +4,9 @@ import { useDebouncedCallback } from 'use-debounce';
 import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
 import { getNoteValues } from '../components/NoteForm';
 import { queryClient } from '../query';
-import { createNoteService, getContactService, setEntityAssocService } from '../services/hubspot';
+import { createNoteService, getContactsByEmailService, getContactService, setEntityAssocService } from '../services/hubspot';
 import { Contact } from '../services/hubspot/types';
-import { Settings } from '../types';
+import { Data, Settings } from '../types';
 
 export type ReplyBox = 'note' | 'email';
 
@@ -27,8 +27,8 @@ const emailKey = (contactID: Contact['id']) => `hubspot/emails/selection/${conta
 
 async function getContactName(client: IDeskproClient, contactID: Contact['id']) {
   const contact = await getContactService(client, contactID);
-  const name =  `${contact.properties.firstname ?? ''} ${contact.properties.lastname ?? ''}` || 'Contact';
-  const characterLimit = 14
+  const name = `${contact.properties.firstname ?? ''} ${contact.properties.lastname ?? ''}` || 'Contact';
+  const characterLimit = 14;
 
   return name.length > characterLimit ? name.slice(0, characterLimit - 3) + '...' : name;
 };
@@ -95,7 +95,7 @@ interface IReplyBoxProvider {
 
 export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
   const { client } = useDeskproAppClient();
-  const { context } = useDeskproLatestAppContext<unknown, Settings>();
+  const { context } = useDeskproLatestAppContext<Data, Settings>();
   const shouldLogNote = context?.settings.log_note_as_hubspot_note;
   const shouldLogEmail = context?.settings.log_email_as_hubspot_note;
 
@@ -125,7 +125,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         if (type === 'note') {
           return registerReplyBoxNotesAdditionsTargetAction(client, contactID);
         } else if (type === 'email') {
-          return registerReplyBoxEmailsAdditionsTargetAction(client, contactID);;
+          return registerReplyBoxEmailsAdditionsTargetAction(client, contactID);
         };
       });
   }, [client]);
@@ -153,12 +153,24 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
             });
         });
       })
-      .with('hubspotOnReplyBoxNote', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      .with('hubspotOnReplyBoxNote', async () => {
+        const userEmail = action.context.data.user.primaryEmail;
+
+        if (!client) return;
+
+        let contactID: Contact['id'] = '';
+
+        const { results } = await getContactsByEmailService(client, userEmail);
+        
+        contactID = results?.[0]?.id;
+
+        if (!contactID) return;
+
+        void client.setBlocking(true);
+
         const { note } = action.payload;
 
-        void client?.setBlocking(true);
-        void client?.getState<Selection>(noteKey('*'))
+        void client.getState<Selection>(noteKey(contactID))
           .then(selections => {
             const contactIDs = selections
               .filter(({ data }) => data?.selected)
@@ -190,12 +202,24 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
             });
         });
       })
-      .with('hubspotOnReplyBoxEmail', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      .with('hubspotOnReplyBoxEmail', async () => {
+        const userEmail = action.context.data.user.primaryEmail;
+
+        if (!client) return;
+
+        let contactID: Contact['id'] = '';
+
+        const { results } = await getContactsByEmailService(client, userEmail);
+        
+        contactID = results?.[0]?.id;
+
+        if (!contactID) return;
+
+        void client.setBlocking(true);
+
         const { email } = action.payload;
 
-        void client?.setBlocking(true);
-        void client?.getState<Selection>(emailKey('*'))
+        void client.getState<Selection>(emailKey(contactID))
           .then(selections => {
             const contactIDs = selections
               .filter(({ data }) => data?.selected)
