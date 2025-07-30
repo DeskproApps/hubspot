@@ -6,6 +6,7 @@ import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, us
 import { getNoteValues } from '../components/NoteForm';
 import { queryClient } from '../query';
 import { createNoteService, getContactsByEmailService, getContactService, setEntityAssocService } from '../services/hubspot';
+import { getEntityContactList } from '../services/entityAssociation';
 import { Contact } from '../services/hubspot/types';
 import { Data, Settings } from '../types';
 
@@ -156,16 +157,12 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
       })
       .with('hubspotOnReplyBoxNote', async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const userEmail = action.context.data.user.primaryEmail;
+        const userID = action.context.data.user.id;
 
         if (!client) return;
 
-        let contactID: Contact['id'] = '';
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const { results } = await getContactsByEmailService(client, userEmail);
-        
-        contactID = results?.[0]?.id;
+        const linkedContactIDs = await getEntityContactList(client, userID);
+        const contactID: Contact['id'] = linkedContactIDs?.[0];
 
         if (!contactID) return;
 
@@ -182,6 +179,8 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
             if (!contactIDs.length) return;
 
+            console.log('Creating note for contact IDs:', contactIDs);
+
             return createNoteService(
               client,
               getNoteValues({
@@ -197,6 +196,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
           })
           .finally(() => {
             void client.setBlocking(false);
+            console.log('Finished processing note creation');
           });
       })
       .with('hubspotReplyBoxEmailAdditions', () => {
@@ -212,16 +212,12 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
       })
       .with('hubspotOnReplyBoxEmail', async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const userEmail = action.context.data.user.primaryEmail;
+        const userID = action.context.data.user.id;
 
         if (!client) return;
 
-        let contactID: Contact['id'] = '';
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const { results } = await getContactsByEmailService(client, userEmail);
-        
-        contactID = results?.[0]?.id;
+        const linkedContactIDs = await getEntityContactList(client, userID);
+        const contactID: Contact['id'] = linkedContactIDs?.[0];
 
         if (!contactID) return;
 
