@@ -142,7 +142,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
   }, [shouldLogNote, shouldLogEmail]);
 
   const handleTargetAction = useCallback((action: TargetAction) => {
-    match(action.name)
+    void match(action.name)
       .with('hubspotReplyBoxNoteAdditions', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         action.payload.forEach((selection: Selection) => {
@@ -155,12 +155,14 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         });
       })
       .with('hubspotOnReplyBoxNote', async () => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const userEmail = action.context.data.user.primaryEmail;
 
         if (!client) return;
 
         let contactID: Contact['id'] = '';
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const { results } = await getContactsByEmailService(client, userEmail);
         
         contactID = results?.[0]?.id;
@@ -169,6 +171,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
         void client.setBlocking(true);
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { note } = action.payload;
 
         void client.getState<Selection>(noteKey(contactID))
@@ -208,12 +211,14 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         });
       })
       .with('hubspotOnReplyBoxEmail', async () => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const userEmail = action.context.data.user.primaryEmail;
 
         if (!client) return;
 
         let contactID: Contact['id'] = '';
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const { results } = await getContactsByEmailService(client, userEmail);
         
         contactID = results?.[0]?.id;
@@ -222,6 +227,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
         void client.setBlocking(true);
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { email } = action.payload;
 
         void client.getState<Selection>(emailKey(contactID))
