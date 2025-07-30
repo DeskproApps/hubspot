@@ -21,6 +21,7 @@ export type RequestParams = {
     queryParams?: Record<string, string | number | boolean>,
     entity?: string,
     settings?: Settings;
+    idempotencyKey?: string;
 };
 
 export type Request = <T = unknown>(

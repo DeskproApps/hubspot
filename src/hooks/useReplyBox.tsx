@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext } from 'react';
+import { v4 as uuid } from 'uuid';
 import { match } from 'ts-pattern';
 import { useDebouncedCallback } from 'use-debounce';
 import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
@@ -178,10 +179,14 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
             if (!contactIDs.length) return;
 
-            return createNoteService(client, getNoteValues({
-              note: `Note Made in Deskpro: ${note}`,
-              files: []
-            }, []))
+            return createNoteService(
+              client,
+              getNoteValues({
+                note: `Note Made in Deskpro: ${note}`,
+                files: []
+              }, []),
+              uuid()
+            )
               .then(note => Promise.all(
                 contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
               ))
@@ -227,10 +232,14 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
             if (!contactIDs.length) return;
 
-            return createNoteService(client, getNoteValues({
-              note: `Email Sent from Deskpro: ${email}`,
-              files: []
-            }, []))
+            return createNoteService(
+              client,
+              getNoteValues({
+                note: `Email Sent from Deskpro: ${email}`,
+                files: []
+              }, []),
+              uuid()
+            )
               .then(note => Promise.all(
                 contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
               ))
