@@ -5,7 +5,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
 import { getNoteValues } from '../components/NoteForm';
 import { queryClient } from '../query';
-import { createNoteService, getContactsByEmailService, getContactService, setEntityAssocService } from '../services/hubspot';
+import { createNoteService, getContactService, setEntityAssocService } from '../services/hubspot';
 import { getEntityContactList } from '../services/entityAssociation';
 import { Contact } from '../services/hubspot/types';
 import { Data, Settings } from '../types';
@@ -161,6 +161,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
         if (!client) return;
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const linkedContactIDs = await getEntityContactList(client, userID);
         const contactID: Contact['id'] = linkedContactIDs?.[0];
 
@@ -179,8 +180,6 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
             if (!contactIDs.length) return;
 
-            console.log('Creating note for contact IDs:', contactIDs);
-
             return createNoteService(
               client,
               getNoteValues({
@@ -196,7 +195,6 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
           })
           .finally(() => {
             void client.setBlocking(false);
-            console.log('Finished processing note creation');
           });
       })
       .with('hubspotReplyBoxEmailAdditions', () => {
@@ -216,6 +214,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
         if (!client) return;
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const linkedContactIDs = await getEntityContactList(client, userID);
         const contactID: Contact['id'] = linkedContactIDs?.[0];
 
