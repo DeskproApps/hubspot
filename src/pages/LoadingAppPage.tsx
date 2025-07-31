@@ -56,7 +56,7 @@ const LoadingAppPage = () => {
             })
     }, [context, context?.settings, isUsingOAuth, user, organisation]);
 
-    if (!client || !user || isFetchingAuth) {
+    if (!client || (!isOrgView && !user) || (isOrgView && !organisation) || isFetchingAuth) {
         return (<LoadingSpinner />)
     }
 
@@ -65,10 +65,12 @@ const LoadingAppPage = () => {
             navigate('/companies');
         };
 
-        tryToLinkAutomatically(client, user, getContactInfo, linkContactFn)
-            .then(() => getEntityContactList(client, user.id))
-            .then((entityIds) => navigate(entityIds.length > 0 ? "/home" : "/link"))
-            .catch(() => { navigate("/link") });
+        if (user) {
+            tryToLinkAutomatically(client, user, getContactInfo, linkContactFn)
+                .then(() => getEntityContactList(client, user.id))
+                .then((entityIds) => navigate(entityIds.length > 0 ? "/home" : "/link"))
+                .catch(() => { navigate("/link") });
+        };
     } else {
         if (isUsingOAuth) {
             navigate("/login")
