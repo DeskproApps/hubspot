@@ -31,6 +31,7 @@ export default function useLogin(): UseLogin {
     const { context } = useDeskproLatestAppContext<ContextData, Settings>()
 
     const user = context?.data?.user
+    const isOrgView = Boolean(context?.data?.organisation);
     const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
 
     // TODO: Update useInitialisedDeskproAppClient typing in the
@@ -38,7 +39,7 @@ export default function useLogin(): UseLogin {
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     useInitialisedDeskproAppClient(async (client) => {
-        if (!user) {
+        if (!context || !context?.settings) {
             // Make sure settings have loaded.
             return
         }
@@ -90,11 +91,11 @@ export default function useLogin(): UseLogin {
         setAuthUrl(oauth2Response.authorizationUrl)
         setOAuth2Context(oauth2Response)
 
-    }, [setAuthUrl, context?.settings.use_advanced_connect])
+    }, [setAuthUrl, context?.settings.use_advanced_connect, context?.settings.use_api_token, context?.settings.client_id]);
 
 
     useInitialisedDeskproAppClient((client) => {
-        if (!user || !oauth2Context) {
+        if (!oauth2Context) {
             return
         }
 
@@ -114,6 +115,14 @@ export default function useLogin(): UseLogin {
                     throw new Error("Error authenticating user")
                 }
 
+                if (isOrgView) {
+                    navigate('/companies');
+                };
+
+                if (!user) {
+                    return;
+                };
+
                 tryToLinkAutomatically(client, user, getContactInfo, linkContactFn)
                     .then(() => getEntityContactList(client, user.id))
                     .then((entityIds) => navigate(entityIds.length > 0 ? "/home" : "/link"))
@@ -132,7 +141,7 @@ export default function useLogin(): UseLogin {
         if (isPolling) {
             void startPolling()
         }
-    }, [isPolling, user, oauth2Context, navigate])
+    }, [isPolling, user, oauth2Context, navigate, isOrgView, getContactInfo, linkContactFn]);
 
 
     const onSignIn = useCallback(() => {
