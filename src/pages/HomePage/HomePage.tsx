@@ -1,5 +1,5 @@
 import { Home } from "../../components/Home";
-import { Settings } from "../../types";
+import { Data, Settings } from "../../types";
 import { useCallback, useEffect } from "react";
 import { useLoadHomeDeps } from "./hooks";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +22,12 @@ const HomePage = () => {
         contactMetaMap,
         dealMetaMap,
     } = useLoadHomeDeps();
-    const { context } = useDeskproLatestAppContext<unknown, Settings>()
+    const { context } = useDeskproLatestAppContext<Data, Settings>();
     const { setSelectionState } = useReplyBox();
 
     const contactId = contact?.hs_object_id;
     const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
+    const ticketID = context?.data?.ticket?.id;
 
     useSetAppTitle("Contact");
 
@@ -75,7 +76,7 @@ const HomePage = () => {
             void setSelectionState(contactId, true, 'note');
             void setSelectionState(contactId, true, 'email');
         };
-    }, [contactId, setSelectionState]);
+    }, [contactId, setSelectionState, ticketID]);
 
     if (isLoading) {
         return <LoadingSpinner />
