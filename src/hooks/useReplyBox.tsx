@@ -157,86 +157,51 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     });
   };
 
+  const onReplyBox = async (action: TargetAction, type: ReplyBox) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const userID = action.context.data.user.id as string | undefined;
+
+    if (!client || !userID) return;
+
+    const linkedContactIDs = await getEntityContactList(client, userID);
+    const contactID: Contact['id'] = linkedContactIDs?.[0];
+
+    if (!contactID) return;
+
+    await client.setBlocking(true);
+    
+    try {
+      const key = type === 'note' ? noteKey : emailKey;
+      const selections = await client.getState<Selection>(key(contactID));
+      const contactIDs = selections
+        .filter(({ data }) => data?.selected)
+        .map(({ data }) => data?.id);
+
+      if (!contactIDs.length) return;
+
+      const payload = action.payload[type];
+      const note = type === 'email' ? `Email Sent from Deskpro: ${payload}` : `Note Made in Deskpro: ${payload}`;
+      const noteData = getNoteValues({
+        note,
+        files: []
+      }, []);
+      const response = await createNoteService(client, noteData, uuid());
+
+      await Promise.all(
+        contactIDs.map(ID => setEntityAssocService(client, 'notes', response.id, 'contact', ID as string, 'note_to_contact'))
+      );
+      await queryClient.invalidateQueries();
+    } finally {
+      await client.setBlocking(false);
+    };
+  };
+
   const handleTargetAction = useCallback((action: TargetAction) => {
     void match(action.name)
       .with('hubspotReplyBoxNoteAdditions', () => {replyBoxAdditions(action, 'note')})
-      .with('hubspotOnReplyBoxNote', async () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const userID = action.context.data.user.id as string | undefined;
-
-        if (!client || !userID) return;
-
-        const linkedContactIDs = await getEntityContactList(client, userID);
-        const contactID: Contact['id'] = linkedContactIDs?.[0];
-
-        if (!contactID) return;
-
-        await client.setBlocking(true);
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { note } = action.payload;
-
-        try {
-          const selections = await client.getState<Selection>(noteKey(contactID));
-          const contactIDs = selections
-            .filter(({ data }) => data?.selected)
-            .map(({ data }) => data?.id);
-
-          if (!contactIDs.length) return;
-
-          const noteData = getNoteValues({
-            note: `Note Made in Deskpro: ${note}`,
-            files: []
-          }, []);
-          const response = await createNoteService(client, noteData, uuid());
-
-          await Promise.all(
-            contactIDs.map(ID => setEntityAssocService(client, 'notes', response.id, 'contact', ID as string, 'note_to_contact'))
-          );
-          await queryClient.invalidateQueries();
-        } finally {
-          await client.setBlocking(false);
-        };
-      })
+      .with('hubspotOnReplyBoxNote', async () => {onReplyBox(action, 'note')})
       .with('hubspotReplyBoxEmailAdditions', () => {replyBoxAdditions(action, 'email')})
-      .with('hubspotOnReplyBoxEmail', async () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const userID = action.context.data.user.id as string | undefined;
-
-        if (!client || !userID) return;
-
-        const linkedContactIDs = await getEntityContactList(client, userID);
-        const contactID: Contact['id'] = linkedContactIDs?.[0];
-
-        if (!contactID) return;
-
-        await client.setBlocking(true);
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { email } = action.payload;
-
-        try {
-          const selections = await client.getState<Selection>(emailKey(contactID));
-          const contactIDs = selections
-            .filter(({ data }) => data?.selected)
-            .map(({ data }) => data?.id);
-
-          if (!contactIDs.length) return;
-
-          const noteData = getNoteValues({
-            note: `Email Sent from Deskpro: ${email}`,
-            files: []
-          }, []);
-          const response = await createNoteService(client, noteData, uuid());
-
-          await Promise.all(
-            contactIDs.map(ID => setEntityAssocService(client, 'notes', response.id, 'contact', ID as string, 'note_to_contact'))
-          );
-          await queryClient.invalidateQueries();
-        } finally {
-          await client.setBlocking(false);
-        };
-      })
+      .with('hubspotOnReplyBoxEmail', async () => {onReplyBox(action, 'email')})
       .run();
   }, [client]);
 
