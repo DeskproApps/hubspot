@@ -142,7 +142,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     };
   }, [shouldLogNote, shouldLogEmail]);
 
-  const replyBoxAdditions = (action: TargetAction, type: ReplyBox) => {
+  const replyBoxAdditions = useCallback((action: TargetAction, type: ReplyBox) => {
     const key = type === 'note' ? noteKey : emailKey;
     const registerReplyBoxAdditionsTargetAction = type === 'email' ? registerReplyBoxEmailsAdditionsTargetAction : registerReplyBoxNotesAdditionsTargetAction;
 
@@ -155,9 +155,9 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
           };
         });
     });
-  };
+  }, [client]);
 
-  const onReplyBox = async (action: TargetAction, type: ReplyBox) => {
+  const onReplyBox = useCallback(async (action: TargetAction, type: ReplyBox) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const userID = action.context.data.user.id as string | undefined;
 
@@ -179,6 +179,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
       if (!contactIDs.length) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const payload = action.payload[type];
       const note = type === 'email' ? `Email Sent from Deskpro: ${payload}` : `Note Made in Deskpro: ${payload}`;
       const noteData = getNoteValues({
@@ -194,17 +195,16 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     } finally {
       await client.setBlocking(false);
     };
-  };
+  }, [client]);
 
   const handleTargetAction = useCallback((action: TargetAction) => {
     void match(action.name)
       .with('hubspotReplyBoxNoteAdditions', () => {replyBoxAdditions(action, 'note')})
-      .with('hubspotOnReplyBoxNote', async () => {onReplyBox(action, 'note')})
+      .with('hubspotOnReplyBoxNote', async () => {await onReplyBox(action, 'note')})
       .with('hubspotReplyBoxEmailAdditions', () => {replyBoxAdditions(action, 'email')})
-      .with('hubspotOnReplyBoxEmail', async () => {onReplyBox(action, 'email')})
+      .with('hubspotOnReplyBoxEmail', async () => {await onReplyBox(action, 'email')})
       .run();
-  }, [client, replyBoxAdditions, onReplyBox]);
-
+  }, [replyBoxAdditions, onReplyBox]);
   const debounceTargetAction = useDebouncedCallback(handleTargetAction, 200);
 
   useDeskproAppEvents({
