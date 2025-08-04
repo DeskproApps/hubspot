@@ -157,11 +157,10 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
       })
       .with('hubspotOnReplyBoxNote', async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const userID = action.context.data.user.id;
+        const userID = action.context.data.user.id as string | undefined;
 
-        if (!client) return;
+        if (!client || !userID) return;
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const linkedContactIDs = await getEntityContactList(client, userID);
         const contactID: Contact['id'] = linkedContactIDs?.[0];
 
@@ -210,11 +209,10 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
       })
       .with('hubspotOnReplyBoxEmail', async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const userID = action.context.data.user.id;
+        const userID = action.context.data.user.id as string | undefined;
 
-        if (!client) return;
+        if (!client || !userID) return;
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const linkedContactIDs = await getEntityContactList(client, userID);
         const contactID: Contact['id'] = linkedContactIDs?.[0];
 
