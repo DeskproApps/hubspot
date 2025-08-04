@@ -166,7 +166,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
         if (!contactID) return;
 
-        void client.setBlocking(true);
+        await client.setBlocking(true);
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { note } = action.payload;
@@ -218,7 +218,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
         if (!contactID) return;
 
-        void client.setBlocking(true);
+        await client.setBlocking(true);
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { email } = action.payload;
