@@ -203,7 +203,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
       .with('hubspotReplyBoxEmailAdditions', () => {replyBoxAdditions(action, 'email')})
       .with('hubspotOnReplyBoxEmail', async () => {onReplyBox(action, 'email')})
       .run();
-  }, [client]);
+  }, [client, replyBoxAdditions, onReplyBox]);
 
   const debounceTargetAction = useDebouncedCallback(handleTargetAction, 200);
 
