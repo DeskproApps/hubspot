@@ -142,19 +142,24 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     };
   }, [shouldLogNote, shouldLogEmail]);
 
+  const replyBoxAdditions = (action: TargetAction, type: ReplyBox) => {
+    const key = type === 'note' ? noteKey : emailKey;
+    const registerReplyBoxAdditionsTargetAction = type === 'email' ? registerReplyBoxEmailsAdditionsTargetAction : registerReplyBoxNotesAdditionsTargetAction;
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    action.payload.forEach((selection: Selection) => {
+      void client?.setState(key(selection.id), { id: selection.id, selected: selection.selected })
+        .then(result => {
+          if (result.isSuccess) {
+            void registerReplyBoxAdditionsTargetAction(client, selection.id);
+          };
+        });
+    });
+  };
+
   const handleTargetAction = useCallback((action: TargetAction) => {
     void match(action.name)
-      .with('hubspotReplyBoxNoteAdditions', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        action.payload.forEach((selection: Selection) => {
-          void client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
-            .then(result => {
-              if (result.isSuccess) {
-                void registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
-              };
-            });
-        });
-      })
+      .with('hubspotReplyBoxNoteAdditions', () => {replyBoxAdditions(action, 'note')})
       .with('hubspotOnReplyBoxNote', async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const userID = action.context.data.user.id as string | undefined;
@@ -193,17 +198,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
           await client.setBlocking(false);
         };
       })
-      .with('hubspotReplyBoxEmailAdditions', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        action.payload.forEach((selection: Selection) => {
-          void client?.setState(emailKey(selection.id), { id: selection.id, selected: selection.selected })
-            .then(result => {
-              if (result.isSuccess) {
-                void registerReplyBoxEmailsAdditionsTargetAction(client, selection.id);
-              };
-            });
-        });
-      })
+      .with('hubspotReplyBoxEmailAdditions', () => {replyBoxAdditions(action, 'email')})
       .with('hubspotOnReplyBoxEmail', async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const userID = action.context.data.user.id as string | undefined;
