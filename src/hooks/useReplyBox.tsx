@@ -171,30 +171,27 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { note } = action.payload;
 
-        void client.getState<Selection>(noteKey(contactID))
-          .then(selections => {
-            const contactIDs = selections
-              .filter(({ data }) => data?.selected)
-              .map(({ data }) => data?.id);
+        try {
+          const selections = await client.getState<Selection>(noteKey(contactID));
+          const contactIDs = selections
+            .filter(({ data }) => data?.selected)
+            .map(({ data }) => data?.id);
 
-            if (!contactIDs.length) return;
+          if (!contactIDs.length) return;
 
-            return createNoteService(
-              client,
-              getNoteValues({
-                note: `Note Made in Deskpro: ${note}`,
-                files: []
-              }, []),
-              uuid()
-            )
-              .then(note => Promise.all(
-                contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
-              ))
-              .then(() => {void queryClient.invalidateQueries()});
-          })
-          .finally(() => {
-            void client.setBlocking(false);
-          });
+          const noteData = getNoteValues({
+            note: `Note Made in Deskpro: ${note}`,
+            files: []
+          }, []);
+          const response = await createNoteService(client, noteData, uuid());
+
+          await Promise.all(
+            contactIDs.map(ID => setEntityAssocService(client, 'notes', response.id, 'contact', ID as string, 'note_to_contact'))
+          );
+          await queryClient.invalidateQueries();
+        } finally {
+          await client.setBlocking(false);
+        };
       })
       .with('hubspotReplyBoxEmailAdditions', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -223,30 +220,27 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { email } = action.payload;
 
-        void client.getState<Selection>(emailKey(contactID))
-          .then(selections => {
-            const contactIDs = selections
-              .filter(({ data }) => data?.selected)
-              .map(({ data }) => data?.id);
+        try {
+          const selections = await client.getState<Selection>(emailKey(contactID));
+          const contactIDs = selections
+            .filter(({ data }) => data?.selected)
+            .map(({ data }) => data?.id);
 
-            if (!contactIDs.length) return;
+          if (!contactIDs.length) return;
 
-            return createNoteService(
-              client,
-              getNoteValues({
-                note: `Email Sent from Deskpro: ${email}`,
-                files: []
-              }, []),
-              uuid()
-            )
-              .then(note => Promise.all(
-                contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
-              ))
-              .then(() => {void queryClient.invalidateQueries()});
-          })
-          .finally(() => {
-            void client.setBlocking(false);
-          });
+          const noteData = getNoteValues({
+            note: `Email Sent from Deskpro: ${email}`,
+            files: []
+          }, []);
+          const response = await createNoteService(client, noteData, uuid());
+
+          await Promise.all(
+            contactIDs.map(ID => setEntityAssocService(client, 'notes', response.id, 'contact', ID as string, 'note_to_contact'))
+          );
+          await queryClient.invalidateQueries();
+        } finally {
+          await client.setBlocking(false);
+        };
       })
       .run();
   }, [client]);
