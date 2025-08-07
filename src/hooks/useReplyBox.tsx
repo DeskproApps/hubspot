@@ -100,9 +100,13 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
   const { context } = useDeskproLatestAppContext<Data, Settings>();
   const shouldLogNote = context?.settings.log_note_as_hubspot_note;
   const shouldLogEmail = context?.settings.log_email_as_hubspot_note;
+  const keyMap = {
+    note: noteKey,
+    email: emailKey
+  };
 
   const getSelectionState: GetSelectionState = useCallback((contactID, type) => {
-    const key = type === 'note' ? noteKey : emailKey;
+    const key = keyMap[type];
 
     return client?.getState(key(contactID));
   }, [client]);
@@ -120,7 +124,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
   }, [client, shouldLogNote, shouldLogEmail]);
 
   const deleteSelectionState: DeleteSelectionState = useCallback((contactID, type) => {
-    const key = type === 'note' ? noteKey : emailKey;
+    const key = keyMap[type];
 
     return client?.deleteState(key(contactID))
       .then(() => {
@@ -143,7 +147,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
   }, [shouldLogNote, shouldLogEmail]);
 
   const replyBoxAdditions = useCallback((action: TargetAction, type: ReplyBox) => {
-    const key = type === 'note' ? noteKey : emailKey;
+    const key = keyMap[type];
     const registerReplyBoxAdditionsTargetAction = type === 'email' ? registerReplyBoxEmailsAdditionsTargetAction : registerReplyBoxNotesAdditionsTargetAction;
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -171,7 +175,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     await client.setBlocking(true);
     
     try {
-      const key = type === 'note' ? noteKey : emailKey;
+      const key = keyMap[type];
       const selections = await client.getState<Selection>(key(contactID));
       const contactIDs = selections
         .filter(({ data }) => data?.selected)
