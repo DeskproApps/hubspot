@@ -14,4 +14,5 @@ export { getCurrencySymbol } from "./getCurrencySymbol";
 export { tryToLinkAutomatically } from "./tryToLinkAutomatically";
 export { isNavigatePayload } from "./isNavigatePayload";
 export { isUnlinkPayload } from "./isUnlinkPayload";
+export { isUnlinkCompanyPayload } from "./isUnlinkCompanyPayload";
 export { capitalise } from "./capitalise";
