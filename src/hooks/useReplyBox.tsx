@@ -172,7 +172,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
 
     if (!contactID) return;
 
-    await client.setBlocking(true);
+    void client.setBlocking(true);
     
     try {
       const key = keyMap[type];
@@ -197,7 +197,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
       );
       await queryClient.invalidateQueries();
     } finally {
-      await client.setBlocking(false);
+      void client.setBlocking(false);
     };
   }, [client]);
 
