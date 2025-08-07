@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 import { match } from 'ts-pattern';
 import { useDebouncedCallback } from 'use-debounce';
@@ -100,16 +100,16 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
   const { context } = useDeskproLatestAppContext<Data, Settings>();
   const shouldLogNote = context?.settings.log_note_as_hubspot_note;
   const shouldLogEmail = context?.settings.log_email_as_hubspot_note;
-  const keyMap = {
+  const keyMap = useMemo(() => ({
     note: noteKey,
     email: emailKey
-  };
+  }), []);
 
   const getSelectionState: GetSelectionState = useCallback((contactID, type) => {
     const key = keyMap[type];
 
     return client?.getState(key(contactID));
-  }, [client]);
+  }, [client, keyMap]);
 
   const setSelectionState: SetSelectionState = useCallback((contactID, selected, type) => {
     if (shouldLogNote && type === 'note') {
@@ -134,7 +134,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
           return registerReplyBoxEmailsAdditionsTargetAction(client, contactID);
         };
       });
-  }, [client]);
+  }, [client, keyMap]);
 
   useInitialisedDeskproAppClient(client => {
     if (shouldLogNote) {
@@ -159,7 +159,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
           };
         });
     });
-  }, [client]);
+  }, [client, keyMap]);
 
   const onReplyBox = useCallback(async (action: TargetAction, type: ReplyBox) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
@@ -199,7 +199,7 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     } finally {
       void client.setBlocking(false);
     };
-  }, [client]);
+  }, [client, keyMap]);
 
   const handleTargetAction = useCallback((action: TargetAction) => {
     void match(action.name)
