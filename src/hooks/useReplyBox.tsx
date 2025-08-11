@@ -1,12 +1,14 @@
-import { createContext, useCallback, useContext } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
+import { v4 as uuid } from 'uuid';
 import { match } from 'ts-pattern';
 import { useDebouncedCallback } from 'use-debounce';
 import { GetStateResponse, IDeskproClient, TargetAction, useDeskproAppClient, useDeskproAppEvents, useDeskproLatestAppContext, useInitialisedDeskproAppClient } from '@deskpro/app-sdk';
 import { getNoteValues } from '../components/NoteForm';
 import { queryClient } from '../query';
 import { createNoteService, getContactService, setEntityAssocService } from '../services/hubspot';
+import { getEntityContactList } from '../services/entityAssociation';
 import { Contact } from '../services/hubspot/types';
-import { Settings } from '../types';
+import { Data, Settings } from '../types';
 
 export type ReplyBox = 'note' | 'email';
 
@@ -27,7 +29,7 @@ const emailKey = (contactID: Contact['id']) => `hubspot/emails/selection/${conta
 
 async function getContactName(client: IDeskproClient, contactID: Contact['id']) {
   const contact = await getContactService(client, contactID);
-  const name =  `${contact.properties.firstname ?? ''} ${contact.properties.lastname ?? ''}` || 'Contact';
+  const name = `${contact.properties.firstname ?? ''} ${contact.properties.lastname ?? ''}` || 'Contact';
 
   return name;
 };
@@ -94,15 +96,19 @@ interface IReplyBoxProvider {
 
 export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
   const { client } = useDeskproAppClient();
-  const { context } = useDeskproLatestAppContext<unknown, Settings>();
+  const { context } = useDeskproLatestAppContext<Data, Settings>();
   const shouldLogNote = context?.settings.log_note_as_hubspot_note;
   const shouldLogEmail = context?.settings.log_email_as_hubspot_note;
+  const keyMap = useMemo(() => ({
+    note: noteKey,
+    email: emailKey
+  }), []);
 
   const getSelectionState: GetSelectionState = useCallback((contactID, type) => {
-    const key = type === 'note' ? noteKey : emailKey;
+    const key = keyMap[type];
 
     return client?.getState(key(contactID));
-  }, [client]);
+  }, [client, keyMap]);
 
   const setSelectionState: SetSelectionState = useCallback((contactID, selected, type) => {
     if (shouldLogNote && type === 'note') {
@@ -117,17 +123,17 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
   }, [client, shouldLogNote, shouldLogEmail]);
 
   const deleteSelectionState: DeleteSelectionState = useCallback((contactID, type) => {
-    const key = type === 'note' ? noteKey : emailKey;
+    const key = keyMap[type];
 
     return client?.deleteState(key(contactID))
       .then(() => {
         if (type === 'note') {
           return registerReplyBoxNotesAdditionsTargetAction(client, contactID);
         } else if (type === 'email') {
-          return registerReplyBoxEmailsAdditionsTargetAction(client, contactID);;
+          return registerReplyBoxEmailsAdditionsTargetAction(client, contactID);
         };
       });
-  }, [client]);
+  }, [client, keyMap]);
 
   useInitialisedDeskproAppClient(client => {
     if (shouldLogNote) {
@@ -139,85 +145,69 @@ export function ReplyBoxProvider({ children }: IReplyBoxProvider) {
     };
   }, [shouldLogNote, shouldLogEmail]);
 
+  const replyBoxAdditions = useCallback((action: TargetAction, type: ReplyBox) => {
+    const key = keyMap[type];
+    const registerReplyBoxAdditionsTargetAction = type === 'email' ? registerReplyBoxEmailsAdditionsTargetAction : registerReplyBoxNotesAdditionsTargetAction;
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    action.payload.forEach((selection: Selection) => {
+      void client?.setState(key(selection.id), { id: selection.id, selected: selection.selected })
+        .then(result => {
+          if (result.isSuccess) {
+            void registerReplyBoxAdditionsTargetAction(client, selection.id);
+          };
+        });
+    });
+  }, [client, keyMap]);
+
+  const onReplyBox = useCallback(async (action: TargetAction, type: ReplyBox) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const userID = action.context.data.user.id as string | undefined;
+
+    if (!client || !userID) return;
+
+    const linkedContactIDs = await getEntityContactList(client, userID);
+    const contactID: Contact['id'] = linkedContactIDs?.[0];
+
+    if (!contactID) return;
+
+    void client.setBlocking(true);
+    
+    try {
+      const key = keyMap[type];
+      const selections = await client.getState<Selection>(key(contactID));
+      const contactIDs = selections
+        .filter(({ data }) => data?.selected)
+        .map(({ data }) => data?.id);
+
+      if (!contactIDs.length) return;
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const payload = action.payload[type];
+      const note = type === 'email' ? `Email Sent from Deskpro: ${payload}` : `Note Made in Deskpro: ${payload}`;
+      const noteData = getNoteValues({
+        note,
+        files: []
+      }, []);
+      const response = await createNoteService(client, noteData, uuid());
+
+      await Promise.all(
+        contactIDs.map(ID => setEntityAssocService(client, 'notes', response.id, 'contact', ID as string, 'note_to_contact'))
+      );
+      await queryClient.invalidateQueries();
+    } finally {
+      void client.setBlocking(false);
+    };
+  }, [client, keyMap]);
+
   const handleTargetAction = useCallback((action: TargetAction) => {
-    match(action.name)
-      .with('hubspotReplyBoxNoteAdditions', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        action.payload.forEach((selection: Selection) => {
-          void client?.setState(noteKey(selection.id), { id: selection.id, selected: selection.selected })
-            .then(result => {
-              if (result.isSuccess) {
-                void registerReplyBoxNotesAdditionsTargetAction(client, selection.id);
-              };
-            });
-        });
-      })
-      .with('hubspotOnReplyBoxNote', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { note } = action.payload;
-
-        void client?.setBlocking(true);
-        void client?.getState<Selection>(noteKey('*'))
-          .then(selections => {
-            const contactIDs = selections
-              .filter(({ data }) => data?.selected)
-              .map(({ data }) => data?.id);
-
-            if (!contactIDs.length) return;
-
-            return createNoteService(client, getNoteValues({
-              note: `Note Made in Deskpro: ${note}`,
-              files: []
-            }, []))
-              .then(note => Promise.all(
-                contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
-              ))
-              .then(() => {void queryClient.invalidateQueries()});
-          })
-          .finally(() => {
-            void client.setBlocking(false);
-          });
-      })
-      .with('hubspotReplyBoxEmailAdditions', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        action.payload.forEach((selection: Selection) => {
-          void client?.setState(emailKey(selection.id), { id: selection.id, selected: selection.selected })
-            .then(result => {
-              if (result.isSuccess) {
-                void registerReplyBoxEmailsAdditionsTargetAction(client, selection.id);
-              };
-            });
-        });
-      })
-      .with('hubspotOnReplyBoxEmail', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { email } = action.payload;
-
-        void client?.setBlocking(true);
-        void client?.getState<Selection>(emailKey('*'))
-          .then(selections => {
-            const contactIDs = selections
-              .filter(({ data }) => data?.selected)
-              .map(({ data }) => data?.id);
-
-            if (!contactIDs.length) return;
-
-            return createNoteService(client, getNoteValues({
-              note: `Email Sent from Deskpro: ${email}`,
-              files: []
-            }, []))
-              .then(note => Promise.all(
-                contactIDs.map(ID => setEntityAssocService(client, 'notes', note.id, 'contact', ID as string, 'note_to_contact'))
-              ))
-              .then(() => {void queryClient.invalidateQueries()});
-          })
-          .finally(() => {
-            void client.setBlocking(false);
-          });
-      })
+    void match(action.name)
+      .with('hubspotReplyBoxNoteAdditions', () => {replyBoxAdditions(action, 'note')})
+      .with('hubspotOnReplyBoxNote', async () => {await onReplyBox(action, 'note')})
+      .with('hubspotReplyBoxEmailAdditions', () => {replyBoxAdditions(action, 'email')})
+      .with('hubspotOnReplyBoxEmail', async () => {await onReplyBox(action, 'email')})
       .run();
-  }, [client]);
-
+  }, [replyBoxAdditions, onReplyBox]);
   const debounceTargetAction = useDebouncedCallback(handleTargetAction, 200);
 
   useDeskproAppEvents({

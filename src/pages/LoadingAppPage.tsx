@@ -27,12 +27,20 @@ const LoadingAppPage = () => {
     // Determine authentication method from settings
     const isUsingOAuth = context?.settings.use_api_token === false || context?.settings.use_advanced_connect === false;
     const user = context?.data?.user
+    const organisation = context?.data?.organisation;
+    const isOrgView = Boolean(context?.data?.organisation);
 
     useInitialisedDeskproAppClient((client) => {
         client.setTitle("HubSpot")
 
-        if (!context || !context?.settings || !user) {
-            return
+        if (!context || !context?.settings) {
+            if (isOrgView && !organisation) {
+                return;
+            };
+
+            if (!isOrgView && !user) {
+                return;
+            };
         }
 
         // Store the authentication method in the user state
@@ -46,19 +54,24 @@ const LoadingAppPage = () => {
             .finally(() => {
                 setIsFetchingAuth(false)
             })
-    }, [context, context?.settings])
+    }, [context, context?.settings, isUsingOAuth, user, organisation]);
 
-    if (!client || !user || isFetchingAuth) {
+    if (!client || (!isOrgView && !user) || (isOrgView && !organisation) || isFetchingAuth) {
         return (<LoadingSpinner />)
     }
 
     if (isAuthenticated) {
-        tryToLinkAutomatically(client, user, getContactInfo, linkContactFn)
-            .then(() => getEntityContactList(client, user.id))
-            .then((entityIds) => navigate(entityIds.length > 0 ? "/home" : "/link"))
-            .catch(() => { navigate("/link") });
-    } else {
+        if (isOrgView) {
+            navigate('/companies');
+        };
 
+        if (user) {
+            tryToLinkAutomatically(client, user, getContactInfo, linkContactFn)
+                .then(() => getEntityContactList(client, user.id))
+                .then((entityIds) => navigate(entityIds.length > 0 ? "/home" : "/link"))
+                .catch(() => { navigate("/link") });
+        };
+    } else {
         if (isUsingOAuth) {
             navigate("/login")
         } else {

@@ -14,7 +14,7 @@ const useUnlinkContact = () => {
     const { asyncErrorHandler } = useAsyncError();
     const { unlinkContactFn } = useLinkUnlinkNote();
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const dpUserId = context?.data?.user.id;
+    const dpUserId = context?.data?.user?.id;
 
     const unlinkContact = useCallback((contactId: Contact["id"]) => {
         if (!client || !dpUserId || !contactId) {

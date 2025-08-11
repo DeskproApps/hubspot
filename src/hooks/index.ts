@@ -12,3 +12,4 @@ export { useQueriesWithClient } from "./useQueriesWithClient";
 export { useQueryWithClient } from "./useQueryWithClient";
 export { useSetAppTitle } from "./useSetAppTitle";
 export { useUnlinkContact } from "./useUnlinkContact";
+export { useUnlinkCompany } from "./useUnlinkCompany";

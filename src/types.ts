@@ -21,6 +21,7 @@ export type RequestParams = {
     queryParams?: Record<string, string | number | boolean>,
     entity?: string,
     settings?: Settings;
+    idempotencyKey?: string;
 };
 
 export type Request = <T = unknown>(
@@ -80,8 +81,17 @@ export type DeskproUser = {
     }[],
 };
 
+export type DeskproOrganisation = {
+  id: string;
+  name: string;
+  summary: string;
+  dateCreated: string;
+  customFields: Record<string, unknown>;
+}
+
 export type ContextData = {
-    user: DeskproUser,
+    user: DeskproUser;
+    organisation: DeskproOrganisation;
 };
 
 export type UserContext = Context<ContextData, Settings>;
@@ -106,11 +116,14 @@ export type NavigateToChangePage = { type: "changePage", path: To };
 
 export type UnlinkPayload = { type: "unlink", contactId: Contact["id"] };
 
+export type UnlinkCompanyPayload = { type: "unlink-company", companyID: Company["id"]};
+
 export type LogoutPayload = { type: "logout" };
 
 export type EventPayload =
   | NavigateToChangePage
   | UnlinkPayload
+  | UnlinkCompanyPayload
   | LogoutPayload
   ;
 

@@ -28,7 +28,6 @@ export class DeskproError extends Error {
     }
 }
 
-
 const baseRequest: Request = async <T = unknown>(
     client: IDeskproClient,
     {
@@ -39,7 +38,8 @@ const baseRequest: Request = async <T = unknown>(
         queryParams = {},
         headers: customHeaders,
         settings,
-    }: RequestParams,
+        idempotencyKey
+    }: RequestParams
 ): Promise<T> => {
     const isAdmin = Boolean(settings);
     const dpFetch = await (isAdmin ? adminGenericProxyFetch : proxyFetch)(client);
@@ -53,6 +53,7 @@ const baseRequest: Request = async <T = unknown>(
         method,
         headers: {
             "Authorization": `Bearer ${settings?.api_token ?? (isUsingOAuth2 ? `[user[${placeholders.OAUTH2_ACCESS_TOKEN_PATH}]]` : placeholders.API_TOKEN)}`,
+            ...(idempotencyKey && { "X-HubSpot-Request-Id": idempotencyKey }),
             ...customHeaders,
         },
     };
