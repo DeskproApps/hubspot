@@ -12,6 +12,7 @@ import { ErrorBoundary } from "@sentry/react";
 import ViewCompanyPage from "./pages/companies/ViewCompanyPage/ViewCompanyPage";
 import CompanyIndexPage from "./pages/companies/CompanyIndexPage/CompanyIndexPage";
 import LinkCompanyPage from "./pages/companies/LinkCompanyPage/LinkCompanyPage";
+import { LogoutEventListener } from "./components";
 
 function App() {
   const { client } = useDeskproAppClient();
@@ -56,27 +57,46 @@ function App() {
         {({ reset }) => (
           <ErrorBoundary onReset={reset} fallback={ErrorFallback}>
             <Routes>
-              <Route path="/admin/mapping/contact" element={<ContactMappingPage />} />
-              <Route path="/admin/mapping/deal" element={<DealMappingPage />} />
-              <Route path="/admin/callback" element={<AdminCallbackPage />} />
-              <Route path="/home" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/link" element={<LinkPage />} />
-              <Route path="/deal/create" element={<CreateDealPage />} />
-              <Route path="/deal/update/:dealId" element={<UpdateDealPage />} />
-              <Route path="/deal/:dealId" element={<DealPage />} />
-              <Route path="/contacts/create" element={<CreateContactPage />} />
-              <Route path="/contacts/:contactId" element={<ViewContactPage />} />
-              <Route path="/contacts/edit/:contactId" element={<UpdateContactPage />} />
-              <Route path="/contacts/activities" element={<ActivityPage />} />
-              <Route path="/note/create" element={<CreateNotePage />} />
-              <Route path="/activity/create" element={<CreateActivityPage />} />
-              <Route path="/companies">
-                <Route path="link" element={<LinkCompanyPage />} />
-                <Route path=":companyId" element={<ViewCompanyPage />} />
-                <Route index element={<CompanyIndexPage />} />
+
+              <Route path="/admin">
+                <Route path="mapping">
+                  <Route path="contact" element={<ContactMappingPage />} />
+                  <Route path="deal" element={<DealMappingPage />} />
+                </Route>
+
+                <Route path="callback" element={<AdminCallbackPage />} />
               </Route>
-              <Route index element={<LoadingAppPage />} />
+
+              <Route element={<LogoutEventListener />}>
+                {/* Routes that require authentication (pretty much all routes besides login) should go here. */}
+                <Route index element={<LoadingAppPage />} />
+
+                <Route path="/home" element={<HomePage />} />
+                <Route path="/link" element={<LinkPage />} />
+                <Route path="/note/create" element={<CreateNotePage />} />
+                <Route path="/activity/create" element={<CreateActivityPage />} />
+
+                <Route path="/deal">
+                  <Route path="create" element={<CreateDealPage />} />
+                  <Route path="update/:dealId" element={<UpdateDealPage />} />
+                  <Route path=":dealId" element={<DealPage />} />
+                </Route>
+
+                <Route path="/contacts">
+                  <Route path="create" element={<CreateContactPage />} />
+                  <Route path=":contactId" element={<ViewContactPage />} />
+                  <Route path="activities" element={<ActivityPage />} />
+                  <Route path="edit/:contactId" element={<UpdateContactPage />} />
+                </Route>
+
+                <Route path="/companies">
+                  <Route path="link" element={<LinkCompanyPage />} />
+                  <Route path=":companyId" element={<ViewCompanyPage />} />
+                  <Route index element={<CompanyIndexPage />} />
+                </Route>
+              </Route>
+
             </Routes>
           </ErrorBoundary>
         )}

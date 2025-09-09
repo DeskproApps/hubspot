@@ -4,4 +4,5 @@ export { CreateContact } from "./CreateContact";
 export { UpdateContact } from "./UpdateContact";
 export { CreateDeal } from "./CreateDeal";
 export { UpdateDeal } from "./UpdateDeal";
+export { default as LogoutEventListener } from "./LogoutEventListener"
 export * from "./Admin";
