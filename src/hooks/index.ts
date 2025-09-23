@@ -1,3 +1,4 @@
+export { default as useLogoutEvent } from "./useLogoutEvent";
 export { useAppContext, AppProvider } from "./AppContext";
 export { useAsyncError } from "./useAsyncError";
 export { useContact } from "./useContact";
@@ -11,5 +12,5 @@ export { useProperties } from "./useProperties";
 export { useQueriesWithClient } from "./useQueriesWithClient";
 export { useQueryWithClient } from "./useQueryWithClient";
 export { useSetAppTitle } from "./useSetAppTitle";
-export { useUnlinkContact } from "./useUnlinkContact";
 export { useUnlinkCompany } from "./useUnlinkCompany";
+export { useUnlinkContact } from "./useUnlinkContact";
