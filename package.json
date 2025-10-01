@@ -15,7 +15,7 @@
     "bumpManifestVer": "node ./bin/bumpManifestVer.js"
   },
   "dependencies": {
-    "@deskpro/app-sdk": "^6.0.6",
+    "@deskpro/app-sdk": "^6.0.7",
     "@deskpro/deskpro-ui": "^8.3.1",
     "@fortawesome/fontawesome-common-types": "6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
