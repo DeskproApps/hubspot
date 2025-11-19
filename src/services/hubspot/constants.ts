@@ -12,7 +12,7 @@ export const placeholders = {
     API_TOKEN: "__api_token__",
     OAUTH2_ACCESS_TOKEN_PATH: "oauth2/access_token",
     OAUTH2_REFRESH_TOKEN_PATH: "oauth2/refresh_token"
-};
+} as const;
 
 export const BASE_URL = "https://api.hubapi.com";
 
@@ -68,4 +68,4 @@ export const PROPERTIES = {
         "lifecyclestage",
     ],
     companies: ["name"],
-};
+} as const;
