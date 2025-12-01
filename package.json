@@ -17,7 +17,7 @@
   "dependencies": {
     "@deskpro/app-sdk": "^6.0.6",
     "@deskpro/deskpro-ui": "^8.3.1",
-    "@fortawesome/fontawesome-common-types": "6.7.2",
+    "@fortawesome/fontawesome-common-types": "7.0.1",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "6.7.2",
     "@heroicons/react": "1.0.6",
